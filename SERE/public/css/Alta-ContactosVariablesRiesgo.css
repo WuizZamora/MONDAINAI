@@ -1,0 +1,14 @@
+.mb-3 a img {
+    width: 100%;
+    /* Hace que la imagen ocupe todo el ancho del contenedor */
+    height: 100%;
+    max-height: 10rem;
+    /* Altura máxima de la imagen */
+}
+
+/* Ocultar las flechas de incremento y decremento en los campos de número */
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}

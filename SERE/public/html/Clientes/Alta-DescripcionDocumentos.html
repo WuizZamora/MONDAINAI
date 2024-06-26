@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DESCRIPCIÓN | ALTA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+        <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+<body>
+    <div id="header"></div>
+    <form action="http://localhost:3000/sere/guardar-DocumentosDescripcion" method="post" autocomplete="off"
+    class="needs-validation" enctype="multipart/form-data" id="Form-Descripcion" novalidate>
+    <div class="container text-center">
+            <div id="NavSere"></div>
+            <br>
+            <h2>UNA BREVE DESCRIPCIÓN DEL CASO</h2>
+            <hr />
+            <div class="row mb-3 align-items-end">
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">HISTORIA DEL CASO: </label>
+                        <textarea name="HistoriaDelCaso" id="HistoriaDelCaso" rows="10" class="form-control"
+                            maxlength="450"
+                            placeholder="El Sr. Juan Pérez contrató los servicios de consultoría de XYZ S.A. el 1 de enero de 2023 para realizar un análisis de mercado y desarrollo de estrategias de marketing para su empresa."
+                            required></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">ACCIONES TOMADAS HASTA EL MOMENTO: </label>
+                        <textarea name="AccionesTomadas" id="AccionesTomadas" rows="10" class="form-control"
+                            maxlength="450"
+                            placeholder="Se ha enviado un recordatorio por correo electrónico y se han dejado mensajes en el buzón de voz del Sr. Pérez."
+                            required></textarea>
+                    </div>
+                </div>
+
+                <div class="col-md-4">
+                    <div class="mb-3">
+                        <label class="form-label">CIRCUNSTANCIAS ESPECIFICAS: </label>
+                        <textarea name="CircunstanciasEspecificas" id="CircunstanciasEspecificas" rows="10"
+                            class="form-control" maxlength="450"
+                            placeholder="¿Existen circunstancias especiales que puedan afectar la capacidad del deudor para pagar, como problemas financieros, disputas de facturación o cambios en la situación personal?"
+                            required></textarea>
+                    </div>
+                </div>
+            </div>
+            <h4> OTROS DOCUMENTOS: </h4>
+            <hr>
+            <div class="row mb-3 align-items-end">
+                <div class="container">
+                    <div class="table-responsive">
+                        <table class="table table-hover text-center" id="dataTableDocumentosExtras">
+                            <thead>
+                                <tr>
+                                    <th scope="col">#</th>
+                                    <th scope="col">DESCRIPCIÓN DEL ARCHIVO</th>
+                                    <th scope="col">ARCHIVO</th>
+                                    <th scope="col">MODO DE ENTREGA</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <th scope="row">1</th>
+                                    <td><input type="text" class="form-control text-center"
+                                            id="DescripcionArchivoExtra1" name="DescripcionArchivoExtra1" required></td>
+                                    <td><input type="file" class="form-control text-center" name="ArchivoExtra1"
+                                            required>
+                                    </td>
+                                    <td>
+                                        <select class="form-select" name="ModoEntregaArchivoExtra1"
+                                            id="ModoEntregaArchivoExtra1" required>
+                                            <option selected disabled value=""></option>
+                                            <option value="Original">ORIGINAL</option>
+                                            <option value="Copia">COPIA</option>
+                                            <option value="Electronico">ELECTRONICO</option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <button type="button" class="btn btn-primary" id="agregarBtn"
+                        onclick="agregarFilaDocumentosExtras()">+</button>
+                </div>
+                <div class="container-avisos text-center">
+                    <div id="error-message" class="alert alert-danger d-none" role="alert">
+                        Por favor, complete toda la información faltante marcada en rojo antes
+                        de guardarla.
+                    </div>
+                    <div id="success-message" class="alert alert-success d-none" role="alert">
+                        <strong>Datos guardados correctamente</strong> <br />
+                        Por favor, cierre esta pestaña para seguir con su registro
+                    </div>
+                    <div class="row mb-3">
+                        <div class="col-md-3 offset-md-10 justify-content-end">
+                            <button id="Registrar" type="submit" class="btn btn-primary btn-lg">Registrar</button>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </form>
+<div id="footer"></div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#Form-Descripcion').submit(function (event) {
+                var form = $(this);
+                if (form[0].checkValidity() === false) {
+                    event.preventDefault();
+                    event.stopPropagation();
+
+                    // Mostrar mensaje de error
+                    $('#error-message').removeClass('d-none');
+
+                    // Resaltar campos no completados en rojo
+                    form.find(':input[required]').each(function () {
+                        if (!$(this).val()) {
+                            $(this).addClass('is-invalid');
+                        }
+                    });
+                } else {
+                    $('#error-message').addClass('d-none'); // Ocultar mensaje de error si está visible
+
+                    // Remover resaltado en rojo de campos cuando el formulario es válido
+                    form.find(':input').removeClass('is-invalid').addClass('is-valid');
+
+                    // Mostrar mensaje de éxito
+                    $('#success-message').removeClass('d-none');
+                }
+
+                form.addClass('was-validated');
+            });
+
+            // Agrega clases de validación visual
+            $('input, select, textarea').on('input', function () {
+                var input = $(this);
+                if (input[0].checkValidity()) {
+                    input.removeClass('is-invalid').addClass('is-valid');
+                } else {
+                    input.removeClass('is-valid').addClass('is-invalid');
+                }
+            });
+        });
+
+        // Dentro de la función agregarFilaDocumentosExtras()
+        function agregarFilaDocumentosExtras() {
+            var table = document.getElementById("dataTableDocumentosExtras");
+            var rowCount = table.rows.length;
+
+            var row = table.insertRow(rowCount);
+            var cell1 = row.insertCell(0);
+            var cell2 = row.insertCell(1);
+            var cell3 = row.insertCell(2);
+            var cell4 = row.insertCell(3);
+
+            cell1.innerHTML = rowCount;
+            cell2.innerHTML =
+                '<input type="text" class="form-control text-center" id="DescripcionArchivoExtra' +
+                rowCount +
+                '" name="DescripcionArchivoExtra' +
+                rowCount +
+                '" required>';
+
+            cell3.innerHTML =
+                '<input type="file" class="form-control text-center" name="ArchivoExtra' +
+                rowCount +
+                '" required>';
+
+            var selectOptions =
+                '<select class="form-select" name="ModoEntregaArchivoExtra' +
+                rowCount +
+                '" id="ModoEntregaArchivoExtra' +
+                rowCount +
+                '" required>' +
+                '<option selected disabled value=""></option>' +
+                '<option value="Original">ORIGINAL</option>' +
+                '<option value="Copia">COPIA</option>' +
+                '<option value="Electronico">ELECTRONICO</option>' +
+                "</select>";
+
+            cell4.innerHTML = selectOptions;
+        }
+
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+            $("#NavSere").load("/sere/NavSere");
+        });
+    </script>
+</body>
+
+</html>

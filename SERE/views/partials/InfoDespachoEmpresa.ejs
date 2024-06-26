@@ -1,0 +1,43 @@
+<form action="/sere/AltaInfoEmpresaDespacho" method="post" enctype="multipart/form-data">
+    <div class="row">
+        <h3>Para facturacion necesitamos:</h3>
+        <!-- <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">RFC: </label>
+                <input name="rfc" type="text" class="form-control" maxlength="13" required>
+            </div>
+        </div> -->
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Nombre: </label>
+                <input name="nombre" type="text" class="form-control" maxlength="100" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Correo: </label>
+                <input name="correo" type="email" class="form-control" maxlength="100" required>
+                <div class="invalid-feedback">Por favor ingrese un correo válido.</div>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Uso del CFDI: </label>
+                <input name="cfdi" type="text" class="form-control" maxlength="100" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Clave SAT: </label>
+                <input name="claveSat" type="text" class="form-control" maxlength="100" required>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="mb-3">
+                <label class="form-label">Constancia de situación fiscal: </label>
+                <input name="csf" type="file" class="form-control" maxlength="100" required>
+            </div>
+        </div>
+    </div>
+    <input type="submit" class="btn btn-primary" value="REGISTRAR">
+</form>

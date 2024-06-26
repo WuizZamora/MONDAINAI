@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nuevo Proyecto</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+</head>
+
+<body>
+    <div class="container text-center">
+        <h4>ALTA A NUEVO PROYECTO</h4>
+        <hr>
+        <form action="#" method="post" novalidate class="needs-validation">
+            <div class="row mb-3">
+                <div class="row align-items-end">
+                    <div class="col-md-3">
+                        <div class="mb-3">
+
+                            <label for="rfc_cliente" class="form-label"> RFC: *</label>
+                            <input type="text" id="rfc_cliente" name="rfc_cliente" class="form-control" maxlength="13"
+                                required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="nombre_proyecto" class="form-label">Nombre o razón social: *</label>
+                            <input type="text" id="nombre_proyecto" name="nombre_proyecto" class="form-control"
+                                maxlength="255" required>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="tipo_proyecto" class="form-label">Tipo de proyecto:</label>
+                            <select id="tipo_proyecto" name="tipo_proyecto" class="form-select" required>
+                                <option value="" selected disabled></option>
+                                <option value="Diseño de negocio">Diseño de negocio</option>
+                                <option value="Plan de PUV">Plan de PUV</option>
+                                <option value="Planes de Suministro">Planes de Suministro</option>
+                                <option value="Cimiento integral empresarial">Cimiento integral empresarial</option>
+                                <option value="Estabilidad financiera">Estabilidad financiera</option>
+                                <option value="Sistema de negocio">Sistema de Negocio</option>
+                                <option value="Gestion de contingencias">Gestión de contingencias</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="mb-3">
+                            <label for="descripcion_proyecto" class="form-label">Breve descripcion del Proyecto:</label>
+
+                            <textarea id="descripcion_proyecto" name="descripcion_proyecto" maxlength="450" class="form-control"
+                                required></textarea>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">ENVIAR</button>
+        </form>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

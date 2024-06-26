@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SECIE | ELEMENTO</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+  <!-- <link rel="stylesheet" href="/secie/public/css/style.css"> -->
+</head>
+
+<body>
+  <div id="header"></div>
+  <div class="container text-center ">
+    <div class="row mb-3">
+      <form action="http://localhost:3000/secie/HOLA" method="post" class="needs-validation" novalidate><br>
+        <h4>Información del elemento</h4>
+        <hr>
+        <div class="row align-items-end">
+          <div class="col-md-3">
+            <div class="mb-3">
+              <label for="tipo_elemento" class="form-label">Tipo de elemento:</label>
+              <select id="tipo_elemento" name="tipo_elemento" class="form-select" required data-required="true">
+                <option value="" selected disabled></option>
+                <option value="subproyecto">Sub proyecto</option>
+                <option value="hito">Hito (Etapa)</option>
+                <option value="actividad">Actividad</option>
+                <option value="accion">Acción</option>
+              </select>
+            </div>
+          </div>
+          <div class="col-md-2" style="display: none;">
+            <div class="mb-3">
+              <label for="id_proyecto" class="form-label">No. de Proyecto:</label>
+              <input type="number" id="id_proyecto" name="id_proyecto" class="form-control text-center" min="0" required data-required="true" readonly>
+            </div>
+          </div>
+          <div class="col-md-2" style="display: none;" id="CampoSubproyecto">
+            <div class="mb-3">
+              <label for="id_subproyecto" class="form-label">S</label>
+              <input type="number" id="id_subproyecto" name="id_subproyecto" class="form-control text-center" min="0" required data-required="true" readonly>
+            </div>
+          </div>
+          <div class="col-md-2" style="display: none;" id="CampoHito">
+            <div class="mb-3">
+              <label for="id_hito" class="form-label">H</label>
+              <input type="number" id="id_hito" name="id_hito" class="form-control text-center" min="0" required data-required="true">
+            </div>
+          </div>
+          <div class="col-md-2" style="display: none;" id="CampoActividad">
+            <div class="mb-3">
+              <label for="id_actividad" class="form-label">AT</label>
+              <input type="number" id="id_actividad" name="id_actividad" class="form-control text-center" min="0" required data-required="true">
+            </div>
+          </div>
+          <div class="col-md-2" style="display: none;" id="CampoAccion">
+            <div class="mb-3">
+              <label for="id_accion" class="form-label">AC</label>
+              <input type="number" id="id_accion" name="id_accion" class="form-control text-center" min="0" required data-required="true">
+            </div>
+          </div>
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="concepto_principal" class="form-label">Concepto principal:</label>
+              <input type="text" id="concepto_principal" name="concepto_principal" class="form-control" maxlength="255" required data-required="true">
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mb-3">
+              <label for="responsable" class="form-label">Responsable:</label>
+              <select id="responsable" name="responsable" class="form-select" required data-required="true">
+                <option value="" selected disabled></option>
+                <% responsables.forEach(function(responsable) { %>
+                <option value="<%= responsable.RFCUsuario %>"><%= responsable.Nombre %></option>
+                <% }); %>
+              </select>
+
+            </div>
+          </div>
+          <div class="col-md-3">
+            <div class="mb-3">
+              <label for="auditor" class="form-label">Validación:</label>
+              <select id="auditor" name="auditor" class="form-select" required data-required="true">
+                <option value="" selected disabled></option>
+                <% auditores.forEach(function(auditor) { %>
+                <option value="<%= auditor.RFCUsuario %>"><%= auditor.Nombre %></option>
+                <% }); %>
+              </select>
+
+            </div>
+          </div>
+        </div>
+
+        <div id="camposHito-Actividad-Accion" class="tipoCampo">
+          <div class="row">
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="relacion" class="form-label">Relación:</label>
+                <input type="number" id="relacion" name="relacion" class="form-control" min="0">
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="mb-3">
+                <label for="descripcion" class="form-label">Descripción:</label>
+                <textarea id="descripcion" name="descripcion" maxlength="450" class="form-control" data-required="true" required></textarea>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="camposHito-Actividad" class="tipoCampo">
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="importancia-1" class="form-label">Importancia:</label>
+                <div id="importanciaContainer">
+                  <div class="importancia-group">
+                    <input type="text" id="importancia-1" name="importancia-1" class="form-control" maxlength="100" required data-required="true">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-info" onclick="agregarCampo('importanciaContainer', 'importancia', 'Importancia')">+</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="meta-1" class="form-label">Meta(s):</label>
+                <div id="metasContainer">
+                  <div class="meta-group">
+                    <input type="text" id="meta-1" name="meta-1" class="form-control" maxlength="100" required data-required="true">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-info" onclick="agregarCampo('metasContainer', 'meta', 'Meta')">+</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="objetivo-1" class="form-label">Objetivo(s):</label>
+                <div id="objetivosContainer">
+                  <div class="objetivo-group">
+                    <input type="text" id="objetivo-1" name="objetivo-1" class="form-control" maxlength="100" required data-required="true">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-info" onclick="agregarCampo('objetivosContainer', 'objetivo', 'Objetivo')">+</button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="camposActividad" class="tipoCampo">
+          <div class="col-md-4">
+            <div class="mb-3">
+              <label for="kpis" class="form-label">KPI's:</label>
+              <input type="text" id="kpis" name="kpis" class="form-control" required data-required="true">
+            </div>
+          </div>
+        </div>
+
+        <div id="camposAccion" class="tipoCampo row">
+          <h4>Planificación y seguimiento</h4>
+          <hr>
+          <div class="row">
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="herramientas-1" class="form-label">Herramientas:</label>
+                <div id="herramientasContainer">
+                  <div class="herramientas-group">
+                    <input type="text" id="herramientas-1" name="herramientas-1" class="form-control" maxlength="100" required data-required="true">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-info" onclick="agregarCampo('herramientasContainer', 'herramientas', 'Herramientas')">+</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="pasos-1" class="form-label">Pasos:</label>
+                <div id="pasosContainer">
+                  <div class="pasos-group">
+                    <input type="text" id="pasos-1" name="pasos-1" class="form-control" maxlength="100" required data-required="true">
+                  </div>
+                </div>
+                <button type="button" class="btn btn-info" onclick="agregarCampo('pasosContainer', 'pasos', 'Pasos')">+</button>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="dependencia" class="form-label">Dependencia:</label>
+                <input type="text" id="dependencia" name="dependencia" class="form-control" maxlength="100" required data-required="true">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="prioridad" class="form-label">Prioridad:</label>
+                <select id="prioridad" name="prioridad" class="form-select" required data-required="true">
+                  <option value="" selected disabled></option>
+                  <option value="Importante - Urgente">Importante - Urgente</option>
+                  <option value="Importante - NO Urgente">Importante - No Urgente</option>
+                  <option value="NO Importante - Urgente">No importante - Urgente</option>
+                  <option value="NO Importante - NO Urgente">No importante - No Urgente</option>
+                </select>
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="area" class="form-label">Área:</label>
+                <input type="text" id="area" name="area" class="form-control" maxlength="100" required data-required="true">
+              </div>
+            </div>
+            <div class="col-md-4">
+              <div class="mb-3">
+                <label for="resultado_esperado" class="form-label">Resultado esperado:</label>
+                <input type="text" id="resultado_esperado" name="resultado_esperado" class="form-control" required data-required="true">
+              </div>
+            </div>
+          </div>
+        </div>
+        <input type="submit" value="ENVIAR" class="btn btn-primary">
+      </form>
+      <div class="container"><br>
+        <div id="error-message" class="alert alert-danger d-none" role="alert">
+          Por favor complete todos los campos marcados en rojo antes de enviar el formulario.
+        </div>
+        <div id="success-message" class="alert alert-success d-none" role="alert">
+          <strong>Proyecto creado correctamente <br> La página se refrescara en 3 segundos</strong>
+        </div>
+      </div>
+    </div>
+    <div id="footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+      $(function() {
+        $("#header").load("/header");
+        $("#footer").load("/footer");
+      });
+    </script>
+    <script src="src/altaElemento.js"></script>
+  </div>
+</body><br><br><br><br><br>
+</html>

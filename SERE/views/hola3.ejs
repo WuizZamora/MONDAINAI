@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BBBBBB</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+</head>
+
+<body>
+    <div class="container text-center">
+        <div class="row">
+            <div class="col-md-3 align-items-center d-flex justify-content-center">
+                <!-- Añadida la clase para centrar -->
+                <div class="list-group">
+                    <a href="#" class="list-group-item list-group-item-action">CASOS</a>
+                    <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
+                        list-group-item-action">Información Financiera y Legal</a>
+                    <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
+                        class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
+                    <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
+                        class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <h2>DETALLES DEL PROCESO JUDICIAL</h2>
+                <hr>
+                <%- include('partials/DatosDeudorGestionCaso') %>
+                    <form id="procesoJudicial-form">
+                        <div class="row">
+                            <h2>Proceso Judicial</h2>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Expediente">Expediente: </label>
+                                    <input type="text" id="Expediente" name="Expediente"
+                                        class="form-control text-center" maxlength="100" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Juzgado">Juzgado: </label>
+                                    <input type="text" id="Juzgado" name="Juzgado" class="form-control text-center"
+                                        maxlength="100" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="Jurisdiccion">Jurisdicción: </label>
+                                    <input type="text" id="Jurisdiccion" name="Jurisdiccion"
+                                        class="form-control text-center" maxlength="100" required>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="mb-3">
+                                    <label for="EstadoDelCaso-form">Estado Del Caso:</label>
+                                    <select name="EstadoDelCaso" id="Estado" required class="form-select">
+                                        <option disabled selected value=""></option>
+                                        <option disabled value="">ESTADO DEL CASO EXTRAJUDICIAL</option>
+                                        <hr>
+                                        <option value="Proceso De Negociacion">En proceso de negociación</option>
+                                        <option value="Pendiente De Contacto">Pendiente de contacto</option>
+                                        <option value="En Revision Legal">En revisión legal</option>
+                                        <option value="En Tramite Administrativo">En trámite administrativo</option>
+                                        <option value="En Espera De Pago">En espera de pago</option>
+                                        <option value="En Proceso De Cobro">En proceso de cobro</option>
+                                        <option value="En Revision De Documentacion">En revisión de documentación</option>
+                                        <option value="En Proceso De Analisis De Riesgos">En proceso de análisis de riesgos
+                                        </option>
+                                        <option value="En Proceso De Seguimiento">En proceso de seguimiento</option>
+                                        <option value="Cerrado">Cerrado</option>
+                                        <option disabled value="">ESTADO DEL CASO JUDICIAL</option>
+                                        <hr>
+                                        <option value="En Etapa De Presentacion De La Demanda">En etapa de presentación de la
+                                            demanda
+                                        </option>
+                                        <option value="En Etapa De Descubrimiento">En etapa de descubrimiento</option>
+                                        <option value="En Etapa De Audiencias Preliminares">En etapa de audiencias preliminares
+                                        </option>
+                                        <option value="En Etapa De Medios Alternativos De Resolucion De Disputas">En etapa de medios
+                                            alternativos de resolución de disputas</option>
+                                        <option value="En Etapa De Juicio">En etapa de juicio</option>
+                                        <option value="En Etapa De Apelacion">En etapa de apelación</option>
+                                        <option value="En Proceso De Ejecucion De Sentencia">En proceso de ejecución de sentencia
+                                        </option>
+                                        <option value="En Espera De Resolucion">En espera de resolución</option>
+                                        <option value="En Proceso De Recopilacion De Pruebas">En proceso de recopilación de
+                                            pruebas
+                                        </option>
+                                        <option value="Cerrado">Cerrado</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                        <label for="RFC"></label>
+                        <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
+                        <label for="Id"></label>
+                        <input type="number" name="Id" id="Id" value="<%= idCuenta %>" style="display: none;">
+                        <label for="fechaHoraPagare"></label>
+                        <input type="datetime-local" id="fechaHoraPagare" name="fechaHoraPagare" style="display: none;"><br>
+                        <button type="submit" class="btn btn-primary">Guardar</button>
+                    </form>
+                    <script>
+                        document.addEventListener("DOMContentLoaded", function () {
+                            document.getElementById('procesoJudicial-form').addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                const ID = document.getElementById('Id').value;
+                                const RFC = document.getElementById('RFC').value;
+                                const Expediente = document.getElementById('Expediente').value;
+                                const Juzgado = document.getElementById('Juzgado').value;
+                                const Jurisdiccion = document.getElementById('Jurisdiccion').value;
+                                const estadoDelCaso = document.getElementById('Estado').value;
+                                function getFormattedDate() {
+                                    const now = new Date();
+                                    const year = now.getFullYear();
+                                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                                    const day = String(now.getDate()).padStart(2, '0');
+                                    const hours = String(now.getHours()).padStart(2, '0');
+                                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                }
+
+                                // Obtener la fecha y hora formateadas
+                                const fecha = getFormattedDate();
+
+                                fetch('/sere/ProcesoJudicial', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ ID, RFC, Expediente, Juzgado, Jurisdiccion, fecha, estadoDelCaso})
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        if (data.message === 'OK') {
+                                            document.getElementById('Expediente').value="";
+                                            document.getElementById('Juzgado').value="";
+                                            document.getElementById('Jurisdiccion').value="";
+                                            document.getElementById('Estado').value="";
+                                            mostrarProceso();
+                                        } else {
+                                            console.error('Error en la respuesta:', data);
+                                        }
+                                    })
+                                    .catch(error => {
+                                        alert("Hubo un error al insertar los datos: " + error.message);
+                                    });
+                            });
+                        });
+                    </script>
+                    <div id="lista-procesoJudicial" class="text-center">
+                        <!-- Aquí se mostrarán los importes -->
+                    </div>
+                    <script>
+                        function mostrarProceso() {
+                                    fetch('/sere/ObtenerProcesoJudicial?IDCuenta=<%= idCuenta %>')
+                                        .then(response => response.json())
+                                        .then(data => {
+                                            const listaProceso = document.getElementById('lista-procesoJudicial');
+                                            listaProceso.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                                            if (data.resultados.length === 0) {
+                                                const mensaje = document.createElement('p');
+                                                mensaje.textContent = 'No hay procesos judiciales recuperados para esta cuenta aún.';
+                                                listaProceso.appendChild(mensaje);
+                                            } else {
+                                                const table = document.createElement('table');
+                                                table.classList.add('table', 'table-info', 'container');
+                                                table.innerHTML = `
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>RFC</th>
+                                                            <th>EXPEDIENTE</th>
+                                                            <th>JUZGADO</th>
+                                                            <th>JURISDICCIÓN</th>
+                                                            <th>FECHA DE REGISTRO DEL PROCESO JUDICIAL</th>
+                                                            <th>ESTADO DEL CASO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                `;
+
+                                                data.resultados.forEach(proceso => {
+                                                    table.innerHTML += `
+                                                        <tr>
+                                                            <td>${proceso.RFCDespacho}</td>
+                                                            <td style=" word-break: break-word; white-space: normal;">${proceso.Expediente}</td>
+                                                            <td style=" word-break: break-word; white-space: normal;">${proceso.Juzgado}</td>
+                                                            <td style=" word-break: break-word; white-space: normal;">${proceso.Jurisdiccion}</td>
+                                                            <td>${proceso.FechaRegistro}</td>
+                                                            <td>${proceso.EstadoDelCaso}</td>
+                                                        </tr>
+                                                    `;
+                                                });
+                                                table.innerHTML += `
+                                                    </tbody>
+                                                `;
+
+                                                listaProceso.appendChild(table);
+                                            }
+                                        });
+                                }
+                                mostrarProceso();
+                    </script>
+
+                    <% if (TipoGarantia==='N/A' ) { %>
+                        <form id="pagares-form">
+                            <div class="row">
+                                <h2>Diagnostico del título del crédito:</h2>
+                                <hr>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="FechaSuscripcion">Fecha de suscripcion: </label>
+                                        <input type="date" id="FechaSuscripcion" name="FechaSuscripcion"
+                                            class="form-control text-center" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="FechaVencimiento">Fecha de vencimiento: </label>
+                                        <input type="date" id="FechaVencimiento" name="FechaVencimiento"
+                                            class="form-control text-center" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="FechaPrescripcion">Fecha prescripción: </label>
+                                        <input type="date" id="FechaPrescripcion" name="FechaPrescripcion"
+                                            class="form-control text-center" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Importe">Importe: ($)</label>
+                                        <input type="number" id="Importe" name="Importe"
+                                            class="form-control text-center" min="0" required>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Interes">Interés: (%)</label>
+                                        <input type="number" id="Interes" name="Interes"
+                                            class="form-control text-center" min="0" required>
+                                    </div>
+                                </div>
+                                <div class="col-md-3">
+                                    <div class="mb-3">
+                                        <label for="Monto">Monto: ($)</label>
+                                        <input type="number" id="Monto" name="Monto" class="form-control text-center"
+                                            min="0" required>
+                                    </div>
+                                </div>
+                            </div>
+
+
+                            <div id="suscriptores-container">
+                                <div class="suscriptor">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="NombreSuscriptor">Nombre del suscriptor: </label>
+                                                <input type="text" name="NombreSuscriptor"
+                                                    class="form-control text-center" maxlength="100" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="DomicilioSuscriptor">Domicilio del suscriptor: </label>
+                                                <input type="text" name="DomicilioSuscriptor"
+                                                    class="form-control text-center" maxlength="200" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="add-suscriptor" class="btn btn-primary">+ Suscriptor</button>
+
+                            <div id="avales-container">
+                                <div class="aval">
+                                    <div class="row">
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="NombreAval">Nombre del aval: </label>
+                                                <input type="text" name="NombreAval" class="form-control text-center"
+                                                    maxlength="100" required>
+                                            </div>
+                                        </div>
+                                        <div class="col-md-3">
+                                            <div class="mb-3">
+                                                <label for="DireccionAval">Dirección del aval: </label>
+                                                <input type="text" name="DireccionAval" class="form-control text-center"
+                                                    maxlength="200" required>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <button type="button" id="add-aval" class="btn btn-primary">+ Aval</button><br>
+
+                            <label for="RFC"></label>
+                            <input type="text" value="<%= RFC %>" name="RFC" id="RFC">
+                            <label for="Id"></label>
+                            <input type="number" name="Id" id="Id" value="<%= idCuenta %>">
+                            <label for="fechaHoraPagare"></label>
+                            <input type="datetime-local" id="fechaHoraPagare" name="fechaHoraPagare"><br>
+
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+
+                        <script>
+                            document.getElementById('pagares-form').addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                const ID = document.getElementById('Id').value;
+                                const RFC = document.getElementById('RFC').value;
+                                const FechaPrescripcion = document.getElementById('FechaPrescripcion').value;
+                                const Importe = document.getElementById('Importe').value;
+                                const FechaSuscripcion = document.getElementById('FechaSuscripcion').value;
+                                const FechaVencimiento = document.getElementById('FechaVencimiento').value;
+                                const Monto = document.getElementById('Monto').value;
+                                const Interes = document.getElementById('Interes').value;
+
+                                // Capturar suscriptores
+                                const suscriptores = Array.from(document.querySelectorAll('.suscriptor')).map(suscriptor => {
+                                    return {
+                                        NombreSuscriptor: suscriptor.querySelector('input[name="NombreSuscriptor"]').value,
+                                        DomicilioSuscriptor: suscriptor.querySelector('input[name="DomicilioSuscriptor"]').value
+                                    };
+                                });
+
+                                // Capturar avales
+                                const avales = Array.from(document.querySelectorAll('.aval')).map(aval => {
+                                    return {
+                                        NombreAval: aval.querySelector('input[name="NombreAval"]').value,
+                                        DireccionAval: aval.querySelector('input[name="DireccionAval"]').value
+                                    };
+                                });
+
+                                function getFormattedDate() {
+                                    const now = new Date();
+                                    const year = now.getFullYear();
+                                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                                    const day = String(now.getDate()).padStart(2, '0');
+                                    const hours = String(now.getHours()).padStart(2, '0');
+                                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                }
+
+                                const fecha = getFormattedDate();
+
+                                // Envío de la solicitud fetch
+                                fetch('/sere/Pagares', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ ID, RFC, FechaPrescripcion, Importe, suscriptores, avales, FechaSuscripcion, FechaVencimiento, Monto, Interes, fecha })
+                                })
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        alert("Solicitud enviada correctamente");
+                                        // Aquí puedes manejar la respuesta del servidor si es necesario
+                                    })
+                                    .catch(error => {
+                                        console.error('Error al enviar la solicitud:', error);
+                                    });
+                            });
+
+                            // Función para agregar dinámicamente campos de suscriptor
+                            document.getElementById('add-suscriptor').addEventListener('click', function () {
+                                const container = document.getElementById('suscriptores-container');
+                                const newSuscriptor = document.createElement('div');
+                                newSuscriptor.className = 'suscriptor';
+                                newSuscriptor.innerHTML = `
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="NombreSuscriptor">Nombre del suscriptor: </label>
+                                            <input type="text" name="NombreSuscriptor" class="form-control text-center" maxlength="100" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="DomicilioSuscriptor">Domicilio del suscriptor: </label>
+                                            <input type="text" name="DomicilioSuscriptor" class="form-control text-center" maxlength="200" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                                container.appendChild(newSuscriptor);
+                            });
+
+                            // Función para agregar dinámicamente campos de aval
+                            document.getElementById('add-aval').addEventListener('click', function () {
+                                const container = document.getElementById('avales-container');
+                                const newAval = document.createElement('div');
+                                newAval.className = 'aval';
+                                newAval.innerHTML = `
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="NombreAval">Nombre del aval: </label>
+                                            <input type="text" name="NombreAval" class="form-control text-center" maxlength="100" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <div class="mb-3">
+                                            <label for="DireccionAval">Dirección del aval: </label>
+                                            <input type="text" name="DireccionAval" class="form-control text-center" maxlength="200" required>
+                                        </div>
+                                    </div>
+                                </div>
+                            `;
+                                container.appendChild(newAval);
+                            });
+
+                        </script>
+                        <% } %>
+
+                            <%= idCuenta%>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

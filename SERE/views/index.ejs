@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Mondainai SERE</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+</head>
+
+<body>
+    <div id="header"></div>
+    <div class="container text-center">
+        <div id="NavSere"></div>
+        <h2>BIENVENIDO A SERE <br>
+            <%= Nombre %>
+        </h2>
+        <!-- <figure class="figure rounded float-end">
+            <figcaption class="figure-caption ">Asignar Rol </figcaption>
+            <a href="/sere/AsignarRol">
+                <img src="/images/sere/Alta.png" class="img-thumbnail" alt="..." width="100">
+            </a>
+        </figure> -->
+        <div class="card d-inline-block" style="width: 18rem;">
+            <img src="/images/sere/Administrador.jpg" class="card-img-top" alt="administrar" style="height: auto;"/>
+            <div class="card-body">
+                <h5 class="card-title">Administrar perfil</h5>
+                <p class="card-text">
+                    Lorem ipsum dolor
+                </p>
+                <a href="/sere/AsignarRol" class="btn btn-dark">Ir</a>
+            </div>
+        </div>
+        <div class="card d-inline-block" style="width: 18rem;">
+            <img src="/images/sere/Clientes.jpg" class="card-img-top" alt="..." style="height: auto;"/>
+            <div class="card-body">
+                <h5 class="card-title">CLIENTES</h5>
+                <p class="card-text">
+                    Lorem ipsum dolor
+                </p>
+                <a href="/sere/clientes" class="btn btn-info">Ir</a>
+            </div>
+        </div>
+        
+        <h3 class="text-danger">¡PRÓXIMAMENTE NUEVOS MODULOS!</h3>
+        <figure class="figure">
+            <figcaption class="figure-caption">Empleados</figcaption>
+            <img src="/images/sere/Empleados.jpg" class="img-thumbnail" alt="..." width="250">
+        </figure>
+        <figure class="figure">
+            <figcaption class="figure-caption">Proveedores</figcaption>
+            <img src="/images/sere/Proveedores.jpg" class="img-thumbnail" alt="..." width="250">
+        </figure>
+        <figure class="figure">
+            <figcaption class="figure-caption">Gobierno</figcaption>
+            <img src="/images/sere/Gobierno.jpg" class="img-thumbnail" alt="..." width="250">
+        </figure>
+    </div>
+    <br>
+    <div id="footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+            $("#NavSere").load("/sere/NavSere");
+        });
+    </script>
+</body>
+
+</html>

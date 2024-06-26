@@ -1,0 +1,11 @@
+#campoDetalle {
+    display: none;
+}
+
+#campoFechaValidacion {
+    display: none;
+}
+
+input[type="date"] {
+    text-align: center;
+}

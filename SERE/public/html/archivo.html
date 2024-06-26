@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Carga de archivos</title>
+</head>
+<body>
+  <h1>Subir Archivos</h1>
+  <form action="http://localhost:3000/sere/upload" method="POST" enctype="multipart/form-data">
+    <div class="col-md-3">
+      <div class="mb-3">
+          <label class="form-label">DOCUMENTACIÓN LEGAL: </label>
+          <input type="file" class="form-control" name="DocumentacionLegal" required>
+      </div>
+  </div>
+  <div class="col-md-6">
+    <div class="mb-3">
+        <label class="form-label">ADJUNTA LA DOCUMENTACIÓN DE LOS DAÑOS:</label>
+        <input type="file" class="form-control" name="DocumentacionDanosReclamados" required>
+    </div>
+</div>
+<div class="col-md-6">
+  <div class="mb-3">
+      <label class="form-label">ADJUNTA LA DOCUMENTACIÓN SOPORTE:</label>
+      <input type="file" class="form-control" name="DocumentacionSoporteActitudDeudor"
+          required>
+  </div>
+</div>
+<div class="col-md-3">
+  <div class="mb-3">
+      <label class="form-label">SUBE 1 ESTADO DE CUENTA:</label>
+      <input type="file" class="form-control" name="EstadoDeCuentaFile">
+  </div>
+</div>
+<div class="col-md-6">
+  <div class="mb-3">
+      <label class="form-label">INFORMACIÓN CREDITICIA DEL CLIENTE:</label>
+      <input type="file" class="form-control" name="BuroDelCliente" required>
+  </div>
+</div>
+    <button type="submit">Subir</button>
+  </form>
+  <script src="../js/script.js"></script>
+</body>
+</html>

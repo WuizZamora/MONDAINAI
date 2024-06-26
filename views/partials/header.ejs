@@ -1,0 +1,117 @@
+<nav class="navbar navbar-expand-lg navbar-light" style="background-color: #ffffff;">
+    <div class="container-fluid d-flex flex-column">
+        <!-- Sección superior con Logo y Frase -->
+        <div class="navbar-top d-flex justify-content-between align-items-center">
+            <!-- Logo con margen ajustado -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/images/logo.svg" width="200" class="d-inline-block align-text-top">
+                <span class="ms-2"></span>
+            </a>
+            <img src="/images/frase.png" width="200" class="d-inline-block frase">
+        </div>
+
+        <!-- Toggler Button -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+            <!-- Sección inferior con botones de navegación -->
+            <div class="collapse navbar-collapse justify-content-between" id="navbarSupportedContent">
+                <div class="navbar-bottom w-100" style="background-color:#E52421; border-radius: 20px;">
+                    <ul class="navbar-nav d-flex justify-content-between align-items-center">
+                        <li class="nav-item">
+                            <a class="nav-link" aria-current="page" href="/">INICIO</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Nosotros">NOSOTROS</a>
+                        </li>
+                        <li class="nav-item dropdown">
+                            <button class="btn nav-link dropdown-toggle" type="button" data-bs-toggle="dropdown"
+                                aria-expanded="false">
+                                ECOSISTEMA DE RECURSOS
+                            </button>
+                            <ul class="dropdown-menu">
+                                <li><a class="dropdown-item" href="/secie">SECIE</a></li>
+                                <li><a class="dropdown-item" href="/sere">SERE</a></li>
+                                <li><a class="dropdown-item" href="#">Servicios</a></li>
+                                <li><a class="dropdown-item" href="#">Capacitaciones</a></li>
+                                <li><a class="dropdown-item" href="#">Impulso financiero</a></li>
+                            </ul>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="/Contacto">CONTACTO</a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+    </div>
+</nav>
+
+<style>
+    #navbarSupportedContent {
+        width: 90%;
+        font-size: 1rem;
+    }
+
+    .navbar-top {
+        width: 100%;
+        margin-bottom: .5rem;
+        /* Espacio entre la sección superior e inferior */
+    }
+
+    .navbar-brand {
+        margin-left: 5rem;
+        /* Margen para pantallas grandes */
+    }
+
+    /* Media query para pantallas con un ancho máximo de 768px */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            margin-left: 1rem;
+            /* Reducir el margen para pantallas más pequeñas */
+        }
+    }
+
+    /* Media query para pantallas con un ancho máximo de 480px */
+    @media (max-width: 480px) {
+        .navbar-brand {
+            margin-left: 0.5rem;
+            /* Margen aún más pequeño para pantallas muy pequeñas */
+        }
+    }
+
+    .frase {
+        margin-right: 4rem;
+        /* Margen para pantallas grandes */
+    }
+
+    /* Media query para pantallas con un ancho máximo de 768px */
+    @media (max-width: 768px) {
+        .frase {
+            margin-right: 1rem;
+            /* Reducir el margen para pantallas más pequeñas */
+        }
+    }
+
+    /* Media query para pantallas con un ancho máximo de 480px */
+    @media (max-width: 480px) {
+        .frase {
+            margin-right: 0.5rem;
+            /* Margen aún más pequeño para pantallas muy pequeñas */
+        }
+    }
+
+    .nav-link {
+        color: #ffffff;
+    }
+
+    .nav-item {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .bi-box-arrow-right {
+        color: #ffffff;
+    }
+</style>

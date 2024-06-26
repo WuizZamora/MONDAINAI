@@ -1,0 +1,12 @@
+.hidden {
+    display: none;
+}
+
+.project-description {
+    overflow: hidden; /* Asegura que cualquier contenido que exceda el tamaño del contenedor sea ocultado */
+    text-overflow: ellipsis; /* Añade puntos suspensivos al final del texto oculto */
+    white-space: nowrap; /* Evita que el texto se envuelva a la siguiente línea */
+    display: block; /* Asegura que el elemento se maneje como bloque, necesario para `text-overflow` */
+    width: 100%; /* Especifica un ancho para garantizar el trabajo de `text-overflow` */
+}
+

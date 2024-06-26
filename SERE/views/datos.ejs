@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Datos</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+</head>
+
+<body>
+    <div class="container text-center">
+        <h2 class="mb-3">DATOS DEL CASO</h2>
+
+        <!-- Información de la cuenta -->
+        <div class="card mb-3">
+            <div class="card-header">Información de la cuenta</div>
+            <div class="row">
+                <% let count=0; %>
+                    <% for (const key in datos) { %>
+                        <% if (count % 4===0) { %>
+            </div>
+            <div class="row">
+                <% } %>
+                    <div class="col-sm-3">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item"><strong>
+                                    <%= key %>:
+                                </strong><br>
+                                <% if (key.includes('Ruta')) { %>
+                                    <a href="<%= datos[key] %>" target="_blank">Ver Archivo</a>
+                                    <% } else { %>
+                                        <%= datos[key] %>
+                                            <% } %>
+                            </li>
+                        </ul>
+                    </div>
+                    <% count++; %>
+                        <% } %>
+            </div>
+        </div>
+
+        <!-- Contactos -->
+        <div class="card mb-3">
+            <div class="card-header">Contactos</div>
+            <div class="row">
+                <% let countContact = 0; %>
+                <% contactos.forEach(function(contacto) { %>
+                    <% if (countContact % 3 === 0) { %>
+                        </div>
+                        <div class="row">
+                    <% } %>
+                    <div class="col-sm-4">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>IDCuenta:</strong> <br><%= contacto.IDCuenta %> <br>
+                                <strong>Numero de Contacto:</strong> <br> <%= contacto.NumeroContacto %><br>
+                                <strong>Nombre de Contacto:</strong> <br> <%= contacto.NombreContacto %><br>
+                                <strong>Dirección de Contacto:</strong> <br> <%= contacto.DireccionContacto %><br>
+                                <strong>Telefono de Contacto:</strong> <br> <%= contacto.TelefonoContacto %><br>
+                                <strong>Celular de Contacto:</strong> <br> <%= contacto.CelularContacto %><br>
+                                <strong>Puesto de Contacto:</strong> <br> <%= contacto.PuestoContacto %><br>
+                                <strong>Email de Contacto:</strong> <br> <%= contacto.EmailContacto %><br>
+                                <strong>Email de Contacto Adicional:</strong> <br> <%= contacto.EmailContactoAdicional %><br>
+                                <strong>Observaciones de Contacto:</strong> <br> <%= contacto.ObservacionesContacto %>
+                            </li>
+                        </ul>
+                    </div>
+                    <% countContact++; %>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Monto de Deuda -->
+        <div class="card mb-3">
+            <div class="card-header">Monto de Deuda</div>
+            <div class="row">
+                <% let countMonto = 0; %>
+                <% montosDeDeuda.forEach(function(monto) { %>
+                    <% if (countMonto % 2 === 0) { %>
+                        </div>
+                        <div class="row">
+                    <% } %>
+                    <div class="col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>IDCuenta:</strong> <br> <%= monto.IDCuenta %><br>
+                                <strong>IDMonto:</strong> <br> <%= monto.IDMonto %><br>
+                                <strong>Descripción de Adeudo:</strong> <br> <%= monto.DescripcionAdeudo %><br>
+                                <strong>Adeudo:</strong> <br> <%= monto.AdeudoMonto %>
+                                
+                            </li>
+                        </ul>
+                    </div>
+                    <% countMonto++; %>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Estado de Cuenta -->
+        <div class="card mb-3">
+            <div class="card-header">Estado de Cuenta</div>
+            <div class="row">
+                <% let countEdoCuenta = 0; %>
+                <% estadoDeCuenta.forEach(function(estado) { %>
+                    <% if (countEdoCuenta % 2 === 0) { %>
+                        </div>
+                        <div class="row">
+                    <% } %>
+                    <div class="col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>IDCuenta:</strong> <br> <%= estado.IDCuenta %><br>
+                                <strong>IDEstadoDeCuenta:</strong> <br> <%= estado.IDEstadoDeCuenta %><br>
+                                <strong>TipoDocumento:</strong> <br> <%= estado.TipoDocumento %><br>
+                                <strong>NoDeDocumento:</strong> <br> <%= estado.NoDeDocumento %><br>
+                                <strong>FechaSoporte:</strong> <br> <%= estado.FechaSoporte %><br>
+                                <strong>FechSoporteVencimiento:</strong> <br> <%= estado.FechSoporteVencimiento %><br>
+                                <strong>ImporteTotal:</strong> <br> <%= estado.ImporteTotal %><br>
+                                <strong>ImporteRestante:</strong> <br> <%= estado.ImporteRestante %><br>
+                                <strong>PromedioPonderado:</strong> <br> <%= estado.PromedioPonderado %><br>
+                                <strong>ArchivosSoporte:</strong> <br> <%= estado.ArchivosSoporte %><br>
+                                <strong>RutaArchivosSoporte:</strong> <br> <a href="<%= estado.RutaArchivosSoporte %>" target="_blank">Abrir</a>
+                            </li>
+                        </ul>
+                    </div>
+                    <% countEdoCuenta++; %>
+                <% }); %>
+            </div>
+        </div>
+
+
+        <!-- Historial de Pagos -->
+        <div class="card mb-3">
+            <div class="card-header">Historial de Pagos</div>
+            <div class="row">
+                <% let countPagos = 0; %>
+                <% historialDePagos.forEach(function(pago) { %>
+                    <% if (countPagos % 2 === 0) { %>
+                        </div>
+                        <div class="row">
+                    <% } %>
+                    <div class="col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>IDCuenta:</strong> <br> <%= pago.IDCuenta %><br>
+                                <strong>IDHistorial de pago:</strong> <br> <%= pago.IDHistorialDePago %><br>
+                                <strong>FechaTransacción:</strong> <br> <%= pago.FechaTransaccion %><br>
+                                <strong>NumeroFacturaORecibo:</strong> <br> <%= pago.NumeroFacturaORecibo %><br>
+                                <strong>MontoPagado:</strong> <br> <%= pago.MontoPagado %><br>
+                                <strong>EstadoDelPago:</strong> <br> <%= pago.EstadoDelPago %><br>
+                                <strong>ObservacionesPago:</strong> <br> <%= pago.ObservacionesPago %>
+                            </li>
+                        </ul>
+                    </div>
+                    <% countPagos++; %>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Documentación Extra -->
+        <div class="card mb-3">
+            <div class="card-header">Documentación Extra</div>
+            <div class="row">
+                <% let countDocumentacion = 0; %>
+                <% documentacionExtra.forEach(function(documento) { %>
+                    <% if (countDocumentacion % 2 === 0) { %>
+                        </div>
+                        <div class="row">
+                    <% } %>
+                    <div class="col-sm-6">
+                        <ul class="list-group list-group-flush">
+                            <li class="list-group-item">
+                                <strong>IDCuenta:</strong> <br> <%= documento.IDCuenta %><br>
+                                <strong>IDDocumentacion:</strong> <br> <%= documento.IDDocumentacion %><br>
+                                <strong>DescripcionArchivoExtra:</strong> <br> <%= documento.DescripcionArchivoExtra %><br>
+                                <strong>ArchivoExtra:</strong> <br> <%= documento.ArchivoExtra %><br>
+                                <strong>RutaArchivoExtra:</strong> <br> <a href="<%= documento.RutaArchivoExtra %>" target="_blank">Abrir</a><br>
+                                <strong>ModoEntregaArchivoExtra:</strong> <br> <%= documento.ModoEntregaArchivoExtra %>
+                            </li>
+                        </ul>
+                    </div>
+                    <% countDocumentacion++; %>
+                <% }); %>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>
