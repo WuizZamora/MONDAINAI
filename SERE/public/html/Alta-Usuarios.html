@@ -100,7 +100,7 @@
         $(document).ready(function () {
             $("input[name='rfcAsociado']").on("input", function () {
                 var rfcAsociado = $(this).val();
-                if (rfcAsociado.length === 13) {
+                if (rfcAsociado.length === 12 || rfcAsociado.length === 13) {
                     $.ajax({
                         url: `/sere/getNombrePorRFC/${rfcAsociado}`,
                         method: "GET",
