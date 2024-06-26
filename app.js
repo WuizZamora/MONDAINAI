@@ -15,7 +15,8 @@ app.set("views", path.join(__dirname, "views"));
 
 // Configurar EJS como motor de plantillas
 app.set("view engine", "ejs");
-// Importamos las aplicaciones
+
+// Importamos las aplicaciones secie y sere
 const secieApp = require("./SECIE/app");
 const sereApp = require("./SERE/app"); // Asegúrate de que la ruta sea correcta
 
@@ -31,9 +32,11 @@ app.get("/", (req, res) => {
 app.get("/Nosotros", (req, res) => {
   res.render("nosotros");
 });
+
 app.get("/Contacto", (req, res) => {
   res.render("contacto");
 });
+
 // Ruta para renderizar el header
 app.get('/header', (req, res) => {
   res.render('partials/header');
@@ -43,6 +46,7 @@ app.get('/header', (req, res) => {
 app.get('/footer', (req, res) => {
   res.render('partials/footer');
 });
+
 // Middleware para manejar errores
 app.use((req, res, next) => {
   res.status(404).send("Lo siento, no pudimos encontrar eso!");
@@ -54,6 +58,6 @@ app.use((err, req, res, next) => {
 });
 
 // Iniciar el servidor
-app.listen(PORT, () => {
+app.listen(PORT, 'localhost', () => {
   console.log(`Servidor principal escuchando en el puerto ${PORT}`);
 });
