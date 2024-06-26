@@ -42,7 +42,7 @@ app.post("/AltaUsuario", (req, res) => {
         "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado, IDPerfil) VALUES (?, ?, ?, ?, ?, ?)";
       connection.query(
         sqlInsert,
-        [rfc, correo, nombre, hash, RFCASOCIADO, IDPERFIL],
+        [rfc, correo, nombre, hash, rfcAsociado, IDPERFIL],
         (err, result) => {
           if (err) {
             console.error("Error al insertar usuario:", err);
