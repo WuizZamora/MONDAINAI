@@ -11,9 +11,8 @@ app.use(bodyParser.json());
 
 // ALTA USUARIO
 app.post("/AltaUsuario", (req, res) => {
-  const { contrasena, rfc, correo, nombre } = req.body;
+  const { contrasena, rfc, correo, nombre, tipo_alta } = req.body;
   // Generar hash bcrypt de la contraseña
-  const tipo_alta="AM";
   bcrypt.hash(contrasena, 10, function (err, hash) {
     if (err) {
       console.error("Error al cifrar la contraseña:", err);

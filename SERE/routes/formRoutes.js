@@ -15,9 +15,7 @@ app.use(bodyParser.json());
 
 app.post("/AltaUsuario", (req, res) => {
   console.log(req.body);
-  const { correo, nombre, contrasena, rfc, rfcAsociado} = req.body;
-  // const RFCASOCIADO = "XXXXX234423DSAD"
-  const IDPERFIL = "AM";
+  const { correo, nombre, contrasena, rfc, rfcAsociado, } = req.body;
   // Verificar si el RFC ya tiene usuarios asociados
   const sqlCheckRFC = "SELECT COUNT(*) AS count FROM Usuarios WHERE RFC = ?";
   connection.query(sqlCheckRFC, [rfc], (err, results) => {
@@ -39,10 +37,10 @@ app.post("/AltaUsuario", (req, res) => {
 
       // INSERSIÓN A LA TABLA USUARIOS CON LA CONTRASEÑA YA ENCRIPTADA
       const sqlInsert =
-        "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado, IDPerfil) VALUES (?, ?, ?, ?, ?, ?)";
+        "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado) VALUES (?, ?, ?, ?, ?)";
       connection.query(
         sqlInsert,
-        [rfc, correo, nombre, hash, rfcAsociado, IDPERFIL],
+        [rfc, correo, nombre, hash, rfcAsociado],
         (err, result) => {
           if (err) {
             console.error("Error al insertar usuario:", err);
