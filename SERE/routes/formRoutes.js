@@ -4,7 +4,7 @@ const multer = require("multer");
 const fs = require("fs"); // Módulo para manejar el sistema de archivos
 const bodyParser = require("body-parser"); // Importa body-parser
 const path = require("path");
-const connection = require("../config/database"); // Importa la conexión a la base de datos
+const pool = require("../config/database"); // Importa la conexión a la base de datos
 const { Console } = require("console");
 
 const app = express();
@@ -18,7 +18,7 @@ app.post("/AltaUsuario", (req, res) => {
   const { correo, nombre, contrasena, rfc, rfcAsociado, } = req.body;
   // Verificar si el RFC ya tiene usuarios asociados
   const sqlCheckRFC = "SELECT COUNT(*) AS count FROM Usuarios WHERE RFC = ?";
-  connection.query(sqlCheckRFC, [rfc], (err, results) => {
+  pool.query(sqlCheckRFC, [rfc], (err, results) => {
     if (err) {
       console.error("Error al verificar el RFC:", err);
       res.status(500).send("Error interno del servidor");
@@ -38,7 +38,7 @@ app.post("/AltaUsuario", (req, res) => {
       // INSERSIÓN A LA TABLA USUARIOS CON LA CONTRASEÑA YA ENCRIPTADA
       const sqlInsert =
         "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado) VALUES (?, ?, ?, ?, ?)";
-      connection.query(
+      pool.query(
         sqlInsert,
         [rfc, correo, nombre, hash, rfcAsociado],
         (err, result) => {
@@ -61,7 +61,7 @@ app.get("/getNombrePorRFC/:rfc", (req, res) => {
   const sqlGetNombre =
     "SELECT Nombre FROM PreregistroDespachoEmpresa WHERE RFC = ?";
 
-  connection.query(sqlGetNombre, [rfc], (err, results) => {
+  pool.query(sqlGetNombre, [rfc], (err, results) => {
     if (err) {
       console.error("Error al buscar el nombre por RFC:", err);
       res.status(500).send("Error interno del servidor");
@@ -84,7 +84,7 @@ app.post("/updatePerfil", (req, res) => {
   const query = "UPDATE Usuarios SET IDPerfil = ? WHERE RFC = ?";
   const values = [IDPerfil, RFC];
 
-  connection.query(query, values, (error, results) => {
+  pool.query(query, values, (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta", error.stack);
       res
@@ -102,7 +102,7 @@ app.post("/login", (req, res) => {
 
   // CONSULTAR LA BASE DE DATOS PARA OBTENER EL USUARIO
   const sql = "SELECT * FROM Usuarios WHERE Correo = ?";
-  connection.query(sql, [correo], (err, results) => {
+  pool.query(sql, [correo], (err, results) => {
     if (err) {
       console.error("Error al buscar usuario:", err);
       res.status(500).send("Error interno del servidor");
@@ -161,7 +161,7 @@ app.post("/guardar-datos", (req, res) => {
   `;
 
   // Usar la conexión para insertar los datos generales de la cuenta
-  connection.query(
+  pool.query(
     queryInfGeneral,
     [
       naIfEmpty(data.NoClientePadre),
@@ -192,7 +192,7 @@ app.post("/guardar-datos", (req, res) => {
       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);
     `;
 
-      connection.query(
+      pool.query(
         queryInfDeudor,
         [
           IDCuenta,
@@ -331,7 +331,7 @@ app.post("/PreAlta", (req, res) => {
   const query =
     "INSERT INTO PreregistroDespachoEmpresa (Nombre, RFC) VALUES (?, ?)";
 
-  connection.query(query, [Nombre, RFC], (err, result) => {
+  pool.query(query, [Nombre, RFC], (err, result) => {
     if (err) {
       return res.status(500).send("Error al guardar en la base de datos");
     }
@@ -370,7 +370,7 @@ app.post(
     const values = [RFCAsociado, nombre, correo, cfdi, claveSat, rutaCsf];
 
     // Ejecutar la consulta
-    connection.query(sql, values, (err, results) => {
+    pool.query(sql, values, (err, results) => {
       if (err) {
         console.error(err);
         return res.status(500).send("Error al guardar los datos");
@@ -469,7 +469,7 @@ async function insertarContacto(IDCuenta, numeroContacto, body) {
       EmailContactoAdicional || "N/A",
       ObservacionesContacto || "N/A",
     ];
-    await connection.query(sql, values);
+    await pool.query(sql, values);
     console.log(`Contacto ${numeroContacto} insertado correctamente`);
   }
 }
@@ -481,7 +481,7 @@ async function insertarMontoDeuda(IDCuenta, IDMonto, body) {
   if (descripcionAdeudo || adeudoMonto) {
     const sql = `INSERT INTO Cliente_MontoDeDeuda (IDCuenta, IDMonto, DescripcionAdeudo, AdeudoMonto) VALUES (?, ?, ?, ?)`;
     const values = [IDCuenta, IDMonto, descripcionAdeudo, adeudoMonto];
-    await connection.query(sql, values);
+    await pool.query(sql, values);
     console.log(`Monto de deuda ${IDMonto} insertado correctamente`);
   }
 }
@@ -547,7 +547,7 @@ async function insertarVariablesRiesgo(IDCuenta, body, files) {
     rutaEstadoDeCuentaFile,
   ];
 
-  await connection.query(sql, values);
+  await pool.query(sql, values);
   console.log("Datos de variables de riesgo insertados correctamente");
 }
 
@@ -604,7 +604,7 @@ app.post(
       }
 
       // Ejecutar la consulta SQL
-      connection.query(sql, [values], (err, result) => {
+      pool.query(sql, [values], (err, result) => {
         if (err) {
           console.error(
             "Error al insertar datos en la base de datos: " + err.message
@@ -651,7 +651,7 @@ app.post("/guardar-HistorialPagos", (req, res) => {
         ObservacionesPago,
       ];
 
-      connection.query(query, values, (error, results, fields) => {
+      pool.query(query, values, (error, results, fields) => {
         if (error) {
           console.error("Error al insertar datos en la base de datos:", error);
           res
@@ -690,7 +690,7 @@ app.post(
     };
 
     // Insertar descripción del caso en la tabla DescripcionDelCaso
-    connection.query(
+    pool.query(
       "INSERT INTO Cliente_DescripcionDelCaso SET ?",
       descripcionDelCaso,
       (error, results) => {
@@ -701,7 +701,7 @@ app.post(
         }
 
         // Obtener el IDDocumentacion inicial
-        connection.query(
+        pool.query(
           "SELECT MAX(IDDocumentacion) AS maxId FROM Cliente_DocumentacionExtra WHERE IDCuenta = ?",
           [IDCuenta],
           (error, results) => {
@@ -733,7 +733,7 @@ app.post(
               };
 
               // Insertar en DocumentacionExtra
-              connection.query(
+              pool.query(
                 "INSERT INTO Cliente_DocumentacionExtra SET ?",
                 documentacionExtra,
                 (error, results) => {
@@ -779,7 +779,7 @@ app.post("/asignarCaso", (req, res) => {
 
   const fechaCierreValue = FechaDeCierre ? FechaDeCierre : null;
 
-  connection.query(
+  pool.query(
     query,
     [
       IDCuenta,
@@ -806,7 +806,7 @@ app.post("/actualizar-caso", (req, res) => {
 
   const query =
     "UPDATE Cliente_InfGeneralCuenta SET TipoDeCaso = ? WHERE IDCuenta = ?";
-  connection.query(query, [tipoDeCaso, idCuenta], (err, result) => {
+  pool.query(query, [tipoDeCaso, idCuenta], (err, result) => {
     if (err) {
       console.error("Error updating the case type:", err);
       return res.json({ success: false });
@@ -845,7 +845,7 @@ app.post(
         : "N/A";
       const rutaCotizacion = `uploads/${IDCuenta}/${cotizacion}`;
       // Guardar rutaCotizacion en la base de datos
-      connection.query(
+      pool.query(
         "INSERT INTO Cliente_Cotizacion(IDCuenta, TipoDeCaso, Comentarios, Cotizacion, FechaCotizacion, Validacion) VALUES (?, ?, ?, ?, ?, ?)",
         [
           IDCuenta,
@@ -898,7 +898,7 @@ app.post("/CostosHonorarios", (req, res, next) => {
     INSERT INTO Despacho_CostosHonorarios (IDCuenta, TipoDeCosto, Cantidad, Descripcion, FechaCostoHonorario, RFCDespacho, Soporte)
     VALUES (?, ?, ?, ?, ?, ?, ?)
     `;
-      connection.query(
+      pool.query(
         query,
         [ID, TipoCosto, parseFloat(cantidad), descripcion, fecha, RFC, rutaSoporteCosto],
         (error, results) => {
@@ -927,7 +927,7 @@ app.post("/ValidarGastosHonorarios", (req, res) => {
     SET Validacion = ?, RFCUsuario = ?, FechaValidacion = ? 
     WHERE IDCostosHonorarios = ?
   `;
-  connection.query(
+  pool.query(
     query,
     [validado, RFCValidacion, fechaHoraValidacion, id],
     (error) => {
@@ -972,7 +972,7 @@ app.post("/Importes", (req, res, next) => {
 
       const values = [IDCuenta, RFC, ImporteRecuperado, ImporteRestante, ObservacionesImporte, fecha, rutaSoporteImporte];
 
-      connection.query(query, values, (err, results) => {
+      pool.query(query, values, (err, results) => {
         if (err) {
           console.error('Error inserting data:', err.stack);
           return res.status(500).json({ error: 'Database error' });
@@ -994,7 +994,7 @@ app.post("/ValidarImportes", (req, res) => {
     SET Validacion = ?, RFCUsuario = ?, FechaValidacion = ? 
     WHERE IDImporteRecuperado = ?
   `;
-  connection.query(
+  pool.query(
     query,
     [validado, RFCValidacion, fechaHoraValidacion, id],
     (error) => {
@@ -1020,7 +1020,7 @@ app.post("/Plazos", (req, res) => {
     VALUES (?, ?, ?, ?, ?)
   `;
 
-  connection.query(query, [IDCuenta, RFC, FechaPlazo, Descripcion, fecha], (err, results) => {
+  pool.query(query, [IDCuenta, RFC, FechaPlazo, Descripcion, fecha], (err, results) => {
     if (err) {
       console.error('Error ejecutando la consulta:', err);
       return res.status(500).send('Error en el servidor');
@@ -1040,7 +1040,7 @@ app.post("/Garantia", (req, res) => {
 
   const values = [ID, RFC, TipoGarantia, Documento, fecha, Retroalimentacion];
 
-  connection.query(query, values, (err, results) => {
+  pool.query(query, values, (err, results) => {
     if (err) {
       console.error('Error inserting data into Despacho_Garantia:', err);
       res.status(500).send('Error inserting data');
@@ -1055,7 +1055,7 @@ app.post("/ProcesoJudicial", (req, res) => {
   
   const query = `INSERT INTO Despacho_ProcesoJudicial (IDCuenta, RFCDespacho, Expediente, Juzgado, Jurisdiccion, FechaRegistro, EstadoDelCaso) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
-  connection.query(query, [ID, RFC, Expediente, Juzgado, Jurisdiccion, fecha, estadoDelCaso], (error, results) => {
+  pool.query(query, [ID, RFC, Expediente, Juzgado, Jurisdiccion, fecha, estadoDelCaso], (error, results) => {
     if (error) {
       console.error('Error ejecutando la consulta: ' + error.stack);
       res.status(500).send('Error al guardar en la base de datos');

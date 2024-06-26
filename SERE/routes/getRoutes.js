@@ -1,4 +1,4 @@
-const connection = require("../config/database");
+const pool = require("../config/database");
 const express = require("express");
 const ejs = require("ejs");
 const path = require("path");
@@ -52,7 +52,7 @@ app.get("/AsignarRol", verificarAutenticacion, (req, res) => {
       params = [RFCAsociado, RFC];
     }
 
-    connection.query(query, params, (error, results) => {
+    pool.query(query, params, (error, results) => {
       if (error) {
         console.error("Error al obtener los usuarios:", error);
         return res.status(500).send("Error al obtener los usuarios");
@@ -92,13 +92,13 @@ app.get("/Ejemplo", verificarAutenticacion, (req, res) => {
     SELECT RFC FROM Usuarios WHERE RFCAsociado = ?
   `;
 
-  connection.query(queryDatos, [RFCAsociado], (error, results) => {
+  pool.query(queryDatos, [RFCAsociado], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta de datos:", error);
       return res.status(500).send("Error interno del servidor");
     }
 
-    connection.query(queryRFCAsociados, [RFCAsociado], (error, rfcResults) => {
+    pool.query(queryRFCAsociados, [RFCAsociado], (error, rfcResults) => {
       if (error) {
         console.error("Error ejecutando la consulta de RFC asociados:", error);
         return res.status(500).send("Error interno del servidor");
@@ -141,7 +141,7 @@ JOIN
 
   `;
 
-  connection.query(query, (err, results) => {
+  pool.query(query, (err, results) => {
     if (err) throw err;
     res.render("partials/DatosDelDeudor", { data: results });
   });
@@ -162,7 +162,7 @@ app.get("/datos", (req, res) => {
   `;
 
   // Ejecutar la consulta SQL para obtener los datos de la cuenta
-  connection.query(sqlQuery, [id], (err, results) => {
+  pool.query(sqlQuery, [id], (err, results) => {
     if (err) {
       console.error("Error al ejecutar la consulta:", err);
       res.status(500).send("Error al obtener los datos");
@@ -177,7 +177,7 @@ app.get("/datos", (req, res) => {
     `;
 
     // Ejecutar la consulta SQL para obtener los contactos asociados a la cuenta
-    connection.query(contactosQuery, [id], (err, contactos) => {
+    pool.query(contactosQuery, [id], (err, contactos) => {
       if (err) {
         console.error("Error al ejecutar la consulta de contactos:", err);
         res.status(500).send("Error al obtener los datos de los contactos");
@@ -192,7 +192,7 @@ app.get("/datos", (req, res) => {
       `;
 
       // Ejecutar la consulta SQL para obtener los montos de deuda asociados a la cuenta
-      connection.query(montosDeDeudaQuery, [id], (err, montosDeDeuda) => {
+      pool.query(montosDeDeudaQuery, [id], (err, montosDeDeuda) => {
         if (err) {
           console.error(
             "Error al ejecutar la consulta de montos de deuda:",
@@ -212,7 +212,7 @@ app.get("/datos", (req, res) => {
         `;
 
         // Ejecutar la consulta SQL para obtener los datos de estado de cuenta asociados a la cuenta
-        connection.query(estadoDeCuentaQuery, [id], (err, estadoDeCuenta) => {
+        pool.query(estadoDeCuentaQuery, [id], (err, estadoDeCuenta) => {
           if (err) {
             console.error(
               "Error al ejecutar la consulta de estado de cuenta:",
@@ -232,7 +232,7 @@ app.get("/datos", (req, res) => {
           `;
 
           // Ejecutar la consulta SQL para obtener los datos de historial de pagos asociados a la cuenta
-          connection.query(
+          pool.query(
             historialDePagosQuery,
             [id],
             (err, historialDePagos) => {
@@ -255,7 +255,7 @@ app.get("/datos", (req, res) => {
             `;
 
               // Ejecutar la consulta SQL para obtener los datos de documentación extra asociados a la cuenta
-              connection.query(
+              pool.query(
                 documentacionExtraQuery,
                 [id],
                 (err, documentacionExtra) => {
@@ -296,7 +296,7 @@ app.get("/datos1", (req, res) => {
   const id = req.query.IDCuenta;
 
   const query = "SELECT * FROM Cliente_InfGeneralCuenta WHERE IDCuenta = ?";
-  connection.query(query, [id], (err, results) => {
+  pool.query(query, [id], (err, results) => {
     if (err) {
       console.error("Error ejecutando la consulta:", err);
       res.status(500).send("Error en la consulta a la base de datos");
@@ -332,7 +332,7 @@ const obtenerDatosDeudor = (req, res, next) => {
       Cliente_InfGeneralCuenta.IDCuenta = ?
   `;
 
-  connection.query(query, [idCuenta], (err, results) => {
+  pool.query(query, [idCuenta], (err, results) => {
     if (err) {
       console.error("Error ejecutando la consulta:", err.stack);
       return res.status(500).send("Error en la base de datos");
@@ -363,7 +363,7 @@ app.get("/hola2",obtenerDatosDeudor, (req, res) => {
     WHERE IDCuenta = ?
   `;
 
-  connection.query(queryDeuda, [idCuenta], (error, resultsDeuda) => {
+  pool.query(queryDeuda, [idCuenta], (error, resultsDeuda) => {
     if (error) {
       console.error("Error executing query:", error);
       res.status(500).send("Error en el servidor");
@@ -373,7 +373,7 @@ app.get("/hola2",obtenerDatosDeudor, (req, res) => {
     const totalDeuda = resultsDeuda[0].totalDeuda || 0; // Si no hay deudas, el total es 0
     const montoSinIVA = totalDeuda / 1.16; // Calcula el monto sin IVA
 
-    connection.query(queryGarantia, [idCuenta], (error, resultsGarantia) => {
+    pool.query(queryGarantia, [idCuenta], (error, resultsGarantia) => {
       if (error) {
         console.error("Error executing query:", error);
         res.status(500).send("Error en el servidor");
@@ -406,7 +406,7 @@ app.get("/ObtenerGastosHonorarios", (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
   const query = "SELECT * FROM Despacho_CostosHonorarios WHERE IDCuenta = ?"; // Consulta SQL modificada
-  connection.query(query, [IDCuenta], (error, results) => {
+  pool.query(query, [IDCuenta], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
@@ -419,7 +419,7 @@ app.get("/ObtenerImportes", (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
   const query = "SELECT * FROM Despacho_ImporteRecuperado WHERE IDCuenta = ?"; // Consulta SQL modificada
-  connection.query(query, [IDCuenta], (error, results) => {
+  pool.query(query, [IDCuenta], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
@@ -432,7 +432,7 @@ app.get("/ObtenerPlazos", (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
   const query = "SELECT * FROM Despacho_PlazosFechasLimite WHERE IDCuenta = ?"; // Consulta SQL modificada
-  connection.query(query, [IDCuenta], (error, results) => {
+  pool.query(query, [IDCuenta], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
@@ -455,7 +455,7 @@ app.get("/ObtenerGarantia", (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
   const query = "SELECT * FROM Despacho_Garantia WHERE IDCuenta = ?"; // Consulta SQL modificada
-  connection.query(query, [IDCuenta], (error, results) => {
+  pool.query(query, [IDCuenta], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
@@ -485,7 +485,7 @@ app.get("/hola3",obtenerDatosDeudor ,(req, res) => {
     FROM Cliente_VariablesDeRiesgo 
     WHERE IDCuenta = ?
   `;
-  connection.query(queryGarantia, [idCuenta], (error, resultsGarantia) => {
+  pool.query(queryGarantia, [idCuenta], (error, resultsGarantia) => {
     if (error) {
       console.error("Error executing query:", error);
       res.status(500).send("Error en el servidor");
@@ -507,7 +507,7 @@ app.get("/ObtenerProcesoJudicial", (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
   const query = "SELECT * FROM Despacho_ProcesoJudicial WHERE IDCuenta = ?"; // Consulta SQL modificada
-  connection.query(query, [IDCuenta], (error, results) => {
+  pool.query(query, [IDCuenta], (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");

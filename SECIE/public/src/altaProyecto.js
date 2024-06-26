@@ -173,7 +173,7 @@ $(document).ready(function () {
         var rfc = this.value;
         var rowId = $(this).attr('id').match(/(\d+)$/)[0]; // Extrae el número al final del ID
         if (rfc.length === 13) {
-            fetch(`/get-nombre-auditor?rfc=${rfc}`)
+            fetch(`/secie/get-nombre-auditor?rfc=${rfc}`)
                 .then(response => response.json())
                 .then(data => {
                     if (data.nombre && data.idPerfil) {

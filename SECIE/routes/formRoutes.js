@@ -1,7 +1,7 @@
 const express = require("express");
 const bodyParser = require("body-parser"); // Importa body-parser
 const bcrypt = require("bcrypt");
-const connection = require("../config/database"); // Importa la conexión a la base de datos
+const pool = require("../config/database"); // Importa la conexión a la base de datos
 
 const app = express();
 
@@ -21,7 +21,7 @@ app.post("/AltaUsuario", (req, res) => {
     }
     const sql =
       "INSERT INTO Usuario (RFCUsuario, IDPerfil, CorreoUsuario, Nombre, Contraseña) VALUES (?, ?, ?, ?, ?)";
-    connection.query(
+    pool.query(
       sql,
       [rfc, tipo_alta, correo, nombre, hash],
       (err, result) => {
@@ -42,7 +42,7 @@ app.post("/login", (req, res) => {
   const { correo, contrasena } = req.body;
   // CONSULTAR LA BASE DE DATOS PARA OBTENER EL USUARIO
   const sql = "SELECT * FROM Usuario WHERE CorreoUsuario = ?";
-  connection.query(sql, [correo], (err, results) => {
+  pool.query(sql, [correo], (err, results) => {
     if (err) {
       console.error("Error al buscar correo:", err);
       res.status(500).send("Error interno del servidor");
@@ -81,85 +81,100 @@ app.post("/login", (req, res) => {
 app.post("/AltaNuevoProyecto", async (req, res) => {
   const { tipo_proyecto, descripcion_proyecto } = req.body;
 
-  // Inicia una transacción para manejar las inserciones
-  connection.beginTransaction(err => {
+  // Obtener una conexión del pool
+  pool.getConnection((err, connection) => {
     if (err) {
-      return res.status(500).send("Error al iniciar la transacción");
+      console.error("Error al obtener la conexión:", err);
+      return res.status(500).send("Error al conectar a la base de datos");
     }
 
-    // Insertar en NuevoProyecto
-    const queryNuevoProyecto = `
-      INSERT INTO NuevoProyecto (TipoDeProyecto, BreveDescripcion) 
-      VALUES (?, ?);
-    `;
-    connection.query(queryNuevoProyecto, [tipo_proyecto, descripcion_proyecto], (err, proyectoResult) => {
+    // Iniciar una transacción para manejar las inserciones
+    connection.beginTransaction(err => {
       if (err) {
-        connection.rollback(() => {
-          console.error("Error al insertar NuevoProyecto:", err);
-          return res.status(500).send("Error al guardar el proyecto");
-        });
+        connection.release();
+        return res.status(500).send("Error al iniciar la transacción");
       }
 
-      const proyectoId = proyectoResult.insertId;
-      const entriesCliente = [];
-      const entriesResponsable = [];
-      const entriesAuditor = [];
-
-      // Extraer RFCs de responsables y auditores de forma dinámica
-      Object.keys(req.body).forEach(key => {
-        if (key.startsWith('rfc_responsable')) {
-          entriesResponsable.push([proyectoId, req.body[key]]);
-        } else if (key.startsWith('rfc_auditor')) {
-          entriesAuditor.push([proyectoId, req.body[key]]);
-        }
-      });
-
-      // Asumimos que el RFC del cliente es estático, como mencionaste antes
-      entriesCliente.push([proyectoId, req.body.rfc]);
-
-      // Funciones de inserción como anteriormente
-      const multiInsert = (query, entries, callback) => {
-        if (entries.length > 0) {
-          connection.query(query, [entries], callback);
-        } else {
-          callback(null, null); // No hay entradas para insertar
-        }
-      };
-
-      multiInsert('INSERT INTO ClienteProyecto (IDProyecto, RFCCliente) VALUES ?', entriesCliente, (err, results) => {
+      // Insertar en NuevoProyecto
+      const queryNuevoProyecto = `
+        INSERT INTO NuevoProyecto (TipoDeProyecto, BreveDescripcion) 
+        VALUES (?, ?);
+      `;
+      connection.query(queryNuevoProyecto, [tipo_proyecto, descripcion_proyecto], (err, proyectoResult) => {
         if (err) {
-          connection.rollback(() => {
-            console.error("Error al insertar ClienteProyecto:", err);
-            return res.status(500).send("Error al guardar el cliente del proyecto");
+          return connection.rollback(() => {
+            connection.release();
+            console.error("Error al insertar NuevoProyecto:", err);
+            return res.status(500).send("Error al guardar el proyecto");
           });
         }
 
-        multiInsert('INSERT INTO ResponsableProyecto (IDProyecto, RFCResponsable) VALUES ?', entriesResponsable, (err, results) => {
+        const proyectoId = proyectoResult.insertId;
+        const entriesCliente = [];
+        const entriesResponsable = [];
+        const entriesAuditor = [];
+
+        // Extraer RFCs de responsables y auditores de forma dinámica
+        Object.keys(req.body).forEach(key => {
+          if (key.startsWith('rfc_responsable')) {
+            entriesResponsable.push([proyectoId, req.body[key]]);
+          } else if (key.startsWith('rfc_auditor')) {
+            entriesAuditor.push([proyectoId, req.body[key]]);
+          }
+        });
+
+        // Asumimos que el RFC del cliente es estático, como mencionaste antes
+        entriesCliente.push([proyectoId, req.body.rfc]);
+
+        // Funciones de inserción como anteriormente
+        const multiInsert = (query, entries, callback) => {
+          if (entries.length > 0) {
+            connection.query(query, [entries], callback);
+          } else {
+            callback(null, null); // No hay entradas para insertar
+          }
+        };
+
+        multiInsert('INSERT INTO ClienteProyecto (IDProyecto, RFCCliente) VALUES ?', entriesCliente, (err, results) => {
           if (err) {
-            connection.rollback(() => {
-              console.error("Error al insertar ResponsableProyecto:", err);
-              return res.status(500).send("Error al guardar los responsables del proyecto");
+            return connection.rollback(() => {
+              connection.release();
+              console.error("Error al insertar ClienteProyecto:", err);
+              return res.status(500).send("Error al guardar el cliente del proyecto");
             });
           }
 
-          multiInsert('INSERT INTO AuditorProyecto (IDProyecto, RFCAuditor) VALUES ?', entriesAuditor, (err, results) => {
+          multiInsert('INSERT INTO ResponsableProyecto (IDProyecto, RFCResponsable) VALUES ?', entriesResponsable, (err, results) => {
             if (err) {
-              connection.rollback(() => {
-                console.error("Error al insertar AuditorProyecto:", err);
-                return res.status(500).send("Error al guardar los auditores del proyecto");
+              return connection.rollback(() => {
+                connection.release();
+                console.error("Error al insertar ResponsableProyecto:", err);
+                return res.status(500).send("Error al guardar los responsables del proyecto");
               });
             }
 
-            // Si todo ha ido bien, hacemos commit
-            connection.commit(err => {
+            multiInsert('INSERT INTO AuditorProyecto (IDProyecto, RFCAuditor) VALUES ?', entriesAuditor, (err, results) => {
               if (err) {
-                connection.rollback(() => {
-                  console.error("Error al hacer commit de la transacción:", err);
-                  return res.status(500).send("Error al finalizar la transacción");
+                return connection.rollback(() => {
+                  connection.release();
+                  console.error("Error al insertar AuditorProyecto:", err);
+                  return res.status(500).send("Error al guardar los auditores del proyecto");
                 });
               }
-              console.log("Proyecto " + proyectoId + " creado correctamente");
-              res.status(200).send("Proyecto creado correctamente");
+
+              // Si todo ha ido bien, hacemos commit
+              connection.commit(err => {
+                if (err) {
+                  return connection.rollback(() => {
+                    connection.release();
+                    console.error("Error al hacer commit de la transacción:", err);
+                    return res.status(500).send("Error al finalizar la transacción");
+                  });
+                }
+                connection.release();
+                console.log("Proyecto " + proyectoId + " creado correctamente");
+                res.status(200).send("Proyecto creado correctamente");
+              });
             });
           });
         });
@@ -214,7 +229,7 @@ app.post("/HOLA", (req, res) => {
   const query = `INSERT INTO InformacionDelElemento (IDProyecto, IDSubproyecto, IDHito, IDActividad, IDAccion, TipoDeElemento, RFCAuditor, RFCResponsable, Relacion, ConceptoPrincipal, Descripcion, Importancia, Metas, Objetivos, Kpis, Herramientas, Dependencia, Pasos, Prioridad, ResultadoEsperado, AreaResponsable) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
   const values = [procesado.id_proyecto, procesado.id_subproyecto, procesado.id_hito, procesado.id_actividad, procesado.id_accion, procesado.tipo_elemento, procesado.rfc_auditor, procesado.rfc_responsable, procesado.relacion, procesado.concepto_principal, procesado.descripcion, procesado.importancias, procesado.metas, procesado.objetivos, procesado.kpis, procesado.herramientas, procesado.dependencia, procesado.pasos, procesado.prioridad, procesado.resultado_esperado, procesado.area_responsable];
 
-  connection.query(query, values, (error, results, fields) => {
+  pool.query(query, values, (error, results, fields) => {
     if (error) {
       console.error(error);
       res.status(500).send("Error al insertar datos");

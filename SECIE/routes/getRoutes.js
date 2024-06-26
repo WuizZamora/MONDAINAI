@@ -1,4 +1,4 @@
-const connection = require("../config/database");
+const pool = require("../config/database");
 const express = require("express");
 const ejs = require("ejs");
 const path = require("path");
@@ -27,7 +27,7 @@ app.get('/', (req, res) => {
     const { RFCUsuario } = req.session.usuario;
 
     // Primera consulta: Datos del usuario
-    connection.query(
+    pool.query(
         "SELECT * FROM Usuario WHERE RFCUsuario = ?",
         [RFCUsuario], // RFC del usuario de la sesión
         (error, resultsUsuario, fields) => {
@@ -38,7 +38,7 @@ app.get('/', (req, res) => {
             }
 
             // Segunda consulta: Datos de los proyectos
-            connection.query(
+            pool.query(
                 "SELECT * FROM NuevoProyecto",
                 (error, resultsProyectos, fields) => {
                     if (error) {
@@ -93,7 +93,7 @@ app.get("/IndexPartials", (req, res) => {
         )
     `;
 
-    connection.query(query, [RFCUsuario, RFCUsuario, RFCUsuario], (err, results) => {
+    pool.query(query, [RFCUsuario, RFCUsuario, RFCUsuario], (err, results) => {
         if (err) {
             console.error('Error al realizar la consulta', err);
             return res.status(500).send('Error en la base de datos');
@@ -123,14 +123,14 @@ app.get('/AgregarElemento',(req, res) => {
             JOIN Usuario u ON ap.RFCAuditor = u.RFCUsuario
             WHERE ap.IDProyecto = ?`;
 
-    connection.query(queryResponsables, [idProyecto], (errorResponsables, responsables) => {
+    pool.query(queryResponsables, [idProyecto], (errorResponsables, responsables) => {
         if (errorResponsables) {
             console.error('Error en la consulta de responsables: ', errorResponsables);
             res.render('NuevoElemento', { responsables: [], auditores: [] });
             return;
         }
 
-        connection.query(queryAuditores, [idProyecto], (errorAuditores, auditores) => {
+        pool.query(queryAuditores, [idProyecto], (errorAuditores, auditores) => {
             if (errorAuditores) {
                 console.error('Error en la consulta de auditores: ', errorAuditores);
                 res.render('NuevoElemento', { responsables, auditores: [] });
@@ -153,7 +153,7 @@ app.get("/NuevoProyecto", (req, res) => {
 // GET PARA LAS INTERFACES DE LOS FORMULARIOS
 app.get("/get-nombre", (req, res) => {
     const rfc = req.query.rfc;
-    connection.query(
+    pool.query(
         "SELECT nombre FROM Usuario WHERE RFCUsuario = ?",
         [rfc],
         (error, results, fields) => {
@@ -176,7 +176,7 @@ app.get("/get-nombre-responsable", (req, res) => {
     if (!rfc) {
         return res.status(400).json({ error: "RFC es requerido" });
     }
-    connection.query(
+    pool.query(
         "SELECT Nombre, IDPerfil FROM Usuario WHERE RFCUsuario = ?",
         [rfc],
         (error, results) => {
@@ -203,7 +203,7 @@ app.get("/get-nombre-auditor", (req, res) => {
     if (!rfc) {
         return res.status(400).json({ error: "RFC es requerido" });
     }
-    connection.query(
+    pool.query(
         "SELECT Nombre, IDPerfil FROM Usuario WHERE RFCUsuario = ?",
         [rfc],
         (error, results) => {
@@ -306,7 +306,7 @@ app.get("/get-idElemento", (req, res) => {
     }
 
     // Ejecutar la consulta apropiada
-    connection.query(query, params, (error, results, fields) => {
+    pool.query(query, params, (error, results, fields) => {
         if (error) {
             console.error("Error al ejecutar la consulta: ", error);
             res.status(500).json({ error: "Error al obtener los datos" });
