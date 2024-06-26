@@ -15,8 +15,8 @@ app.use(bodyParser.json());
 
 app.post("/AltaUsuario", (req, res) => {
   console.log(req.body);
-  const { correo, nombre, contrasena, rfc} = req.body;
-  const RFCASOCIADO = "XXXXX234423DSAD"
+  const { correo, nombre, contrasena, rfc, rfcAsociado} = req.body;
+  // const RFCASOCIADO = "XXXXX234423DSAD"
   const IDPERFIL = "AM";
   // Verificar si el RFC ya tiene usuarios asociados
   const sqlCheckRFC = "SELECT COUNT(*) AS count FROM Usuarios WHERE RFC = ?";
