@@ -16,14 +16,14 @@
     <div id="header"></div>
     <div class="container text-center">
         <div id="NavSere"></div>
-        <h2 style="display: inline">CONTACTOS</h2>
+        <h2 style="display: inline;" >CONTACTOS</h2>
         <h6 style="display: inline; margin-left: 0.5rem">(Máximo 3)</h6>
         <hr>
         <form action="/sere/guardar-contactos" method="post" autocomplete="off" class="needs-validation"
             enctype="multipart/form-data" novalidate>
             <div id="contactosContainer">
                 <div class="row mb-3 align-items-end contactoContainer">
-                    <h4>DEL CONTACTO:</h4>
+                    <h4>DEL CONTACTO PRINCIPAL:</h4>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label class="form-label" for="NombreContacto1">NOMBRE: *</label>
@@ -93,8 +93,16 @@
                     </div>
                 </div>
             </div>
-            <button type="button" onclick="agregarContacto()" class="btn btn-primary" id="btnAgregarContacto">+</button>
-            <button type="button" onclick="eliminarUltimoContacto()" class="btn btn-danger mr-3"
+            <div class="d-flex justify-content-center">
+                <div class="col-md-8">
+                    <div class="alert alert-dark" role="alert">
+                        <strong>Nota:</strong> Presiona <strong>(+)</strong> ó <strong>(-)</strong> para agregar o
+                        eliminar contactos adicionales.
+                    </div>
+                </div>
+            </div>
+            <button type="button" onclick="agregarContacto()" class="btn btn-dark id=" btnAgregarContacto">+</button>
+            <button type="button" onclick="eliminarUltimoContacto()" class="btn btn-secondary mr-3"
                 id="btnEliminarContacto">-</button>
             <h2>VARIABLES DE RIESGO</h2>
             <hr>
@@ -104,9 +112,9 @@
                         <div class="accordion" id="accordionPanelsStayOpenExample">
                             <div class="accordion-item">
                                 <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse"
-                                        data-bs-target="#panelsStayOpen-collapseOne" aria-expanded="true"
-                                        aria-controls="panelsStayOpen-collapseOne">
+                                    <button class="accordion-button custom-header" type="button"
+                                        data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne"
+                                        aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
                                         MONTO DE LA DEUDA
                                     </button>
                                 </h2>
@@ -134,11 +142,10 @@
                                             </tbody>
                                         </table>
 
-                                        <button type="button" class="btn btn-primary btn-lg" id="agregarBtn"
+                                        <button type="button" class="btn btn-dark btn-lg" id="agregarBtn"
                                             onclick="agregarFila()">+</button>
-                                        <button type="button" class="btn btn-danger btn-lg" id="eliminarBtn"
+                                        <button type="button" class="btn btn-secondary btn-lg" id="eliminarBtn"
                                             onclick="eliminarUltimaFila()">-</button>
-
 
                                         <div class="mt-3">
                                             <p>Saldo Total Actualizado: $</p>
@@ -148,23 +155,74 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <a href="/sere/AltaEdoCuenta" target="_blank">
-                            <img src="/images/1.jpg" alt="Estado de Cuenta">
-                        </a>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <div class="mb-3">
-                        <a href="/sere/AltaHistorialPagos" target="_blank">
-                            <img src="/images/1.jpg" alt="Estado de Cuenta">
-                        </a>
-                    </div>
-                </div>
+                        <style>
+                            .custom-header {
+                                background-color: #95979B;
+                                color: white;
+                                /* Color del texto */
+                            }
 
+                            .custom-header:not(.collapsed) {
+                                background-color: #95979b93;
+                                color: black;
+                            }
+
+                            .custom-header.collapsed {
+                                background-color: #95979B;
+                                color: white;
+                            }
+                        </style>
+
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <a href="/sere/AltaEdoCuenta" target="_blank">
+                                        <img src="/images/1.jpg" alt="Estado de Cuenta" class="img-fluid rounded-start">
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Estado de cuenta</h5>
+                                        <p class="card-text"><small class="text-body-secondary">Presiona el ícono para llenar esa parte del formulario</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="card mb-3" style="max-width: 540px;">
+                            <div class="row g-0">
+                                <div class="col-md-4">
+                                    <a href="/sere/AltaHistorialPagos" target="_blank">
+                                        <img src="/images/1.jpg" alt="Estado de Cuenta" class="img-fluid rounded-start">
+                                    </a>
+                                </div>
+                                <div class="col-md-8">
+                                    <div class="card-body">
+                                        <h5 class="card-title">Historial de pagos</h5>
+                                        <p class="card-text"><small class="text-body-secondary">Presiona el ícono para llenar esa parte del formulario</small></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row d-flex justify-content-center text-justify">
+                    <div class="col-md-8">
+                        <div class="alert alert-danger" role="alert">
+                            <strong>Importante:</strong> En esta sección de la solicitud, solo se permite agregar un
+                            archivo, preferiblemente en formato <strong>PDF</strong>. Si tienes más de un archivo,
+                            comprímelos en un
+                            archivo <strong>ZIP</strong> y añádelos a la solicitud.
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-3">
                     <div class="mb-3">
                         <label class="form-label" for="TipoDeuda">TIPO DE DEUDA (SOLVENCIA):</label>
@@ -210,10 +268,12 @@
                             required>
                     </div>
                 </div>
-                <h6>DAÑOS RECLAMADOS JUDICIAL: ** </h6>
+                
+                <h6>DAÑOS RECLAMADOS JUDICIAL:</h6>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label" for="DescripcionDanosReclamados">DESCRIBA LOS DAÑOS RECLAMOS:</label>
+                        <label class="form-label" for="DescripcionDanosReclamados">DESCRIBA LOS DAÑOS
+                            RECLAMADOS:</label>
                         <textarea name="DescripcionDanosReclamados" id="DescripcionDanosReclamados" rows="2"
                             class="form-control" maxlength="50" required></textarea>
                     </div>
@@ -249,6 +309,14 @@
                         <input type="file" class="form-control" name="BuroDelCliente" id="BuroDelCliente" required>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="alert alert-dark" role="alert">
+                            <strong>Nota:</strong> Adjunta documentación sobre el otrogamiento del credito.
+                        </div>
+                    </div>
+                </div>
+
                 <h6>CUENTAS BANCARIAS:</h6>
 
                 <div class="col-md-3">
@@ -285,7 +353,7 @@
                 </div>
             </div>
             <!-- BOTON -->
-            <button id="Registrar" type="submit" class="btn btn-primary btn-lg">Registrar</button>
+            <button id="Registrar" type="submit" class="btn btn-danger btn-lg">Registrar</button>
         </form>
         <div id="success-message" class="alert alert-success d-none" role="alert">
             <strong>Datos guardados correctamente</strong> <br>Por favor presione siguiente para seguir con tu registro.

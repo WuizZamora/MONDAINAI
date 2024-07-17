@@ -7,16 +7,16 @@
     <title>DESCRIPCIÓN | ALTA</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous" />
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-        <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/ico.ico">
     <link rel="stylesheet" href="/css/style.css">
 </head>
 
 <body>
     <div id="header"></div>
-    <form action="http://localhost:3000/sere/guardar-DocumentosDescripcion" method="post" autocomplete="off"
-    class="needs-validation" enctype="multipart/form-data" id="Form-Descripcion" novalidate>
     <div class="container text-center">
+        <form action="/sere/guardar-DocumentosDescripcion" method="post" autocomplete="off" class="needs-validation"
+            enctype="multipart/form-data" id="Form-Descripcion" novalidate>
             <div id="NavSere"></div>
             <br>
             <h2>UNA BREVE DESCRIPCIÓN DEL CASO</h2>
@@ -53,10 +53,10 @@
                     </div>
                 </div>
             </div>
-            <h4> OTROS DOCUMENTOS: </h4>
+            <h4>OTROS DOCUMENTOS:</h4>
             <hr>
             <div class="row mb-3 align-items-end">
-                <div class="container">
+                <div class="col">
                     <div class="table-responsive">
                         <table class="table table-hover text-center" id="dataTableDocumentosExtras">
                             <thead>
@@ -65,6 +65,7 @@
                                     <th scope="col">DESCRIPCIÓN DEL ARCHIVO</th>
                                     <th scope="col">ARCHIVO</th>
                                     <th scope="col">MODO DE ENTREGA</th>
+
                                 </tr>
                             </thead>
                             <tbody>
@@ -73,8 +74,7 @@
                                     <td><input type="text" class="form-control text-center"
                                             id="DescripcionArchivoExtra1" name="DescripcionArchivoExtra1" required></td>
                                     <td><input type="file" class="form-control text-center" name="ArchivoExtra1"
-                                            required>
-                                    </td>
+                                            required></td>
                                     <td>
                                         <select class="form-select" name="ModoEntregaArchivoExtra1"
                                             id="ModoEntregaArchivoExtra1" required>
@@ -84,33 +84,41 @@
                                             <option value="Electronico">ELECTRONICO</option>
                                         </select>
                                     </td>
+                                    <td></td>
                                 </tr>
                             </tbody>
                         </table>
                     </div>
-                    <button type="button" class="btn btn-primary" id="agregarBtn"
-                        onclick="agregarFilaDocumentosExtras()">+</button>
+                    <div>
+                        <button type="button" class="btn btn-dark me-2" id="agregarBtn"
+                            onclick="agregarFilaDocumentosExtras()">+</button>
+                        <button type="button" class="btn btn-secondary" id="eliminarBtn"
+                            onclick="eliminarUltimaFila()">-</button>
+                    </div>
                 </div>
-                <div class="container-avisos text-center">
+            </div>
+
+            <div class="row mb-3 justify-content-center">
+                <div class="col-md-6 text-center">
                     <div id="error-message" class="alert alert-danger d-none" role="alert">
-                        Por favor, complete toda la información faltante marcada en rojo antes
-                        de guardarla.
+                        Por favor, complete toda la información faltante marcada en rojo antes de guardarla.
                     </div>
                     <div id="success-message" class="alert alert-success d-none" role="alert">
-                        <strong>Datos guardados correctamente</strong> <br />
-                        Por favor, cierre esta pestaña para seguir con su registro
-                    </div>
-                    <div class="row mb-3">
-                        <div class="col-md-3 offset-md-10 justify-content-end">
-                            <button id="Registrar" type="submit" class="btn btn-primary btn-lg">Registrar</button>
-                        </div>
+                        <strong>Datos guardados correctamente</strong> <br>
+                        En 5 segundos serás redirigido a contingencias.
                     </div>
                 </div>
-
             </div>
-        </div>
+
+            <div class="row mb-3 justify-content-end justify-content-center">
+                <div class="col-md-3">
+                    <button id="Registrar" type="submit" class="btn btn-danger btn-lg">Registrar</button>
+                </div>
+            </div>
+    </div>
     </form>
-<div id="footer"></div>
+    </div>
+    <div id="footer"></div>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {
@@ -122,74 +130,76 @@
 
                     // Mostrar mensaje de error
                     $('#error-message').removeClass('d-none');
-
-                    // Resaltar campos no completados en rojo
-                    form.find(':input[required]').each(function () {
-                        if (!$(this).val()) {
-                            $(this).addClass('is-invalid');
-                        }
-                    });
                 } else {
-                    $('#error-message').addClass('d-none'); // Ocultar mensaje de error si está visible
+                    // Realizar la solicitud fetch al servidor
+                    fetch('/sere/guardar-DocumentosDescripcion', {
+                        method: 'POST',
+                        body: new FormData(form[0]),
+                        redirect: 'follow'
+                    })
+                        .then(response => {
+                            if (!response.ok) {
+                                throw new Error('Error en la solicitud: ' + response.statusText);
+                            }
+                            return response;
+                        })
+                        .then(() => {
+                            form.find('input, select, textarea, button').prop('disabled', true);
+                            $('#success-message').removeClass('d-none');
+                            $('#error-message').addClass('d-none');
+                            setTimeout(() => {
+                                window.location.href = '/sere/Contingencias';
+                            }, 5000);
+                        })
+                        .catch(error => {
+                            console.error('Error en la solicitud fetch:', error);
+                            $('#error-message').removeClass('d-none').text('Error interno del servidor');
+                        });
 
-                    // Remover resaltado en rojo de campos cuando el formulario es válido
-                    form.find(':input').removeClass('is-invalid').addClass('is-valid');
-
-                    // Mostrar mensaje de éxito
-                    $('#success-message').removeClass('d-none');
+                    // Prevenir el envío del formulario por defecto
+                    event.preventDefault();
                 }
 
                 form.addClass('was-validated');
             });
-
-            // Agrega clases de validación visual
-            $('input, select, textarea').on('input', function () {
-                var input = $(this);
-                if (input[0].checkValidity()) {
-                    input.removeClass('is-invalid').addClass('is-valid');
-                } else {
-                    input.removeClass('is-valid').addClass('is-invalid');
-                }
-            });
         });
 
-        // Dentro de la función agregarFilaDocumentosExtras()
-        function agregarFilaDocumentosExtras() {
-            var table = document.getElementById("dataTableDocumentosExtras");
-            var rowCount = table.rows.length;
 
-            var row = table.insertRow(rowCount);
+        function agregarFilaDocumentosExtras() {
+            var table = document.getElementById("dataTableDocumentosExtras").getElementsByTagName('tbody')[0];
+            var rowCount = table.rows.length + 1;
+
+            var row = table.insertRow();
             var cell1 = row.insertCell(0);
             var cell2 = row.insertCell(1);
             var cell3 = row.insertCell(2);
             var cell4 = row.insertCell(3);
+            var cell5 = row.insertCell(4);
 
             cell1.innerHTML = rowCount;
-            cell2.innerHTML =
-                '<input type="text" class="form-control text-center" id="DescripcionArchivoExtra' +
-                rowCount +
-                '" name="DescripcionArchivoExtra' +
-                rowCount +
-                '" required>';
-
-            cell3.innerHTML =
-                '<input type="file" class="form-control text-center" name="ArchivoExtra' +
-                rowCount +
-                '" required>';
+            cell2.innerHTML = '<input type="text" class="form-control text-center" id="DescripcionArchivoExtra' + rowCount + '" name="DescripcionArchivoExtra' + rowCount + '" required>';
+            cell3.innerHTML = '<input type="file" class="form-control text-center" name="ArchivoExtra' + rowCount + '" required>';
 
             var selectOptions =
-                '<select class="form-select" name="ModoEntregaArchivoExtra' +
-                rowCount +
-                '" id="ModoEntregaArchivoExtra' +
-                rowCount +
-                '" required>' +
+                '<select class="form-select" name="ModoEntregaArchivoExtra' + rowCount + '" id="ModoEntregaArchivoExtra' + rowCount + '" required>' +
                 '<option selected disabled value=""></option>' +
                 '<option value="Original">ORIGINAL</option>' +
                 '<option value="Copia">COPIA</option>' +
                 '<option value="Electronico">ELECTRONICO</option>' +
-                "</select>";
-
+                '</select>';
             cell4.innerHTML = selectOptions;
+        }
+
+        function eliminarFila(button) {
+            var row = button.closest('tr');
+            row.parentNode.removeChild(row);
+        }
+
+        function eliminarUltimaFila() {
+            var table = document.getElementById("dataTableDocumentosExtras").getElementsByTagName('tbody')[0];
+            if (table.rows.length > 1) { // asegura que siempre queda al menos una fila
+                table.deleteRow(-1); // elimina la última fila
+            }
         }
 
         $(function () {

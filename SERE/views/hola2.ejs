@@ -11,172 +11,309 @@
 </head>
 
 <body>
-    <div class="container text-center"><br><br>
-        <div class="row">
-            <div class="col-md-3 align-items-center d-flex justify-content-center">
-                <!-- Añadida la clase para centrar -->
-                <div class="list-group">
-                    <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
-                    <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
-                        list-group-item-action">Información Financiera y Legal</a>
-                    <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
-                        class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
-                    <a href="#" class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
-                </div>
-            </div>
-            <div class="col-md-9">
-                <h2>INFORMACIÓN FINANCIERA Y LEGAL</h2>
-                <hr>
-                <%- include('partials/DatosDeudorGestionCaso') %>
-                    <h2>Resumen de Deuda inicial:</h2>
-                    <table class="table table-striped table-responsive-md">
-                        <!-- Ajustes en la tabla para que sea responsiva -->
-                        <thead>
-                            <tr>
-                                <th>Descripción</th>
-                                <th>Monto</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>Monto Total de Deuda</td>
-                                <td>$ <%= totalDeuda.toFixed(2) %>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>Monto sin IVA (16%)</td>
-                                <td>$ <%= montoSinIVA.toFixed(2) %>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                    <br><br>
-                    <h2>Costos y Honorarios</h2>
+    <div id="header"></div>
+    <div class="container text-center">
+        <%- include('partials/NavSere') %>
+            <div class="row">
+                <% if (TipoDeCaso==='Cuenta Incobrable' ) { %>
+                    <h2>Cuenta Incobrable</h2>
                     <hr>
-                    <% if (['AD', 'D1' , 'D2' , 'AM' ].includes(IDPerfil)) { %>
-                        <form id="costos-form" enctype="multipart/form-data">
-                            <div class="row">
-                                <div class="col-md-4">
-                                    <label for="CostoHonorario">Tipo de Costo/Honorario:</label>
-                                    <select name="CostoHonorario" id="CostoHonorario" class="form-select" required>
-                                        <option selected disabled value=""></option>
-                                        <option value="Honorarios del Abogado">Honorarios del Abogado:</option>
-                                        <option value="Gastos de Notificación">Gastos de Notificación</option>
-                                        <option value="Gastos de Investigación">Gastos de Investigación</option>
-                                        <option value="Costos de Gestión de Documentos">Costos de Gestión de Documentos
-                                        </option>
-                                        <option value="Gastos de Peritaje">Gastos de Peritaje</option>
-                                        <option value="Costos de Mediación o Arbitraje">Costos de Mediación o Arbitraje
-                                        </option>
-                                        <option value="Tasas Judiciales">Tasas Judiciales</option>
-                                        <option value="Gastos de Viaje y Estadía">Gastos de Viaje y Estadía</option>
-                                        <option value="Costos de Ejecución">Costos de Ejecución</option>
-                                        <option value="Servicios de Apoyo Administrativo">Servicios de Apoyo
-                                            Administrativo
-                                        </option>
-                                        <option value="Gastos Adicionales">Gastos Adicionales</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="cantidad">Cantidad: ($)</label>
-                                    <input type="number" id="cantidad" name="cantidad" class="form-control text-center"
-                                        min="0" pattern="[0-9]{1,}" required>
-                                </div>
-                                <div class="col-md-4">
-                                    <label for="soporteCostoHonorario">Soporte: </label>
-                                    <input type="file" id="soporteCostoHonorario" name="soporteCostoHonorario"
-                                        class="form-control text-center" required>
-                                </div>
-                                <div class="col-md-6">
-                                    <label for="DescripcionCostosHonorarios">Descripcion:</label>
-                                    <textarea name="DescripcionCostosHonorarios" id="DescripcionCostosHonorarios"
-                                        maxlength="450" placeholder="Descripción Breve del costo o honorario"
-                                        class="form-control" rows="6" required></textarea>
-                                </div>
-                                <label for="RFC"></label>
-                                <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
+                    <form id="form-incobrabilidad" enctype="multipart/form-data">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <label for="Formato">ADJUNTA FORMATO / CARTA DE INCOBRABILIDAD:</label>
+                                <input type="file" id="Formato" name="Formato" class="form-control text-center"
+                                    required>
                             </div>
-                            <label for="Id"></label>
+                            <div class="col-md-6">
+                                <label for="ComentariosFormato">Comentarios:</label>
+                                <textarea name="ComentariosFormato" id="ComentariosFormato" maxlength="450"
+                                    class="form-control" rows="6" required></textarea>
+                            </div>
+                            <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
                             <input type="number" name="Id" id="Id" value="<%= idCuenta %>" style="display: none;">
-                            <label for="fechaHora"></label>
-                            <input type="datetime-local" id="fechaHora" name="fechaHora" style="display: none;">
-                            <br>
-                            <button type="submit" class="btn btn-primary">Guardar</button>
-                        </form>
-                        <script>
-                            document.getElementById('costos-form').addEventListener('submit', function (event) {
-                                event.preventDefault();
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-danger">Guardar</button>
+                    </form>
 
-                                const ID = document.getElementById('Id').value;
-                                const RFC = document.getElementById('RFC').value;
-                                const TipoCosto = document.getElementById('CostoHonorario').value;
-                                const descripcion = document.getElementById('DescripcionCostosHonorarios').value;
-                                const cantidad = document.getElementById('cantidad').value;
-                                const soporte = document.getElementById('soporteCostoHonorario').files[0]; // Cambia aquí para obtener el archivo
-                                setFechaHoraActual();
-                                const fecha = document.getElementById('fechaHora').value;
+                    <script>
+                        // Función para obtener la fecha y hora formateada
+                        function getFormattedDate() {
+                            const now = new Date();
+                            const year = now.getFullYear();
+                            const month = String(now.getMonth() + 1).padStart(2, '0');
+                            const day = String(now.getDate()).padStart(2, '0');
+                            const hours = String(now.getHours()).padStart(2, '0');
+                            const minutes = String(now.getMinutes()).padStart(2, '0');
+                            const seconds = String(now.getSeconds()).padStart(2, '0');
+                            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                        }
 
-                                const formData = new FormData();
-                                formData.append('ID', ID);
-                                formData.append('RFC', RFC);
-                                formData.append('TipoCosto', TipoCosto);
-                                formData.append('descripcion', descripcion);
-                                formData.append('cantidad', cantidad);
-                                formData.append('soporteCostoHonorario', soporte); // Añade el archivo al formData
-                                formData.append('fecha', fecha);
+                        // Evento al enviar el formulario
+                        document.getElementById('form-incobrabilidad').addEventListener('submit', function (event) {
+                            event.preventDefault(); // Evitar que el formulario se envíe de forma convencional
 
-                                fetch('/sere/CostosHonorarios?IDCuenta=<%=idCuenta %>', {
-                                    method: 'POST',
-                                    body: formData
+                            // Obtener el formulario y los datos
+                            const formData = new FormData(this);
+
+                            // Agregar fechaHoraPlazos con la fecha y hora actual
+                            formData.append('FechaRegistro', getFormattedDate());
+
+                            // Realizar la solicitud fetch
+                            fetch('/sere/Incobrabilidad?IDCuenta=<%= idCuenta %>', {
+                                method: 'POST',
+                                body: formData
+                            })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        throw new Error('Error en la solicitud');
+                                    }
+                                    return response.json(); // o response.text(), dependiendo de la respuesta del servidor
                                 })
-                                    .then(response => response.json())
-                                    .then(data => {
-                                        // Limpiar los campos del formulario después de guardar los datos
-                                        document.getElementById('CostoHonorario').selectedIndex = 0; // Reinicia el select
-                                        document.getElementById('DescripcionCostosHonorarios').value = ''; // Limpia el textarea
-                                        document.getElementById('cantidad').value = ''; // Limpia el input de cantidad
-                                        document.getElementById('fechaHora').value = '';
-                                        document.getElementById('soporteCostoHonorario').value = '';
-                                        // Actualiza la lista de costos
-                                        mostrarCostos();
-                                    });
-                            });
+                                .then(data => {
+                                    // Limpiar los campos de Formato y ComentariosFormato
+                                    document.getElementById('Formato').value = '';
+                                    document.getElementById('ComentariosFormato').value = '';
+                                    mostrarFormato();
+                                })
+                                .catch(error => {
+                                    console.error('Error:', error);
+                                    // Manejar errores si es necesario
+                                });
+                        });
+                    </script>
+                    <div id="lista-incobrabilidad" class="text-center">
+                        <!-- AQUI IRAN LAS INCOBRABILIDADES -->
+                    </div>
+                    <script>
+                        function mostrarFormato() {
+                            fetch('/sere/ObtenerIncobrabilidad?IDCuenta=<%= idCuenta %>')
+                                .then(response => response.json())
+                                .then(data => {
+                                    const listaFormato = document.getElementById('lista-incobrabilidad');
+                                    listaFormato.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
 
-                        </script>
-                        <% } %> <br>
+                                    if (data.resultados.length === 0) {
+                                        const mensaje = document.createElement('p');
+                                        mensaje.textContent = 'No hay datos recuperados para esta cuenta aún.';
+                                        listaFormato.appendChild(mensaje);
+                                    } else {
+                                        const table = document.createElement('table');
+                                        table.classList.add('table', 'table-warning', 'container');
+                                        table.innerHTML = `
+                                <thead class="thead-dark">
+                                    <tr>
+                                        <th>RFC</th>
+                                        <th>FORMATO INCOBRABILIDAD</th>
+                                        <th>COMENTARIOS</th>
+                                        <th>FECHA EN LA QUE SE INGRESO</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                            `;
 
-                            <div id="lista-costos" class="text-center">
-                                <!-- Aquí se mostrarán los costos y honorarios guardados -->
+                                        data.resultados.forEach(formato => {
+                                            table.innerHTML += `
+                                    <tr>
+                                        <td>${formato.RFCDespacho}</td>
+                                        <td><a href="${formato.FormatoIncobrabilidad}" target="_blank"><i class="bi bi-file-earmark-post bi-lg"></i></a></td>
+                                        <td style=" word-break: break-word; white-space: normal;">${formato.Comentarios}</td>
+                                        <td>${formato.FechaRegistro}</td>
+                                    </tr>
+                                `;
+                                        });
+                                        table.innerHTML += `
+                                </tbody>
+                            `;
+
+                                        listaFormato.appendChild(table);
+                                    }
+                                });
+                        }
+                        mostrarFormato();
+                    </script>
+
+                    <% } else { %>
+                        <div class="col-md-3 align-items-center d-flex justify-content-center">
+                            <!-- Añadida la clase para centrar -->
+                            <div class="list-group">
+                                <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
+                                <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
+                        list-group-item-action">Información Financiera y Legal</a>
+                                <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
+                                    class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
+                                <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
+                                    class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
                             </div>
-                            <script>
-                                function getFormattedDate() {
-                                    const now = new Date();
-                                    const year = now.getFullYear();
-                                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                                    const day = String(now.getDate()).padStart(2, '0');
-                                    const hours = String(now.getHours()).padStart(2, '0');
-                                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-                                }
+                        </div>
+                        <div class="col-md-9">
+                            <h2>INFORMACIÓN FINANCIERA Y LEGAL</h2>
+                            <hr>
+                            <%- include('partials/DatosDeudorGestionCaso') %>
+                                <h2>Resumen de Deuda inicial:</h2>
+                                <table class="table table-striped table-responsive-md">
+                                    <!-- Ajustes en la tabla para que sea responsiva -->
+                                    <thead>
+                                        <tr class="table-dark">
+                                            <th>Descripción</th>
+                                            <th>Monto</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td>Monto Total de Deuda</td>
+                                            <td>$ <%= totalDeuda.toFixed(2) %>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Monto sin IVA (16%)</td>
+                                            <td>$ <%= montoSinIVA.toFixed(2) %>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <br><br>
+                                <h2>Costos y Honorarios</h2>
+                                <hr>
+                                <% if (['AD', 'D1' , 'D2' , 'AM' ].includes(IDPerfil)) { %>
+                                    <form id="costos-form" enctype="multipart/form-data">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <label for="CostoHonorario">Tipo de Costo/Honorario:</label>
+                                                <select name="CostoHonorario" id="CostoHonorario" class="form-select"
+                                                    required>
+                                                    <option selected disabled value=""></option>
+                                                    <option value="Honorarios del Abogado">Honorarios del Abogado:
+                                                    </option>
+                                                    <option value="Gastos de Notificación">Gastos de Notificación
+                                                    </option>
+                                                    <option value="Gastos de Investigación">Gastos de Investigación
+                                                    </option>
+                                                    <option value="Costos de Gestión de Documentos">Costos de Gestión de
+                                                        Documentos
+                                                    </option>
+                                                    <option value="Gastos de Peritaje">Gastos de Peritaje</option>
+                                                    <option value="Costos de Mediación o Arbitraje">Costos de Mediación
+                                                        o
+                                                        Arbitraje
+                                                    </option>
+                                                    <option value="Tasas Judiciales">Tasas Judiciales</option>
+                                                    <option value="Gastos de Viaje y Estadía">Gastos de Viaje y Estadía
+                                                    </option>
+                                                    <option value="Costos de Ejecución">Costos de Ejecución</option>
+                                                    <option value="Servicios de Apoyo Administrativo">Servicios de Apoyo
+                                                        Administrativo
+                                                    </option>
+                                                    <option value="Gastos Adicionales">Gastos Adicionales</option>
+                                                </select>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="cantidad">Cantidad: ($)</label>
+                                                <input type="number" id="cantidad" name="cantidad"
+                                                    class="form-control text-center" min="0" pattern="[0-9]{1,}"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-4">
+                                                <label for="soporteCostoHonorario">Soporte: </label>
+                                                <input type="file" id="soporteCostoHonorario"
+                                                    name="soporteCostoHonorario" class="form-control text-center"
+                                                    required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="DescripcionCostosHonorarios">Descripcion:</label>
+                                                <textarea name="DescripcionCostosHonorarios"
+                                                    id="DescripcionCostosHonorarios" maxlength="450"
+                                                    placeholder="Descripción Breve del costo o honorario"
+                                                    class="form-control" rows="6" required></textarea>
+                                            </div>
+                                            <label for="RFC"></label>
+                                            <input type="text" value="<%= RFC %>" name="RFC" id="RFC"
+                                                style="display: none;">
+                                        </div>
+                                        <label for="Id"></label>
+                                        <input type="number" name="Id" id="Id" value="<%= idCuenta %>"
+                                            style="display: none;">
+                                        <label for="fechaHora"></label>
+                                        <input type="datetime-local" id="fechaHora" name="fechaHora"
+                                            style="display: none;">
+                                        <br>
+                                        <button type="submit" class="btn btn-danger">Guardar</button>
+                                    </form>
+                                    <script>
+                                        document.getElementById('costos-form').addEventListener('submit', function (event) {
+                                            event.preventDefault();
 
-                                function mostrarCostos() {
-                                    fetch('/sere/ObtenerGastosHonorarios?IDCuenta=<%= idCuenta %>')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            const listaCostos = document.getElementById('lista-costos');
-                                            listaCostos.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+                                            const ID = document.getElementById('Id').value;
+                                            const RFC = document.getElementById('RFC').value;
+                                            const TipoCosto = document.getElementById('CostoHonorario').value;
+                                            const descripcion = document.getElementById('DescripcionCostosHonorarios').value;
+                                            const cantidad = document.getElementById('cantidad').value;
+                                            const soporte = document.getElementById('soporteCostoHonorario').files[0]; // Cambia aquí para obtener el archivo
+                                            setFechaHoraActual();
+                                            const fecha = document.getElementById('fechaHora').value;
 
-                                            if (data.resultados.length === 0) {
-                                                const mensaje = document.createElement('p');
-                                                mensaje.textContent = 'No hay costos y honorarios para esta cuenta aún.';
-                                                listaCostos.appendChild(mensaje);
-                                            } else {
-                                                const table = document.createElement('table');
-                                                table.classList.add('table', 'table-danger', 'container');
-                                                table.innerHTML = `
+                                            const formData = new FormData();
+                                            formData.append('ID', ID);
+                                            formData.append('RFC', RFC);
+                                            formData.append('TipoCosto', TipoCosto);
+                                            formData.append('descripcion', descripcion);
+                                            formData.append('cantidad', cantidad);
+                                            formData.append('soporteCostoHonorario', soporte); // Añade el archivo al formData
+                                            formData.append('fecha', fecha);
+
+                                            fetch('/sere/CostosHonorarios?IDCuenta=<%=idCuenta %>', {
+                                                method: 'POST',
+                                                body: formData
+                                            })
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    // Limpiar los campos del formulario después de guardar los datos
+                                                    document.getElementById('CostoHonorario').selectedIndex = 0; // Reinicia el select
+                                                    document.getElementById('DescripcionCostosHonorarios').value = ''; // Limpia el textarea
+                                                    document.getElementById('cantidad').value = ''; // Limpia el input de cantidad
+                                                    document.getElementById('fechaHora').value = '';
+                                                    document.getElementById('soporteCostoHonorario').value = '';
+                                                    // Actualiza la lista de costos
+                                                    mostrarCostos();
+                                                });
+                                        });
+
+                                    </script>
+                                    <% } %> <br>
+
+                                        <div id="lista-costos" class="text-center">
+                                            <!-- Aquí se mostrarán los costos y honorarios guardados -->
+                                        </div>
+                                        <script>
+                                            function getFormattedDate() {
+                                                const now = new Date();
+                                                const year = now.getFullYear();
+                                                const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                const day = String(now.getDate()).padStart(2, '0');
+                                                const hours = String(now.getHours()).padStart(2, '0');
+                                                const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                const seconds = String(now.getSeconds()).padStart(2, '0');
+                                                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                            }
+
+                                            function mostrarCostos() {
+                                                fetch('/sere/ObtenerGastosHonorarios?IDCuenta=<%= idCuenta %>')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const listaCostos = document.getElementById('lista-costos');
+                                                        listaCostos.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                                                        if (data.resultados.length === 0) {
+                                                            const mensaje = document.createElement('p');
+                                                            mensaje.textContent = 'No hay costos y honorarios para esta cuenta aún.';
+                                                            listaCostos.appendChild(mensaje);
+                                                        } else {
+                                                            const table = document.createElement('table');
+                                                            table.classList.add('table', 'table-hover', 'table-striped-columns', 'container');
+                                                            table.innerHTML = `
                                                 <thead class="thead-dark">
-                                                    <tr>
+                                                    <tr class="table-dark">
                                                         <th>Tipo</th>
                                                         <th>Cantidad</th>
                                                         <th>Descripción</th>
@@ -187,8 +324,8 @@
                                                 <tbody>
                                             `;
 
-                                                data.resultados.forEach(costo => {
-                                                    table.innerHTML += `
+                                                            data.resultados.forEach(costo => {
+                                                                table.innerHTML += `
                                                     <tr>
                                                         <td>${costo.TipoDeCosto}</td>
                                                         <td>${costo.Cantidad}</td>
@@ -203,169 +340,173 @@
                                                         `}
                                                     </tr>
                                                 `;
-                                                });
+                                                            });
 
-                                                table.innerHTML += `
+                                                            table.innerHTML += `
                                                 </tbody>
                                             `;
 
-                                                listaCostos.appendChild(table);
+                                                            listaCostos.appendChild(table);
+                                                        }
+                                                    });
                                             }
-                                        });
-                                }
 
-                                function validarCosto(id, isChecked) {
-                                    const validado = isChecked;
-                                    const fechaHoraField = document.getElementById(`fechaHoraValidacion-${id}`);
-                                    const currentDateTime = getFormattedDate(fechaHoraField);
-                                    const RfcUsuario = document.getElementById(`RFCValidacion-${id}`);
-                                    fechaHoraField.value = currentDateTime;
+                                            function validarCosto(id, isChecked) {
+                                                const validado = isChecked;
+                                                const fechaHoraField = document.getElementById(`fechaHoraValidacion-${id}`);
+                                                const currentDateTime = getFormattedDate(fechaHoraField);
+                                                const RfcUsuario = document.getElementById(`RFCValidacion-${id}`);
+                                                fechaHoraField.value = currentDateTime;
 
-                                    fetch('/sere/ValidarGastosHonorarios', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ id, validado, fechaHoraValidacion: fechaHoraField.value, RFCValidacion: RfcUsuario.value })
-                                    });
-                                }
+                                                fetch('/sere/ValidarGastosHonorarios', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({ id, validado, fechaHoraValidacion: fechaHoraField.value, RFCValidacion: RfcUsuario.value })
+                                                });
+                                            }
 
 
-                                // Inicializa mostrando los costos
-                                mostrarCostos();
+                                            // Inicializa mostrando los costos
+                                            mostrarCostos();
 
-                                function setFechaHoraActual() {
-                                    const now = new Date();
-                                    const year = now.getFullYear();
-                                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                                    const day = String(now.getDate()).padStart(2, '0');
-                                    const hour = String(now.getHours()).padStart(2, '0');
-                                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                                    const fechaHora = `${year}-${month}-${day}T${hour}:${minutes}`;
-                                    document.getElementById('fechaHora').value = fechaHora;
-                                }
-                            </script>
-                            <h2>Importe Recuperado</h2>
-                            <hr>
-                            <form id="importe-form" enctype="multipart/form-data">
-                                <div class="row align-items-end">
-                                    <div class="col-md-4">
-                                        <label for="ImporteRecuperado">Importe recuperado por despacho S/IVA ($)</label>
-                                        <input type="text" id="ImporteRecuperado" name="ImporteRecuperado"
-                                            class="form-control text-center" pattern="[0-9]+([.,][0-9]+)?"
-                                            title="Por favor, ingrese un número válido." required>
-                                    </div>
-                                    <div class="col-md-4">
-                                        <label for="ImporteRestante">Importe restante por cobrar ($)</label>
-                                        <input type="number" id="ImporteRestante" name="ImporteRestante"
-                                            class="form-control text-center" min="0" pattern="[0-9]{1,}" readonly>
-                                    </div>
+                                            function setFechaHoraActual() {
+                                                const now = new Date();
+                                                const year = now.getFullYear();
+                                                const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                const day = String(now.getDate()).padStart(2, '0');
+                                                const hour = String(now.getHours()).padStart(2, '0');
+                                                const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                const fechaHora = `${year}-${month}-${day}T${hour}:${minutes}`;
+                                                document.getElementById('fechaHora').value = fechaHora;
+                                            }
+                                        </script>
+                                        <h2>Importe Recuperado</h2>
+                                        <hr>
+                                        <form id="importe-form" enctype="multipart/form-data">
+                                            <div class="row align-items-end">
+                                                <div class="col-md-4">
+                                                    <label for="ImporteRecuperado">Importe recuperado por despacho S/IVA
+                                                        ($)</label>
+                                                    <input type="text" id="ImporteRecuperado" name="ImporteRecuperado"
+                                                        class="form-control text-center" pattern="[0-9]+([.,][0-9]+)?"
+                                                        title="Por favor, ingrese un número válido." required>
+                                                </div>
+                                                <div class="col-md-4">
+                                                    <label for="ImporteRestante">Importe restante por cobrar ($)</label>
+                                                    <input type="number" id="ImporteRestante" name="ImporteRestante"
+                                                        class="form-control text-center" min="0" pattern="[0-9]{1,}"
+                                                        readonly>
+                                                </div>
 
-                                    <div class="col-md-4">
-                                        <label for="SoporteImporte">Soporte:</label>
-                                        <input type="file" id="SoporteImporte" name="SoporteImporte"
-                                            class="form-control text-center" required>
-                                    </div>
+                                                <div class="col-md-4">
+                                                    <label for="SoporteImporte">Soporte:</label>
+                                                    <input type="file" id="SoporteImporte" name="SoporteImporte"
+                                                        class="form-control text-center" required>
+                                                </div>
 
-                                    <div class="col-md-6">
-                                        <label for="ObservacionesImporte">Observaciones:</label>
-                                        <textarea name="ObservacionesImporte" id="ObservacionesImporte" maxlength="450"
-                                            class="form-control" rows="6" required></textarea>
-                                    </div>
-                                    <label for="RFC"></label>
-                                    <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
-                                </div>
-                                <br>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
+                                                <div class="col-md-6">
+                                                    <label for="ObservacionesImporte">Observaciones:</label>
+                                                    <textarea name="ObservacionesImporte" id="ObservacionesImporte"
+                                                        maxlength="450" class="form-control" rows="6"
+                                                        required></textarea>
+                                                </div>
+                                                <label for="RFC"></label>
+                                                <input type="text" value="<%= RFC %>" name="RFC" id="RFC"
+                                                    style="display: none;">
+                                            </div>
+                                            <br>
+                                            <button type="submit" class="btn btn-danger">Guardar</button>
+                                        </form>
 
-                            <script>
-                                document.addEventListener('DOMContentLoaded', function () {
-                                    const importeRecuperadoInput = document.getElementById('ImporteRecuperado');
-                                    const importeRestanteInput = document.getElementById('ImporteRestante');
-                                    const montoSinIVA = parseFloat("<%= montoSinIVA %>");
+                                        <script>
+                                            document.addEventListener('DOMContentLoaded', function () {
+                                                const importeRecuperadoInput = document.getElementById('ImporteRecuperado');
+                                                const importeRestanteInput = document.getElementById('ImporteRestante');
+                                                const montoSinIVA = parseFloat("<%= montoSinIVA %>");
 
-                                    function actualizarImporteRestante() {
-                                        const importeRecuperado = parseFloat(importeRecuperadoInput.value) || 0;
-                                        const importeRestante = montoSinIVA - importeRecuperado;
-                                        importeRestanteInput.value = importeRestante.toFixed(2);
-                                    }
-
-                                    importeRecuperadoInput.addEventListener('input', actualizarImporteRestante);
-
-                                    document.getElementById('importe-form').addEventListener('submit', function (event) {
-                                        event.preventDefault();
-
-                                        const form = document.getElementById('importe-form');
-                                        const formData = new FormData(form);
-
-                                        function getFormattedDate() {
-                                            const now = new Date();
-                                            const year = now.getFullYear();
-                                            const month = String(now.getMonth() + 1).padStart(2, '0');
-                                            const day = String(now.getDate()).padStart(2, '0');
-                                            const hours = String(now.getHours()).padStart(2, '0');
-                                            const minutes = String(now.getMinutes()).padStart(2, '0');
-                                            const seconds = String(now.getSeconds()).padStart(2, '0');
-                                            return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-                                        }
-
-                                        const fecha = getFormattedDate();
-                                        formData.append('fecha', fecha);
-
-                                        fetch('/sere/Importes?IDCuenta=<%= idCuenta %>', {
-                                            method: 'POST',
-                                            body: formData
-                                        })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                if (data.message === 'OK') {
-                                                    form.reset();  // Limpia todos los campos del formulario
-                                                    // actualizarImporteRestante();  // Actualiza el campo importeRestante
-                                                    mostrarImporte();
-                                                } else {
-                                                    console.error('Error en la respuesta:', data);
+                                                function actualizarImporteRestante() {
+                                                    const importeRecuperado = parseFloat(importeRecuperadoInput.value) || 0;
+                                                    const importeRestante = montoSinIVA - importeRecuperado;
+                                                    importeRestanteInput.value = importeRestante.toFixed(2);
                                                 }
-                                            })
-                                            .catch(error => {
-                                                console.error('Error:', error);
+
+                                                importeRecuperadoInput.addEventListener('input', actualizarImporteRestante);
+
+                                                document.getElementById('importe-form').addEventListener('submit', function (event) {
+                                                    event.preventDefault();
+
+                                                    const form = document.getElementById('importe-form');
+                                                    const formData = new FormData(form);
+
+                                                    function getFormattedDate() {
+                                                        const now = new Date();
+                                                        const year = now.getFullYear();
+                                                        const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                        const day = String(now.getDate()).padStart(2, '0');
+                                                        const hours = String(now.getHours()).padStart(2, '0');
+                                                        const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                        const seconds = String(now.getSeconds()).padStart(2, '0');
+                                                        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                                    }
+
+                                                    const fecha = getFormattedDate();
+                                                    formData.append('fecha', fecha);
+
+                                                    fetch('/sere/Importes?IDCuenta=<%= idCuenta %>', {
+                                                        method: 'POST',
+                                                        body: formData
+                                                    })
+                                                        .then(response => response.json())
+                                                        .then(data => {
+                                                            if (data.message === 'OK') {
+                                                                form.reset();  // Limpia todos los campos del formulario
+                                                                // actualizarImporteRestante();  // Actualiza el campo importeRestante
+                                                                mostrarImporte();
+                                                            } else {
+                                                                console.error('Error en la respuesta:', data);
+                                                            }
+                                                        })
+                                                        .catch(error => {
+                                                            console.error('Error:', error);
+                                                        });
+                                                });
                                             });
-                                    });
-                                });
-                            </script>
-                            <div id="lista-importe" class="text-center">
-                                <!-- Aquí se mostrarán los importes -->
-                            </div>
+                                        </script><br>
+                                        <div id="lista-importe" class="text-center">
+                                            <!-- Aquí se mostrarán los importes -->
+                                        </div>
 
-                            <script>
-                                function getFormattedDate() {
-                                    const now = new Date();
-                                    const year = now.getFullYear();
-                                    const month = String(now.getMonth() + 1).padStart(2, '0');
-                                    const day = String(now.getDate()).padStart(2, '0');
-                                    const hours = String(now.getHours()).padStart(2, '0');
-                                    const minutes = String(now.getMinutes()).padStart(2, '0');
-                                    const seconds = String(now.getSeconds()).padStart(2, '0');
-                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-                                }
+                                        <script>
+                                            function getFormattedDate() {
+                                                const now = new Date();
+                                                const year = now.getFullYear();
+                                                const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                const day = String(now.getDate()).padStart(2, '0');
+                                                const hours = String(now.getHours()).padStart(2, '0');
+                                                const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                const seconds = String(now.getSeconds()).padStart(2, '0');
+                                                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                            }
 
-                                function mostrarImporte() {
-                                    fetch('/sere/ObtenerImportes?IDCuenta=<%= idCuenta %>')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            const listaImportes = document.getElementById('lista-importe');
-                                            listaImportes.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+                                            function mostrarImporte() {
+                                                fetch('/sere/ObtenerImportes?IDCuenta=<%= idCuenta %>')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const listaImportes = document.getElementById('lista-importe');
+                                                        listaImportes.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
 
-                                            if (data.resultados.length === 0) {
-                                                const mensaje = document.createElement('p');
-                                                mensaje.textContent = 'No hay importes recuperados para esta cuenta aún.';
-                                                listaImportes.appendChild(mensaje);
-                                            } else {
-                                                const table = document.createElement('table');
-                                                table.classList.add('table', 'table-success', 'container');
-                                                table.innerHTML = `
+                                                        if (data.resultados.length === 0) {
+                                                            const mensaje = document.createElement('p');
+                                                            mensaje.textContent = 'No hay importes recuperados para esta cuenta aún.';
+                                                            listaImportes.appendChild(mensaje);
+                                                        } else {
+                                                            const table = document.createElement('table');
+                                                            table.classList.add('table', 'table-striped-columns', 'container');
+                                                            table.innerHTML = `
                                                     <thead class="thead-dark">
-                                                        <tr>
+                                                        <tr class="table-dark">
                                                             <th>Importe Recuperado</th>
                                                             <th>Importe Restante</th>
                                                             <th>Observaciones</th>
@@ -377,12 +518,12 @@
                                                     <tbody>
                                                 `;
 
-                                                data.resultados.forEach(importe => {
-                                                    table.innerHTML += `
+                                                            data.resultados.forEach(importe => {
+                                                                table.innerHTML += `
                                                         <tr>
                                                             <td>${importe.ImporteRecuperado}</td>
                                                             <td>${importe.ImporteRestante}</td>
-                                                            <td>${importe.Observaciones}</td>
+                                                            <td style=" word-break: break-word; white-space: normal;">${importe.Observaciones}</td>
                                                             <td>${getFormattedDate(importe.FechaImporteRecuperado)}</td>
                                                             <td><a href="${importe.Soporte}" target="_blank">VER</a></td>
                                                             ${data.IDPerfil === 'C6' ? `
@@ -395,133 +536,136 @@
                                                             `}
                                                         </tr>
                                                     `;
-                                                });
-                                                table.innerHTML += `
+                                                            });
+                                                            table.innerHTML += `
                                                     </tbody>
                                                 `;
 
-                                                listaImportes.appendChild(table);
+                                                            listaImportes.appendChild(table);
+                                                        }
+                                                    });
                                             }
-                                        });
-                                }
 
-                                function validarImporte(id, isChecked) {
-                                    const validado = isChecked;
-                                    const fechaHoraField = document.getElementById(`fechaHoraValidacion-${id}`);
-                                    const currentDateTime = getFormattedDate(fechaHoraField);
-                                    const RfcUsuario = document.getElementById(`RFCValidacion-${id}`);
-                                    fechaHoraField.value = currentDateTime;
+                                            function validarImporte(id, isChecked) {
+                                                const validado = isChecked;
+                                                const fechaHoraField = document.getElementById(`fechaHoraValidacion-${id}`);
+                                                const currentDateTime = getFormattedDate(fechaHoraField);
+                                                const RfcUsuario = document.getElementById(`RFCValidacion-${id}`);
+                                                fechaHoraField.value = currentDateTime;
 
-                                    fetch('/sere/ValidarImportes', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ id, validado, fechaHoraValidacion: fechaHoraField.value, RFCValidacion: RfcUsuario.value })
-                                    });
-                                }
-
-                                // Inicializa mostrando los importes
-                                mostrarImporte();
-                            </script>
-
-                            <h2>Plazos y fechas límites</h2>
-                            <hr>
-                            <form id="plazos-form">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label for="FechaPlazo">Fechas límites importantes:</label>
-                                        <input type="date" id="FechaPlazo" name="FechaPlazo"
-                                            class="form-control text-center" required>
-                                    </div>
-                                    <div class="col-md-9">
-                                        <label for="JustificacionFechaPlazo">Descripción:</label>
-                                        <textarea name="JustificacionFechaPlazo" id="JustificacionFechaPlazo"
-                                            maxlength="450" class="form-control" rows="6" required></textarea>
-                                    </div>
-                                    <label for="RFC"></label>
-                                    <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
-                                </div>
-                                <label for="Id"></label>
-                                <input type="number" name="Id" id="Id" value="<%= idCuenta %>" style="display: none;">
-                                <label for="fechaHoraPlazos"></label>
-                                <input type="datetime-local" id="fechaHoraPlazos" name="fechaHoraPlazos"
-                                    style="display: none;">
-                                <br>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-
-                            <script>
-                                 
-                                document.getElementById('plazos-form').addEventListener('submit', function (event) {
-                                    event.preventDefault();
-
-                                    const IDCuenta = document.getElementById('Id').value;
-                                    const RFC = document.getElementById('RFC').value;
-                                    const Descripcion = document.getElementById('JustificacionFechaPlazo').value;
-                                    const FechaPlazo = document.getElementById('FechaPlazo').value;
-
-                                    function getFormattedDate() {
-                                        const now = new Date();
-                                        const year = now.getFullYear();
-                                        const month = String(now.getMonth() + 1).padStart(2, '0');
-                                        const day = String(now.getDate()).padStart(2, '0');
-                                        const hours = String(now.getHours()).padStart(2, '0');
-                                        const minutes = String(now.getMinutes()).padStart(2, '0');
-                                        const seconds = String(now.getSeconds()).padStart(2, '0');
-                                        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-                                    }
-
-                                    const fecha = getFormattedDate();
-
-                                    fetch(`/sere/Plazos?IDCuenta=<%= idCuenta %>`, {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ RFC, FechaPlazo, Descripcion, fecha })
-                                    })
-                                        .then(response => {
-                                            if (!response.ok) {
-                                                throw new Error('Network response was not ok');
+                                                fetch('/sere/ValidarImportes', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({ id, validado, fechaHoraValidacion: fechaHoraField.value, RFCValidacion: RfcUsuario.value })
+                                                });
                                             }
-                                            return response.json();
-                                        })
-                                        .then(data => {
-                                            if (data.message === 'OK') {
-                                                document.getElementById('JustificacionFechaPlazo').value="";
-                                                document.getElementById('FechaPlazo').value="";
-                                                mostrarPlazo();
-                                            } else {
-                                                console.error('Error en la respuesta:', data);
-                                            }
-                                        })
-                                        .catch(error => {
-                                            alert("Hubo un error al insertar los datos: " + error.message);
-                                        });
-                                });
-                            </script>
-                            <div id="lista-plazos" class="text-center">
-                                <!-- Aquí se mostrarán los importes -->
-                            </div>
-                            <script>
-                                 function mostrarPlazo() {
-                                    fetch('/sere/ObtenerPlazos?IDCuenta=<%= idCuenta %>')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            const listaPlazos = document.getElementById('lista-plazos');
-                                            listaPlazos.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
 
-                                            if (data.resultados.length === 0) {
-                                                const mensaje = document.createElement('p');
-                                                mensaje.textContent = 'No hay plazos o fechas importantes recuperados para esta cuenta aún.';
-                                                listaPlazos.appendChild(mensaje);
-                                            } else {
-                                                const table = document.createElement('table');
-                                                table.classList.add('table', 'table-dark', 'container');
-                                                table.innerHTML = `
+                                            // Inicializa mostrando los importes
+                                            mostrarImporte();
+                                        </script>
+
+                                        <h2>Plazos y fechas límites</h2>
+                                        <hr>
+                                        <form id="plazos-form">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="FechaPlazo">Fechas límites importantes:</label>
+                                                    <input type="date" id="FechaPlazo" name="FechaPlazo"
+                                                        class="form-control text-center" required>
+                                                </div>
+                                                <div class="col-md-9">
+                                                    <label for="JustificacionFechaPlazo">Descripción:</label>
+                                                    <textarea name="JustificacionFechaPlazo"
+                                                        id="JustificacionFechaPlazo" maxlength="450"
+                                                        class="form-control" rows="6" required></textarea>
+                                                </div>
+                                                <label for="RFC"></label>
+                                                <input type="text" value="<%= RFC %>" name="RFC" id="RFC"
+                                                    style="display: none;">
+                                            </div>
+                                            <label for="Id"></label>
+                                            <input type="number" name="Id" id="Id" value="<%= idCuenta %>"
+                                                style="display: none;">
+                                            <label for="fechaHoraPlazos"></label>
+                                            <input type="datetime-local" id="fechaHoraPlazos" name="fechaHoraPlazos"
+                                                style="display: none;">
+                                            <br>
+                                            <button type="submit" class="btn btn-danger">Guardar</button>
+                                        </form>
+
+                                        <script>
+
+                                            document.getElementById('plazos-form').addEventListener('submit', function (event) {
+                                                event.preventDefault();
+
+                                                const IDCuenta = document.getElementById('Id').value;
+                                                const RFC = document.getElementById('RFC').value;
+                                                const Descripcion = document.getElementById('JustificacionFechaPlazo').value;
+                                                const FechaPlazo = document.getElementById('FechaPlazo').value;
+
+                                                function getFormattedDate() {
+                                                    const now = new Date();
+                                                    const year = now.getFullYear();
+                                                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                    const day = String(now.getDate()).padStart(2, '0');
+                                                    const hours = String(now.getHours()).padStart(2, '0');
+                                                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                                }
+
+                                                const fecha = getFormattedDate();
+
+                                                fetch(`/sere/Plazos?IDCuenta=<%= idCuenta %>`, {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({ RFC, FechaPlazo, Descripcion, fecha })
+                                                })
+                                                    .then(response => {
+                                                        if (!response.ok) {
+                                                            throw new Error('Network response was not ok');
+                                                        }
+                                                        return response.json();
+                                                    })
+                                                    .then(data => {
+                                                        if (data.message === 'OK') {
+                                                            document.getElementById('JustificacionFechaPlazo').value = "";
+                                                            document.getElementById('FechaPlazo').value = "";
+                                                            mostrarPlazo();
+                                                        } else {
+                                                            console.error('Error en la respuesta:', data);
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        alert("Hubo un error al insertar los datos: " + error.message);
+                                                    });
+                                            });
+                                        </script><br>
+                                        <div id="lista-plazos" class="text-center">
+                                            <!-- Aquí se mostrarán los importes -->
+                                        </div>
+                                        <script>
+                                            function mostrarPlazo() {
+                                                fetch('/sere/ObtenerPlazos?IDCuenta=<%= idCuenta %>')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const listaPlazos = document.getElementById('lista-plazos');
+                                                        listaPlazos.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                                                        if (data.resultados.length === 0) {
+                                                            const mensaje = document.createElement('p');
+                                                            mensaje.textContent = 'No hay plazos o fechas importantes recuperados para esta cuenta aún.';
+                                                            listaPlazos.appendChild(mensaje);
+                                                        } else {
+                                                            const table = document.createElement('table');
+                                                            table.classList.add('table', 'table-striped-columns', 'container');
+                                                            table.innerHTML = `
                                                     <thead class="thead-dark">
-                                                        <tr>
+                                                        <tr class="table-dark">
                                                             <th>RFC</th>
                                                             <th>FECHA IMPORTANTE</th>
                                                             <th>DESCRIPCION</th>
@@ -531,8 +675,8 @@
                                                     <tbody>
                                                 `;
 
-                                                data.resultados.forEach(plazo => {
-                                                    table.innerHTML += `
+                                                            data.resultados.forEach(plazo => {
+                                                                table.innerHTML += `
                                                         <tr>
                                                             <td>${plazo.RFCDespacho}</td>
                                                             <td>${plazo.FechaPlazoFecha}</td>
@@ -540,153 +684,186 @@
                                                             <td>${plazo.FechaRegistroPlazo}</td>
                                                         </tr>
                                                     `;
-                                                });
-                                                table.innerHTML += `
+                                                            });
+                                                            table.innerHTML += `
                                                     </tbody>
                                                 `;
 
-                                                listaPlazos.appendChild(table);
+                                                            listaPlazos.appendChild(table);
+                                                        }
+                                                    });
                                             }
-                                        });
-                                }
-                                mostrarPlazo();
-                            </script>
-                            <h2>Estado legal de la garantia: </h2>
-                            <hr>
-                            <form id="garantia-form">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        <label for="TipoGarantia">Tipo de garantía:</label>
-                                        <input type="text" id="TipoGarantia" name="TipoGarantia"
-                                            class="form-control text-center" value="<%= TipoGarantia %>" required
-                                            readonly>
-                                    </div>
-                                    <div class="col-md-3">
-                                        <label for="DocumentoGarantia">Documento soporte:</label><br>
-                                        <a href="<%= RutaDocumentacionLegal %>" target="_blank">VER</a>
-                                        <input type="text" id="DocumentoGarantia" name="DocumentoGarantia"
-                                            value="<%= RutaDocumentacionLegal %>" style="display: none;" readonly>
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="Retroalimentacion">Diagnostico de la garantía:</label>
-                                        <textarea name="Retroalimentacion" id="Retroalimentacion" maxlength="450"
-                                            class="form-control" rows="6" required></textarea>
-                                    </div>
-                                </div>
-                                <label for="RFC"></label>
-                                <input type="text" value="<%= RFC %>" name="RFC" id="RFC" style="display: none;">
-                                <label for="Id"></label>
-                                <input type="number" name="Id" id="Id" value="<%= idCuenta %>" style="display: none;">
-                                <label for="fechaHoraPlazos"></label>
-                                <input type="datetime-local" id="fechaHoraGarantia" name="fechaHoraGarantia"
-                                    style="display: none;">
-                                <br>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
-                            </form>
-                            <script>
-                                document.getElementById('garantia-form').addEventListener('submit', function (event) {
-                                    event.preventDefault();
-                                    const ID = document.getElementById('Id').value;
-                                    const RFC = document.getElementById('RFC').value;
-                                    const Retroalimentacion = document.getElementById('Retroalimentacion').value;
-                                    const TipoGarantia = document.getElementById('TipoGarantia').value;
-                                    const Documento = document.getElementById('DocumentoGarantia').value;
-                                    function getFormattedDate() {
-                                        const now = new Date();
-                                        const year = now.getFullYear();
-                                        const month = String(now.getMonth() + 1).padStart(2, '0');
-                                        const day = String(now.getDate()).padStart(2, '0');
-                                        const hours = String(now.getHours()).padStart(2, '0');
-                                        const minutes = String(now.getMinutes()).padStart(2, '0');
-                                        const seconds = String(now.getSeconds()).padStart(2, '0');
-                                        return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
-                                    }
+                                            mostrarPlazo();
+                                        </script>
+                                        <h2>Estado legal de la garantia: </h2>
+                                        <hr>
+                                        <form id="garantia-form">
+                                            <div class="row">
+                                                <div class="col-md-3">
+                                                    <label for="TipoGarantia">Tipo de garantía:</label>
+                                                    <input type="text" id="TipoGarantia" name="TipoGarantia"
+                                                        class="form-control text-center" value="<%= TipoGarantia %>"
+                                                        required readonly>
+                                                </div>
+                                                <div class="col-md-3">
+                                                    <label for="DocumentoGarantia">Documento soporte:</label><br>
+                                                    <a href="<%= RutaDocumentacionLegal %>" target="_blank">VER</a>
+                                                    <input type="text" id="DocumentoGarantia" name="DocumentoGarantia"
+                                                        value="<%= RutaDocumentacionLegal %>" style="display: none;"
+                                                        readonly>
+                                                </div>
+                                                <div class="col-md-6">
+                                                    <label for="Retroalimentacion">Diagnostico de la garantía:</label>
+                                                    <textarea name="Retroalimentacion" id="Retroalimentacion"
+                                                        maxlength="450" class="form-control" rows="6"
+                                                        required></textarea>
+                                                </div>
+                                            </div>
+                                            <label for="RFC"></label>
+                                            <input type="text" value="<%= RFC %>" name="RFC" id="RFC"
+                                                style="display: none;">
+                                            <label for="Id"></label>
+                                            <input type="number" name="Id" id="Id" value="<%= idCuenta %>"
+                                                style="display: none;">
+                                            <label for="fechaHoraPlazos"></label>
+                                            <input type="datetime-local" id="fechaHoraGarantia" name="fechaHoraGarantia"
+                                                style="display: none;">
+                                            <br>
+                                            <button type="submit" class="btn btn-danger">Guardar</button>
+                                        </form>
+                                        <script>
+                                            document.getElementById('garantia-form').addEventListener('submit', function (event) {
+                                                event.preventDefault();
+                                                const ID = document.getElementById('Id').value;
+                                                const RFC = document.getElementById('RFC').value;
+                                                const Retroalimentacion = document.getElementById('Retroalimentacion').value;
+                                                const TipoGarantia = document.getElementById('TipoGarantia').value;
+                                                const Documento = document.getElementById('DocumentoGarantia').value;
+                                                function getFormattedDate() {
+                                                    const now = new Date();
+                                                    const year = now.getFullYear();
+                                                    const month = String(now.getMonth() + 1).padStart(2, '0');
+                                                    const day = String(now.getDate()).padStart(2, '0');
+                                                    const hours = String(now.getHours()).padStart(2, '0');
+                                                    const minutes = String(now.getMinutes()).padStart(2, '0');
+                                                    const seconds = String(now.getSeconds()).padStart(2, '0');
+                                                    return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                                                }
 
-                                    // Obtener la fecha y hora formateadas
-                                    const fecha = getFormattedDate();
+                                                // Obtener la fecha y hora formateadas
+                                                const fecha = getFormattedDate();
 
-                                    fetch('/sere/Garantia', {
-                                        method: 'POST',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({ ID, RFC, TipoGarantia, Documento, fecha, Retroalimentacion })
-                                    })
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            if (data.message === 'OK') {
-                                                document.getElementById('Retroalimentacion').value="";
-                                                // document.getElementById('TipoGarantia').value="";
-                                                // document.getElementById('DocumentoGarantia').value="";
-                                                mostrarGarantia();
-                                            } else {
-                                                console.error('Error en la respuesta:', data);
+                                                fetch('/sere/Garantia', {
+                                                    method: 'POST',
+                                                    headers: {
+                                                        'Content-Type': 'application/json'
+                                                    },
+                                                    body: JSON.stringify({ ID, RFC, TipoGarantia, Documento, fecha, Retroalimentacion })
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        if (data.message === 'OK') {
+                                                            document.getElementById('Retroalimentacion').value = "";
+                                                            // document.getElementById('TipoGarantia').value="";
+                                                            // document.getElementById('DocumentoGarantia').value="";
+                                                            mostrarGarantia();
+                                                        } else {
+                                                            console.error('Error en la respuesta:', data);
+                                                        }
+                                                    })
+                                                    .catch(error => {
+                                                        alert("Hubo un error al insertar los datos: " + error.message);
+                                                    });
+                                            });
+                                        </script><br>
+                                        <div id="lista-garantia" class="text-center">
+                                            <!-- Aquí se mostrarán los importes -->
+                                        </div>
+                                        <script>
+                                            function mostrarGarantia() {
+                                                fetch('/sere/ObtenerGarantia?IDCuenta=<%= idCuenta %>')
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        const listaGarantia = document.getElementById('lista-garantia');
+                                                        listaGarantia.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                                                        if (data.resultados.length === 0) {
+                                                            const mensaje = document.createElement('p');
+                                                            mensaje.textContent = 'No hay retroalimentacion de la garantia recuperada para esta cuenta aún.';
+                                                            listaGarantia.appendChild(mensaje);
+                                                        } else {
+                                                            const table = document.createElement('table');
+                                                            table.classList.add('table', 'table-striped', 'table-striped-columns', 'container');
+                                                            table.innerHTML = `
+                                                                <thead class="thead-dark">
+                                                                    <tr class="table-dark">
+                                                                        <th>TIPO DE GARANTIA</th>
+                                                                        <th>DOCUMENTO SOPORTE</th>
+                                                                    </tr>
+                                                                </thead>
+                                                                <tbody>
+                                                            `;
+
+                                                            data.resultados.forEach(garantia => {
+                                                                table.innerHTML += `
+                                                                    <tr>
+                                                                        <td>${garantia.TipoGarantia}</td>
+                                                                        <td><a href="${garantia.DocumentoSoporte}" target="_blank">VER</a></td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-dark">
+                                                                            <strong>
+                                                                             RFC:
+                                                                            </strong>
+                                                                        </td>
+                                                                        <td colspan="2">${garantia.RFCDespacho}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-dark">
+                                                                            <strong>
+                                                                                Retroalimentación:
+                                                                            </strong>
+                                                                        </td>
+                                                                        <td colspan="2" style=" word-break: break-word; white-space: normal;">${garantia.RetroAlimentacion}</td>
+                                                                    </tr>
+                                                                    <tr>
+                                                                        <td class="table-dark">
+                                                                            <strong>
+                                                                                Fecha de Registro:
+                                                                            </strong>
+                                                                        </td>
+                                                                        <td colspan="2">${garantia.FechaRegistro}</td>
+                                                                    </tr>
+                                                                `;
+                                                            });
+
+                                                            table.innerHTML += `
+                                                                </tbody>
+                                                            `;
+
+                                                            listaGarantia.appendChild(table);
+                                                        }
+
+                                                    });
                                             }
-                                        })
-                                        .catch(error => {
-                                            alert("Hubo un error al insertar los datos: " + error.message);
-                                        });
-                                });
-                            </script>
-                            <div id="lista-garantia" class="text-center">
-                                <!-- Aquí se mostrarán los importes -->
-                            </div>
-                            <script>
-                                 function mostrarGarantia() {
-                                    fetch('/sere/ObtenerGarantia?IDCuenta=<%= idCuenta %>')
-                                        .then(response => response.json())
-                                        .then(data => {
-                                            const listaGarantia = document.getElementById('lista-garantia');
-                                            listaGarantia.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
-
-                                            if (data.resultados.length === 0) {
-                                                const mensaje = document.createElement('p');
-                                                mensaje.textContent = 'No hay retroalimentacion de la garantia recuperada para esta cuenta aún.';
-                                                listaGarantia.appendChild(mensaje);
-                                            } else {
-                                                const table = document.createElement('table');
-                                                table.classList.add('table', 'table-warning', 'container');
-                                                table.innerHTML = `
-                                                    <thead class="thead-dark">
-                                                        <tr>
-                                                            <th>RFC</th>
-                                                            <th>TIPO DE GARANTIA</th>
-                                                            <th>DOCUMENTO SOPORTE</th>
-                                                            <th>RETROALIMENTACION</th>
-                                                            <th>FECHA DE REGISTRO DE LA RETROALIMENTACIÓN</th>
-                                                        </tr>
-                                                    </thead>
-                                                    <tbody>
-                                                `;
-
-                                                data.resultados.forEach(garantia => {
-                                                    table.innerHTML += `
-                                                        <tr>
-                                                            <td>${garantia.RFCDespacho}</td>
-                                                            <td>${garantia.TipoGarantia}</td>
-                                                            <td><a href="${garantia.DocumentoSoporte}" target="_blank">VER</a></td>
-                                                            <td style=" word-break: break-word; white-space: normal;">${garantia.RetroAlimentacion}</td>
-                                                            <td>${garantia.FechaRegistro}</td>
-                                                        </tr>
-                                                    `;
-                                                });
-                                                table.innerHTML += `
-                                                    </tbody>
-                                                `;
-
-                                                listaGarantia.appendChild(table);
-                                            }
-                                        });
-                                }
-                                mostrarGarantia();
-                            </script>
-
+                                            mostrarGarantia();
+                                        </script>
+                        </div>
+                        <% } %>
             </div>
-        </div>
     </div>
+
+    <div id="footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+        });
+    </script>
 </body>
 
 </html>

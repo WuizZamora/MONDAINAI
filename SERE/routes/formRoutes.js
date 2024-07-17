@@ -5,7 +5,6 @@ const fs = require("fs"); // Módulo para manejar el sistema de archivos
 const bodyParser = require("body-parser"); // Importa body-parser
 const path = require("path");
 const pool = require("../config/database"); // Importa la conexión a la base de datos
-const { Console } = require("console");
 
 const app = express();
 
@@ -586,11 +585,14 @@ app.post(
       let sql = `INSERT INTO Cliente_EstadoDeCuenta (IDCuenta, IDEstadoDeCuenta, TipoDocumento, NoDeDocumento, FechaSoporte, FechSoporteVencimiento, ImporteTotal, ImporteRestante, PromedioPonderado, ArchivosSoporte, RutaArchivosSoporte) VALUES ?`;
       let values = [];
 
+      // Generar un ID único para cada fila
+      let IDEstadoDeCuenta = 1; // Empezamos con 1, puedes ajustar la lógica según tu necesidad
+
       // Iterar sobre todas las filas enviadas desde el frontend
       for (let i = 1; formData["TipoDocumento" + i]; i++) {
         values.push([
           IDCuenta,
-          i,
+          IDEstadoDeCuenta,
           formData["TipoDocumento" + i],
           formData["NoDeDocumento" + i],
           formData["FechaSoporte" + i],
@@ -601,6 +603,8 @@ app.post(
           ArchivoSoporte, // Usar el nombre del archivo para todas las filas
           RutaArchivoSoporte, // Usar la misma ruta de archivo para todas las filas
         ]);
+        
+        IDEstadoDeCuenta++; // Incrementar el ID para la siguiente fila
       }
 
       // Ejecutar la consulta SQL
@@ -609,11 +613,14 @@ app.post(
           console.error(
             "Error al insertar datos en la base de datos: " + err.message
           );
-          res.status(500).send("Error interno del servidor");
+          if (err.code === 'ER_DUP_ENTRY') {
+            res.status(409).send("Ya existe un estado de cuenta con ese IDEstadoDeCuenta");
+          } else {
+            res.status(500).send("Error interno del servidor");
+          }
           return;
         }
         console.log("Datos insertados correctamente en la base de datos");
-        // res.json({ success: true });
         res.status(204).end(); // Enviar una respuesta vacía con el código 204 al cliente
       });
     }
@@ -624,7 +631,7 @@ app.post(
 app.post("/guardar-HistorialPagos", (req, res) => {
   const IDCuenta = req.session.IDCuenta;
   const formData = req.body;
-
+console.log(formData);
   // Itera sobre los datos del formulario y los inserta en la base de datos
   Object.keys(formData).forEach((key) => {
     // Verifica que el nombre de la clave sea válido (corresponde a un campo del formulario)
@@ -892,7 +899,7 @@ app.post("/CostosHonorarios", (req, res, next) => {
     try {
       const { ID, TipoCosto, descripcion, cantidad, fecha, RFC } = req.body;
       const IDCuenta = req.query.IDCuenta;
-      const SoporteCosto = req.files["soporteCostoHonorario"]? req.files["soporteCostoHonorario"][0].filename : "N/A";
+      const SoporteCosto = req.files["soporteCostoHonorario"] ? req.files["soporteCostoHonorario"][0].filename : "N/A";
       const rutaSoporteCosto = `uploads/${IDCuenta}/${SoporteCosto}`;
       const query = `
     INSERT INTO Despacho_CostosHonorarios (IDCuenta, TipoDeCosto, Cantidad, Descripcion, FechaCostoHonorario, RFCDespacho, Soporte)
@@ -1052,7 +1059,7 @@ app.post("/Garantia", (req, res) => {
 
 app.post("/ProcesoJudicial", (req, res) => {
   const { ID, RFC, Expediente, Juzgado, Jurisdiccion, fecha, estadoDelCaso } = req.body;
-  
+
   const query = `INSERT INTO Despacho_ProcesoJudicial (IDCuenta, RFCDespacho, Expediente, Juzgado, Jurisdiccion, FechaRegistro, EstadoDelCaso) VALUES (?, ?, ?, ?, ?, ?, ?)`;
 
   pool.query(query, [ID, RFC, Expediente, Juzgado, Jurisdiccion, fecha, estadoDelCaso], (error, results) => {
@@ -1064,11 +1071,113 @@ app.post("/ProcesoJudicial", (req, res) => {
     res.status(200).json({ message: 'OK' }); // Aquí enviamos una respuesta JSON
   });
 });
+
+// Ruta para manejar la inserción de pagares
 app.post("/Pagares", (req, res) => {
-  // const { ID, TipoCosto, descripcion, cantidad, fecha, RFC } = req.body;
   const data = req.body;
-  console.log(data);
-  res.sendStatus(200);
+  const IDCuenta = req.query.IDCuenta;
+  // Iniciar la transacción con el pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error al conectar con la base de datos:', err);
+      return res.status(500).json({ error: 'Error de conexión con la base de datos' });
+    }
+
+    // Iniciar la transacción
+    connection.beginTransaction(err => {
+      if (err) {
+        console.error('Error al iniciar la transacción:', err);
+        connection.release();
+        return res.status(500).json({ error: 'Error al iniciar la transacción' });
+      }
+
+      // Insertar en la tabla Pagares
+      connection.query('INSERT INTO Pagares (IDCuenta, RFCDespacho, FechaPrescripcion, Importe, FechaSuscripcion, FechaVencimiento, Monto, Interes, fechaHoraPagare) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)',
+        [IDCuenta, data.RFC, data.FechaPrescripcion, data.Importe, data.FechaSuscripcion, data.FechaVencimiento, data.Monto, data.Interes, data.fecha],
+        (err, results) => {
+          if (err) {
+            connection.rollback(() => {
+              console.error('Error al insertar en Pagares:', err);
+              connection.release();
+              return res.status(500).json({ error: 'Error al insertar en Pagares' });
+            });
+          }
+
+          const PagarID = results.insertId; // Obtener el ID generado
+
+          // Insertar suscriptores
+          if (data.suscriptores && data.suscriptores.length > 0) {
+            const suscriptoresValues = data.suscriptores.map(suscriptor => [PagarID, suscriptor.NombreSuscriptor, suscriptor.DomicilioSuscriptor]);
+            connection.query('INSERT INTO Suscriptores (PagarID, NombreSuscriptor, DomicilioSuscriptor) VALUES ?', [suscriptoresValues], (err, results) => {
+              if (err) {
+                connection.rollback(() => {
+                  console.error('Error al insertar suscriptores:', err);
+                  connection.release();
+                  return res.status(500).json({ error: 'Error al insertar suscriptores' });
+                });
+              }
+
+              // Insertar avales
+              if (data.avales && data.avales.length > 0) {
+                const avalesValues = data.avales.map(aval => [PagarID, aval.NombreAval, aval.DireccionAval]);
+                connection.query('INSERT INTO Avales (PagarID, NombreAval, DireccionAval) VALUES ?', [avalesValues], (err, results) => {
+                  if (err) {
+                    connection.rollback(() => {
+                      console.error('Error al insertar avales:', err);
+                      connection.release();
+                      return res.status(500).json({ error: 'Error al insertar avales' });
+                    });
+                  }
+
+                  // Commit si todo ha ido bien
+                  connection.commit((err) => {
+                    if (err) {
+                      connection.rollback(() => {
+                        console.error('Error al hacer commit:', err);
+                        connection.release();
+                        return res.status(500).json({ error: 'Error al hacer commit' });
+                      });
+                    }
+
+                    // console.log('Transacción completada.');
+                    connection.release();
+                    res.status(200).json({ message: 'OK' });
+                  });
+                });
+              } else {
+                // Commit si no hay avales
+                connection.commit((err) => {
+                  if (err) {
+                    connection.rollback(() => {
+                      console.error('Error al hacer commit:', err);
+                      connection.release();
+                      return res.status(500).json({ error: 'Error al hacer commit' });
+                    });
+                  }
+                  // console.log('Transacción completada.');
+                  connection.release();
+                  res.status(200).json({ message: 'OK' });
+                });
+              }
+            });
+          } else {
+            // Commit si no hay suscriptores ni avales
+            connection.commit((err) => {
+              if (err) {
+                connection.rollback(() => {
+                  console.error('Error al hacer commit:', err);
+                  connection.release();
+                  return res.status(500).json({ error: 'Error al hacer commit' });
+                });
+              }
+
+              connection.release();
+              res.status(200).json({ message: 'OK' });
+            });
+          }
+        });
+    });
+  });
 });
 
 app.post("/EstadoDelCaso", (req, res, next) => {
@@ -1086,17 +1195,167 @@ app.post("/EstadoDelCaso", (req, res, next) => {
     }
     next();
   });
-},
-  (req, res) => {
-    try {
-    // const { ID, TipoCosto, descripcion, cantidad, fecha, RFC } = req.body;
-      const data = req.body;
-      console.log(data);
-      res.sendStatus(200);
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
+}, (req, res) => {
+  try {
+    const IDCuenta = req.query.IDCuenta;
+    const { RFC, FechaProximasAcciones, ProximasAcciones, fechaHoraActual, IDProcesoJudicial } = req.body;
+    const SoporteActuaciones = req.files["SoporteActuaciones"] ? req.files["SoporteActuaciones"][0].filename : "N/A";
+    const rutaSoporteActuaciones = `uploads/${IDCuenta}/${SoporteActuaciones}`;
+
+    // Aquí realizamos la inserción en la base de datos
+    const query = `
+  INSERT INTO Despacho_GestionCaso (
+    IDCuenta, RFCDespacho, FechaProximaAccion, ProximasAcciones, SoporteActuaciones, FechaRegistro, IDProcesoJudicial
+  ) VALUES (?, ?, ?, ?, ?, ?, ?)
+`;
+    const values = [IDCuenta, RFC, FechaProximasAcciones, ProximasAcciones, rutaSoporteActuaciones, fechaHoraActual, IDProcesoJudicial];
+
+
+    pool.query(query, values, (err, results) => {
+      if (err) {
+        console.error('Error inserting data:', err.stack);
+        return res.status(500).json({ error: 'Database error' });
+      }
+      res.status(200).json({ message: 'OK' }); // Aquí enviamos una respuesta JSON
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
   }
-);
+});
+
+app.post("/DocumentosProcesales", (req, res, next) => {
+  const IDCuenta = req.query.IDCuenta;
+
+  const upload = createUploadDirForUser(IDCuenta);
+
+  const uploadHandler = upload.fields([{ name: "DocumentosProcesales", maxCount: 1 }]);
+
+  uploadHandler(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    next();
+  });
+}, (req, res) => {
+  try {
+    const IDCuenta = req.query.IDCuenta;
+    const { RFC, IDProcesoJudicial, fechaHoraActual } = req.body;
+    const SoporteDocumentos = req.files["DocumentosProcesales"] ? req.files["DocumentosProcesales"][0].filename : "N/A";
+    const rutaSoporteDocumentos = `uploads/${IDCuenta}/${SoporteDocumentos}`;
+
+    // Inserción en la base de datos
+    const query = `INSERT INTO Despacho_DocumentosProcesales 
+                   (IDCuenta, RFCDespacho, DocumentosProcesales, FechaRegistro, IDProcesoJudicial) 
+                   VALUES (?, ?, ?, ?, ?)`;
+    const values = [IDCuenta, RFC, rutaSoporteDocumentos, fechaHoraActual, IDProcesoJudicial];
+
+    pool.query(query, values, (error, results) => {
+      if (error) {
+        return res.status(500).json({ error: error.message });
+      }
+      res.status(200).json({ message: 'OK' });
+    });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Ruta para recibir los datos del formulario
+app.post('/Comentarios', (req, res) => {
+  const { RFC, idCuenta, Retroalimentacion, fechaHoraRegistro } = req.body;
+  console.log(fechaHoraRegistro);
+  // Consulta SQL para insertar datos en la tabla Despacho_Retroalimentacion
+  const insertQuery = `INSERT INTO Cliente_Retroalimentacion (IDCuenta, RFCDespacho, Retroalimentacion, FechaRegistro)
+                         VALUES (?, ?, ?, ?)`;
+
+  // Valores para la consulta preparada
+  const values = [idCuenta, RFC, Retroalimentacion, fechaHoraRegistro];
+
+  // Ejecutar la consulta usando el pool de conexiones
+  pool.query(insertQuery, values, (error, results, fields) => {
+    if (error) {
+      console.error('Error al insertar datos:', error);
+      res.status(500).json({ message: 'Error al insertar datos en la base de datos' });
+    } else {
+      console.log('Datos insertados correctamente');
+      res.status(200).json({ message: 'Datos recibidos y almacenados correctamente en la base de datos' });
+    }
+  });
+});
+
+app.post('/ComentariosAccion', (req, res) => {
+  const { RFC, idCuenta, IDGestion, Retroalimentacion, fechaHoraRegistro } = req.body;
+
+  // Obtener una conexión del pool
+  pool.getConnection((err, connection) => {
+    if (err) {
+      console.error('Error al obtener conexión del pool:', err);
+      return res.status(500).json({ error: 'Error de servidor' });
+    }
+
+    // Preparar la consulta SQL
+    const sql = `INSERT INTO Cliente_RetroalimentacionAccion (IDCuenta, RFCDespacho, IDGestion, Retroalimentacion, FechaRegistro) VALUES (?, ?, ?, ?, ?)`;
+    const values = [idCuenta, RFC, IDGestion, Retroalimentacion, fechaHoraRegistro];
+
+    // Ejecutar la consulta SQL
+    connection.query(sql, values, (error, results, fields) => {
+      connection.release(); // Liberar la conexión al pool
+
+      if (error) {
+        console.error('Error al ejecutar consulta:', error);
+        return res.status(500).json({ error: 'Error de servidor al guardar datos' });
+      }
+
+      // console.log('Datos insertados correctamente:', results);
+      res.json({ message: 'Datos recibidos y guardados correctamente' });
+    });
+  });
+});
+
+app.post("/Incobrabilidad", (req, res, next) => {
+  const IDCuenta = req.query.IDCuenta;
+
+  const upload = createUploadDirForUser(IDCuenta);
+
+  const uploadHandler = upload.fields([{ name: "Formato", maxCount: 1 }]);
+
+  uploadHandler(req, res, (err) => {
+    if (err instanceof multer.MulterError) {
+      return res.status(400).json({ error: err.message });
+    } else if (err) {
+      return res.status(500).json({ error: err.message });
+    }
+    next();
+  });
+}, (req, res) => {
+  try {
+    const IDCuenta = req.query.IDCuenta;
+    const formData = req.body;
+    const SoporteFormato = req.files["Formato"] ? req.files["Formato"][0].filename : "N/A";
+    const rutaFormato = `uploads/${IDCuenta}/${SoporteFormato}`;
+    const { ComentariosFormato, RFC, Id, FechaRegistro } = formData;
+
+    // Crear la consulta SQL para insertar en la tabla Despacho_Incobrabilidad
+    const insertQuery = `
+      INSERT INTO Despacho_Incobrabilidad (IDCuenta, RFCDespacho, FormatoIncobrabilidad, Comentarios, FechaRegistro)
+      VALUES (?, ?, ?, ?, ?)
+    `;
+    
+    // Ejecutar la consulta SQL con los valores correspondientes
+    pool.query(insertQuery, [Id, RFC, rutaFormato, ComentariosFormato, FechaRegistro], (error, results) => {
+      if (error) {
+        console.error('Error al insertar en Despacho_Incobrabilidad:', error);
+        return res.status(500).json({ error: 'Error interno al guardar los datos' });
+      }
+      res.status(200).json({ message: 'Datos recibidos y guardados correctamente' });
+    });
+
+  } catch (error) {
+    console.error('Error en el manejo de la solicitud:', error);
+    res.status(500).json({ error: error.message });
+  }
+});
 
 module.exports = app;

@@ -11,65 +11,115 @@
 </head>
 
 <body>
-    <div class="container mt-5 text-center">
-        <h2>Listado de Casos</h2>
-        <table class="table table-striped table-bordered">
-            <thead class="thead-dark">
-                <tr>
-                    <th># DE CASO</th>
-                    <th>Fecha de Asignación</th>
-                    <th>Razon Social</th>
-                    <th>Tipo de Caso</th>
-                    <th>Abogado Responsable</th>
-                    <th>Abogado Asistente</th>
-                    <th>Estado de Cuenta</th>
-                    <th>Fecha de Cierre</th>
-                    <th>Acciones</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                <% datos.forEach(dato => { %>
-                    <tr>
-                        <td>
-                            <a href="/sere/hola2?IDCuenta=<%= dato.IDCuenta %>"><%= dato.IDCuenta %></a>
-                        </td>
-                        <td><%= dato.FechaDeAsignacion %></td>
-                        <td><%= dato.RazonSocial %></td>
-                        <td><%= dato.TipoDeCaso %></td>
-                        <td>
-                            <select class="form-select abogado-responsable">
-                                <option selected disabled value=""></option>
-                                <% rfcAsociados.forEach(rfc => { %>
-                                    <option value="<%= rfc %>"><%= rfc %></option>
-                                <% }); %>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-select abogado-asistente">
-                                <option selected disabled value=""></option>
-                                <% rfcAsociados.forEach(rfc => { %>
-                                    <option value="<%= rfc %>"><%= rfc %></option>
-                                <% }); %>
-                            </select>
-                        </td>
-                        <td>
-                            <select class="form-select estado-cuenta">
-                                <option selected disabled value=""></option>
-                                <option value="asignado">Asignado</option>
-                                <option value="en proceso">En Proceso</option>
-                                <option value="cerrado">Cerrado</option>
-                            </select>
-                        </td>
-                        <td class="fecha-cierre"></td>
-                        <td>
-                            <button class="btn btn-primary btn-asignar" data-id="<%= dato.IDCuenta %>">Asignar</button>
-                        </td>
+    <div id="header"></div>
+    <div class="container text-center">
+        <%- include('partials/NavSere') %>
+            <h2>Listado de Casos</h2>
+            <div class="row justify-content-center">
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control text-center" id="filtroNumeroCaso"
+                            placeholder="Ingrese número de caso">
+                        <button class="btn btn-outline-secondary" type="button" id="btnBuscar"><i
+                                class="bi bi-search"></i></button>
+                    </div>
+                </div>
+            </div>
+            <table class="table table-striped table-bordered" id="clienteTable">
+                <thead class="thead-dark">
+                    <tr class="table-dark">
+                        <th># DE CASO</th>
+                        <th>Fecha de Asignación</th>
+                        <th>Razon Social</th>
+                        <th>Tipo de Caso</th>
+                        <th>Abogado Responsable</th>
+                        <th>Abogado Asistente</th>
+                        <th>Estado de Cuenta</th>
+                        <th>Fecha de Cierre</th>
+                        <th>Acciones</th>
+
                     </tr>
-                <% }); %>
-            </tbody>
-        </table>
+                </thead>
+                <tbody id="clienteTableBody">
+                    <% datos.forEach(dato=> { %>
+                        <tr>
+                            <td>
+                                <a href="/sere/hola2?IDCuenta=<%= dato.IDCuenta %>">
+                                    <%= dato.IDCuenta %>
+                                </a>
+                            </td>
+                            <td>
+                                <%= dato.FechaDeAsignacion %>
+                            </td>
+                            <td>
+                                <%= dato.RazonSocial %>
+                            </td>
+                            <td>
+                                <%= dato.TipoDeCaso %>
+                            </td>
+                            <td>
+                                <select class="form-select abogado-responsable">
+                                    <option selected disabled value=""></option>
+                                    <% rfcAsociados.forEach(rfc=> { %>
+                                        <option value="<%= rfc %>">
+                                            <%= rfc %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select abogado-asistente">
+                                    <option selected disabled value=""></option>
+                                    <% rfcAsociados.forEach(rfc=> { %>
+                                        <option value="<%= rfc %>">
+                                            <%= rfc %>
+                                        </option>
+                                        <% }); %>
+                                </select>
+                            </td>
+                            <td>
+                                <select class="form-select estado-cuenta">
+                                    <option selected disabled value=""></option>
+                                    <option value="asignado">Asignado</option>
+                                    <option value="en proceso">En Proceso</option>
+                                    <option value="cerrado">Cerrado</option>
+                                </select>
+                            </td>
+                            <td class="fecha-cierre"></td>
+                            <td>
+                                <button class="btn btn-danger btn-asignar"
+                                    data-id="<%= dato.IDCuenta %>">Asignar</button>
+                            </td>
+                        </tr>
+                        <% }); %>
+                </tbody>
+            </table>
     </div>
+    <nav>
+        <ul class="pagination justify-content-center" id="pagination">
+            <!-- Pagination items will be inserted here by JavaScript -->
+        </ul>
+    </nav>
+    <style>
+        .pagination .page-link {
+            color: #dc3545;
+            background-color: #ffffff; /* Rojo (danger) */
+            border-color: #dc3545; /* Rojo (danger) */
+        }
+
+        .pagination .page-link:hover {
+            color: #ffffff;
+            background-color: #ff5654; /* Rojo más oscuro al pasar el mouse */
+            border-color: #bd2130; /* Rojo más oscuro al pasar el mouse */
+        }
+
+        .pagination .page-item.active .page-link {
+            color: #ffffff;
+            background-color: #E52421; /* Rojo más oscuro para la página activa */
+            border-color: #bd2130; /* Rojo más oscuro para la página activa */
+        }
+    </style>
+    <div id="footer"></div>
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             const estadoCuentaSelects = document.querySelectorAll('.estado-cuenta');
@@ -109,23 +159,106 @@
                             FechaDeCierre
                         })
                     })
-                    .then(response => response.json())
-                    .then(data => {
-                        if (data.success) {
-                            alert('Caso asignado exitosamente');
-                        } else {
-                            alert('Error al asignar el caso');
-                        }
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                alert('Caso asignado exitosamente');
+                            } else {
+                                alert('Error al asignar el caso');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
                 });
             });
         });
+        
     </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
-        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+
+         // JavaScript para la paginación y filtro
+         const rowsPerPage = 15;
+            const tableBody = document.getElementById('clienteTableBody');
+            const pagination = document.getElementById('pagination');
+            const rows = Array.from(tableBody.querySelectorAll('tr'));
+            let pageCount = Math.ceil(rows.length / rowsPerPage);
+            let currentPage = 1;
+
+            function displayPage(page) {
+                const startRow = (page - 1) * rowsPerPage;
+                const endRow = startRow + rowsPerPage;
+
+                rows.forEach((row, index) => {
+                    row.style.display = (index >= startRow && index < endRow) ? '' : 'none';
+                });
+
+                updatePagination();
+            }
+
+            function setupPagination() {
+                pagination.innerHTML = '';
+
+                for (let i = 1; i <= pageCount; i++) {
+                    const li = document.createElement('li');
+                    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
+                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
+                    li.setAttribute('data-page', i);
+                    li.addEventListener('click', (e) => {
+                        e.preventDefault();
+                        currentPage = i;
+                        displayPage(currentPage);
+                    });
+                    pagination.appendChild(li);
+                }
+            }
+
+            function updatePagination() {
+                pageCount = Math.ceil(rows.length / rowsPerPage);
+                setupPagination();
+            }
+
+            displayPage(currentPage);
+            setupPagination();
+
+            // Filtro por número de caso
+            $('#filtroNumeroCaso').on('input', function () {
+                const filtro = this.value.trim().toLowerCase();
+
+                rows.forEach(row => {
+                    const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
+                    const match = numeroCaso.includes(filtro);
+
+                    row.style.display = match ? '' : 'none';
+                });
+
+                currentPage = 1;
+                updatePagination();
+            });
+
+            // Botón de búsqueda (opcional)
+            $('#btnBuscar').click(function () {
+                const filtro = $('#filtroNumeroCaso').val().trim().toLowerCase();
+
+                rows.forEach(row => {
+                    const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
+                    const match = numeroCaso.includes(filtro);
+
+                    row.style.display = match ? '' : 'none';
+                });
+
+                currentPage = 1;
+                updatePagination();
+            });
+        });
+    </script>
 </body>
 
 </html>

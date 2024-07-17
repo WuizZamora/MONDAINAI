@@ -12,187 +12,396 @@
 </head>
 
 <body>
+    <div id="header"></div>
     <div class="container text-center">
+        <div id="NavSere"></div>
         <h2 class="mb-3">DATOS DEL CASO</h2>
 
-        <!-- Información de la cuenta -->
-        <div class="card mb-3">
-            <div class="card-header">Información de la cuenta</div>
-            <div class="row">
-                <% let count=0; %>
-                    <% for (const key in datos) { %>
-                        <% if (count % 4===0) { %>
-            </div>
-            <div class="row">
-                <% } %>
-                    <div class="col-sm-3">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item"><strong>
-                                    <%= key %>:
-                                </strong><br>
-                                <% if (key.includes('Ruta')) { %>
-                                    <a href="<%= datos[key] %>" target="_blank">Ver Archivo</a>
+        <!-- Acordion Bootstrap -->
+        <div class="accordion" id="accordionExample">
+
+            <!-- Información de la cuenta -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingOne">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne">
+                        INFORMACIÓN GENERAL DE LA CUENTA
+                    </button>
+                </h2>
+                <div id="collapseOne" class="accordion-collapse collapse collapsed" aria-labelledby="headingOne"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                    <% let lastTableName = ''; %>
+            <% const tableNamesMap = {
+                'Cliente_InfGeneralCuenta': 'Información General de la Cuenta',
+                'Cliente_InfDeudor': 'Información del Deudor',
+                'Cliente_VariablesDeRiesgo': 'Variables de Riesgo',
+                'Cliente_DescripcionDelCaso': 'Descripción del Caso'
+            }; %>
+            <div class="table-responsive">
+                <% for (const key in datos) { %>
+                    <% if (datos[key] !== 'N/A') { %>
+                        <% const tableName = getTableName(key); %>
+                        <% const displayName = tableNamesMap[tableName] || tableName; %>
+                        <% if (tableName !== lastTableName) { %>
+                            <% if (lastTableName !== '') { %>
+                                </tbody></table> <!-- Cierre de la tabla anterior -->
+                            <% } %>
+                            <h3 class="bg-dark text-white p-2"><%= displayName %></h3>
+                            <table class="table table-striped table-hover">
+                                <tbody>
+                        <% } %>
+                        <% if (tableName === 'Cliente_VariablesDeRiesgo') { %>
+                            <% if (key === 'TipoDeuda') { %>
+                                <tr>
+                                    <td class="col"><strong><%= formatFieldName('TipoDeuda') %></strong></td>
+                                    <td class="col"><%= datos['TipoDeuda'] %></td>
+                                </tr>
+                                <% if (datos['TipoDeuda'] === 'Garantizada') { %>
+                                    <% if (datos['TipoGarantia']) { %>
+                                        <tr>
+                                            <td class="col"><strong><%= formatFieldName('TipoGarantia') %></strong></td>
+                                            <td class="col"><%= datos['TipoGarantia'] %></td>
+                                        </tr>
+                                        <% if (datos['TipoGarantia'] === 'Otros' && datos['OtroTipoGarantia']) { %>
+                                            <tr>
+                                                <td class="col"><strong><%= formatFieldName('OtroTipoGarantia') %></strong></td>
+                                                <td class="col"><%= datos['OtroTipoGarantia'] %></td>
+                                            </tr>
+                                        <% } %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td class="col"><strong><%= formatFieldName('TipoGarantia') %></strong></td>
+                                            <td class="col">N/A</td>
+                                        </tr>
+                                    <% } %>
+                                <% } %>
+                            <% } else if (!(key === 'TipoGarantia' || key === 'OtroTipoGarantia')) { %>
+                                <tr>
+                                    <td class="col"><strong><%= formatFieldName(key) %></strong></td>
+                                    <td class="col">
+                                        <% if (key.includes('Ruta')) { %>
+                                            <a href="<%= datos[key] %>" target="_blank">Ver Archivo</a>
+                                        <% } else { %>
+                                            <%= datos[key] %>
+                                        <% } %>
+                                    </td>
+                                </tr>
+                            <% } %>
+                        <% } else { %>
+                            <tr>
+                                <td class="col"><strong><%= formatFieldName(key) %></strong></td>
+                                <td class="col">
+                                    <% if (key.includes('Ruta')) { %>
+                                        <a href="<%= datos[key] %>" target="_blank">Ver Archivo</a>
                                     <% } else { %>
                                         <%= datos[key] %>
-                                            <% } %>
-                            </li>
-                        </ul>
-                    </div>
-                    <% count++; %>
+                                    <% } %>
+                                </td>
+                            </tr>
                         <% } %>
-            </div>
-        </div>
-
-        <!-- Contactos -->
-        <div class="card mb-3">
-            <div class="card-header">Contactos</div>
-            <div class="row">
-                <% let countContact = 0; %>
-                <% contactos.forEach(function(contacto) { %>
-                    <% if (countContact % 3 === 0) { %>
-                        </div>
-                        <div class="row">
+                        <% lastTableName = tableName; %>
                     <% } %>
-                    <div class="col-sm-4">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>IDCuenta:</strong> <br><%= contacto.IDCuenta %> <br>
-                                <strong>Numero de Contacto:</strong> <br> <%= contacto.NumeroContacto %><br>
-                                <strong>Nombre de Contacto:</strong> <br> <%= contacto.NombreContacto %><br>
-                                <strong>Dirección de Contacto:</strong> <br> <%= contacto.DireccionContacto %><br>
-                                <strong>Telefono de Contacto:</strong> <br> <%= contacto.TelefonoContacto %><br>
-                                <strong>Celular de Contacto:</strong> <br> <%= contacto.CelularContacto %><br>
-                                <strong>Puesto de Contacto:</strong> <br> <%= contacto.PuestoContacto %><br>
-                                <strong>Email de Contacto:</strong> <br> <%= contacto.EmailContacto %><br>
-                                <strong>Email de Contacto Adicional:</strong> <br> <%= contacto.EmailContactoAdicional %><br>
-                                <strong>Observaciones de Contacto:</strong> <br> <%= contacto.ObservacionesContacto %>
-                            </li>
-                        </ul>
+                <% } %>
+                <% if (lastTableName !== '') { %>
+                    </tbody></table> <!-- Cierre de la última tabla -->
+                <% } %>
+            </div> <!-- Cierre de table-responsive -->
+
+
                     </div>
-                    <% countContact++; %>
-                <% }); %>
+                </div>
             </div>
-        </div>
 
-        <!-- Monto de Deuda -->
-        <div class="card mb-3">
-            <div class="card-header">Monto de Deuda</div>
-            <div class="row">
-                <% let countMonto = 0; %>
-                <% montosDeDeuda.forEach(function(monto) { %>
-                    <% if (countMonto % 2 === 0) { %>
-                        </div>
-                        <div class="row">
-                    <% } %>
-                    <div class="col-sm-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>IDCuenta:</strong> <br> <%= monto.IDCuenta %><br>
-                                <strong>IDMonto:</strong> <br> <%= monto.IDMonto %><br>
-                                <strong>Descripción de Adeudo:</strong> <br> <%= monto.DescripcionAdeudo %><br>
-                                <strong>Adeudo:</strong> <br> <%= monto.AdeudoMonto %>
-                                
-                            </li>
-                        </ul>
+            <!-- Contactos -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTwo">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTwo" aria-expanded="false" aria-controls="collapseTwo">
+                        CONTACTOS
+                    </button>
+                </h2>
+                <div id="collapseTwo" class="accordion-collapse collapse" aria-labelledby="headingTwo"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <% if (contactos.length > 0) { %>
+                            <% contactos.forEach(function(contacto, index) { %>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-dark">
+                                                <th colspan="4">
+                                                    <h4>CONTACTO <%= index + 1 %></h4>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Nombre de Contacto:</strong></td>
+                                                <td colspan="3" style=" word-break: break-word; white-space: normal;"><%= contacto.NombreContacto %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Dirección de Contacto:</strong></td>
+                                                <td colspan="3" style=" word-break: break-word; white-space: normal;"><%= contacto.DireccionContacto %></td>
+                                                
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Teléfono de Contacto:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= contacto.TelefonoContacto %></td>
+                                                <td><strong>Celular de Contacto:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= contacto.CelularContacto %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Puesto de Contacto:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= contacto.PuestoContacto %></td>
+                                                <td><strong>Email de Contacto:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= contacto.EmailContacto %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Email de Contacto Adicional:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= contacto.EmailContactoAdicional %></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Observaciones de Contacto:</strong></td>
+                                                <td colspan="3"><%= contacto.ObservacionesContacto %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No hay contactos disponibles.</p>
+                        <% } %>
                     </div>
-                    <% countMonto++; %>
-                <% }); %>
+                </div>
             </div>
-        </div>
 
-        <!-- Estado de Cuenta -->
-        <div class="card mb-3">
-            <div class="card-header">Estado de Cuenta</div>
-            <div class="row">
-                <% let countEdoCuenta = 0; %>
-                <% estadoDeCuenta.forEach(function(estado) { %>
-                    <% if (countEdoCuenta % 2 === 0) { %>
-                        </div>
-                        <div class="row">
-                    <% } %>
-                    <div class="col-sm-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>IDCuenta:</strong> <br> <%= estado.IDCuenta %><br>
-                                <strong>IDEstadoDeCuenta:</strong> <br> <%= estado.IDEstadoDeCuenta %><br>
-                                <strong>TipoDocumento:</strong> <br> <%= estado.TipoDocumento %><br>
-                                <strong>NoDeDocumento:</strong> <br> <%= estado.NoDeDocumento %><br>
-                                <strong>FechaSoporte:</strong> <br> <%= estado.FechaSoporte %><br>
-                                <strong>FechSoporteVencimiento:</strong> <br> <%= estado.FechSoporteVencimiento %><br>
-                                <strong>ImporteTotal:</strong> <br> <%= estado.ImporteTotal %><br>
-                                <strong>ImporteRestante:</strong> <br> <%= estado.ImporteRestante %><br>
-                                <strong>PromedioPonderado:</strong> <br> <%= estado.PromedioPonderado %><br>
-                                <strong>ArchivosSoporte:</strong> <br> <%= estado.ArchivosSoporte %><br>
-                                <strong>RutaArchivosSoporte:</strong> <br> <a href="<%= estado.RutaArchivosSoporte %>" target="_blank">Abrir</a>
-                            </li>
-                        </ul>
+            <!-- Monto de Deuda -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingTree">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseTree" aria-expanded="false" aria-controls="collapseTree">
+                        MONTOS DE DEUDA
+                    </button>
+                </h2>
+                <div id="collapseTree" class="accordion-collapse collapse" aria-labelledby="headingTree"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <% if (montosDeDeuda.length > 0) { %>
+                            <% montosDeDeuda.forEach(function(monto, index) { %>
+                                <div class="table-responsive text-center">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-dark">
+                                                <th colspan="4">
+                                                    <h4>MONTO DE DEUDA <%= index + 1 %></h4>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Descripción de Adeudo:</strong></td>
+                                                <td style=" word-break: break-word; white-space: normal;"><%= monto.DescripcionAdeudo %></td>
+                                                <td><strong>Adeudo:</strong></td>
+                                                <td><%= monto.AdeudoMonto %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No hay montos de deuda disponibles.</p>
+                        <% } %>
                     </div>
-                    <% countEdoCuenta++; %>
-                <% }); %>
+                </div>
             </div>
-        </div>
 
-
-        <!-- Historial de Pagos -->
-        <div class="card mb-3">
-            <div class="card-header">Historial de Pagos</div>
-            <div class="row">
-                <% let countPagos = 0; %>
-                <% historialDePagos.forEach(function(pago) { %>
-                    <% if (countPagos % 2 === 0) { %>
-                        </div>
-                        <div class="row">
-                    <% } %>
-                    <div class="col-sm-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>IDCuenta:</strong> <br> <%= pago.IDCuenta %><br>
-                                <strong>IDHistorial de pago:</strong> <br> <%= pago.IDHistorialDePago %><br>
-                                <strong>FechaTransacción:</strong> <br> <%= pago.FechaTransaccion %><br>
-                                <strong>NumeroFacturaORecibo:</strong> <br> <%= pago.NumeroFacturaORecibo %><br>
-                                <strong>MontoPagado:</strong> <br> <%= pago.MontoPagado %><br>
-                                <strong>EstadoDelPago:</strong> <br> <%= pago.EstadoDelPago %><br>
-                                <strong>ObservacionesPago:</strong> <br> <%= pago.ObservacionesPago %>
-                            </li>
-                        </ul>
+            <!-- Estado de Cuenta -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFour">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFour" aria-expanded="false" aria-controls="collapseFour">
+                        ESTADO DE CUENTA
+                    </button>
+                </h2>
+                <div id="collapseFour" class="accordion-collapse collapse" aria-labelledby="headingFour"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <% if (estadoDeCuenta.length > 0) { %>
+                            <% estadoDeCuenta.forEach(function(estado, index) { %>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-dark">
+                                                <th colspan="4">
+                                                    <h4>ESTADO DE CUENTA <%= index + 1 %></h4>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Tipo de documento:</strong></td>
+                                                <td><%= estado.TipoDocumento %></td>
+                                                <td><strong>No de documento:</strong></td>
+                                                <td><%= estado.NoDeDocumento %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Fecha Soporte:</strong></td>
+                                                <td><%= estado.FechaSoporte %></td>
+                                                <td><strong>Fecha Soporte Vencimiento:</strong></td>
+                                                <td><%= estado.FechSoporteVencimiento %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Importe Total:</strong></td>
+                                                <td><%= estado.ImporteTotal %></td>
+                                                <td><strong>Importe Restante:</strong></td>
+                                                <td><%= estado.ImporteRestante %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Promedio Ponderado:</strong></td>
+                                                <td><%= estado.PromedioPonderado %></td>
+                                                <td><strong>Archivo Soporte:</strong></td>
+                                                <td><a href="<%= estado.RutaArchivosSoporte %>" target="_blank">Abrir</a></td>
+                                            </tr>
+                                            
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No hay estados de cuenta disponibles.</p>
+                        <% } %>
                     </div>
-                    <% countPagos++; %>
-                <% }); %>
+                </div>
             </div>
-        </div>
 
-        <!-- Documentación Extra -->
-        <div class="card mb-3">
-            <div class="card-header">Documentación Extra</div>
-            <div class="row">
-                <% let countDocumentacion = 0; %>
-                <% documentacionExtra.forEach(function(documento) { %>
-                    <% if (countDocumentacion % 2 === 0) { %>
-                        </div>
-                        <div class="row">
-                    <% } %>
-                    <div class="col-sm-6">
-                        <ul class="list-group list-group-flush">
-                            <li class="list-group-item">
-                                <strong>IDCuenta:</strong> <br> <%= documento.IDCuenta %><br>
-                                <strong>IDDocumentacion:</strong> <br> <%= documento.IDDocumentacion %><br>
-                                <strong>DescripcionArchivoExtra:</strong> <br> <%= documento.DescripcionArchivoExtra %><br>
-                                <strong>ArchivoExtra:</strong> <br> <%= documento.ArchivoExtra %><br>
-                                <strong>RutaArchivoExtra:</strong> <br> <a href="<%= documento.RutaArchivoExtra %>" target="_blank">Abrir</a><br>
-                                <strong>ModoEntregaArchivoExtra:</strong> <br> <%= documento.ModoEntregaArchivoExtra %>
-                            </li>
-                        </ul>
+             <!-- Historial de Pagos -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingFive">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseFive" aria-expanded="false" aria-controls="collapseFive">
+                        HISTORIAL DE PAGOS
+                    </button>
+                </h2>
+                <div id="collapseFive" class="accordion-collapse collapse" aria-labelledby="headingFive"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <% if (historialDePagos.length > 0) { %>
+                            <% historialDePagos.forEach(function(pago, index) { %>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-dark">
+                                                <th colspan="4">
+                                                    <h3>Historial de Pago <%= index + 1 %></h3>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Fecha de Transaccion:</strong></td>
+                                                <td><%= pago.FechaTransaccion %></td>
+                                                <td><strong>Numero de Factura o de Recibo:</strong></td>
+                                                <td><%= pago.NumeroFacturaORecibo %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Monto Pagado:</strong></td>
+                                                <td><%= pago.MontoPagado %></td>
+                                                <td><strong>Estado Del Pago:</strong></td>
+                                                <td><%= pago.EstadoDelPago %></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Observaciones del Pago:</strong></td>
+                                                <td colspan="3" style=" word-break: break-word; white-space: normal;"><%= pago.ObservacionesPago %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No hay historial de pagos disponibles.</p>
+                        <% } %>
                     </div>
-                    <% countDocumentacion++; %>
-                <% }); %>
+                </div>
             </div>
+
+            <!-- Documentación Extra -->
+            <div class="accordion-item">
+                <h2 class="accordion-header" id="headingSix">
+                    <button class="accordion-button custom-header collapsed" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#collapseSix" aria-expanded="false" aria-controls="collapseSix">
+                        DOCUMENTACIÓN EXTRA
+                    </button>
+                </h2>
+                <div id="collapseSix" class="accordion-collapse collapse" aria-labelledby="headingSix"
+                    data-bs-parent="#accordionExample">
+                    <div class="accordion-body">
+                        <% if (documentacionExtra.length > 0) { %>
+                            <% documentacionExtra.forEach(function(documento, index) { %>
+                                <div class="table-responsive">
+                                    <table class="table table-striped table-hover">
+                                        <thead>
+                                            <tr class="table-dark">
+                                                <th colspan="4">
+                                                    <h3>Documentación Extra <%= index + 1 %></h3>
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td><strong>Descripción del Archivo Extra:</strong></td>
+                                                <td ><%= documento.DescripcionArchivoExtra %></td>
+                                                <td><strong>Archivo Extra:</strong></td>
+                                                <td><a href="<%= documento.RutaArchivoExtra %>" target="_blank">Abrir</a></td>
+                                            </tr>
+                                            <tr>
+                                                <td><strong>Modo de entrega del archivo extra:</strong></td>
+                                                <td colspan="3"><%= documento.ModoEntregaArchivoExtra %></td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            <% }); %>
+                        <% } else { %>
+                            <p>No hay documentación extra disponible.</p>
+                        <% } %>
+                    </div>
+                </div>
+            </div>
+
         </div>
+        <style>
+            .custom-header {
+                background-color: #95979B;
+                color: white;
+                /* Color del texto */
+            }
 
-    </div>
+            .custom-header:not(.collapsed) {
+                background-color: #95979b93;
+                color: black;
+            }
 
+            .custom-header.collapsed {
+                background-color: #95979B;
+                color: white;
+            }
+        </style>
+    </div><br>
+    <div id="footer"></div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script>
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+            $("#NavSere").load("/sere/NavSere");
+        });
+    </script>
 </body>
 
 </html>

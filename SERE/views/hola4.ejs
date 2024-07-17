@@ -12,177 +12,409 @@
 </head>
 
 <body>
+    <div id="header"></div>
     <div class="container text-center">
-        <div class="row">
-            <div class="col-md-3 align-items-center d-flex justify-content-center">
-                <!-- Añadida la clase para centrar -->
-                <div class="list-group">
-                    <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
-                    <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
+        <%- include('partials/NavSere') %>
+            <div class="row">
+                <div class="col-md-3 align-items-center d-flex justify-content-center">
+                    <!-- Añadida la clase para centrar -->
+                    <div class="list-group">
+                        <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
+                        <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
                         list-group-item-action">Información Financiera y Legal</a>
-                    <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
-                        class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
-                    <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
-                        class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
+                        <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
+                            class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
+                        <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
+                            class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
+                    </div>
                 </div>
-            </div>
-            <div class="col-md-9">
-                <h2>SEGUIMIENTO Y GESTIÓN DEL CASO</h2>
-                <hr>
-                <%- include('partials/DatosDeudorGestionCaso') %>
-                <div id="lista-procesoJudicial" class="text-center">
-                    <!-- Aquí se mostrarán los importes -->
-                </div>
-                <script>
-                    function mostrarProceso() {
-                        fetch('/sere/ObtenerProcesoJudicial?IDCuenta=<%= idCuenta %>')
-                            .then(response => response.json())
-                            .then(data => {
-                                const listaProceso = document.getElementById('lista-procesoJudicial');
-                                listaProceso.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
-            
-                                if (data.resultados.length === 0) {
-                                    const mensaje = document.createElement('p');
-                                    mensaje.textContent = 'No hay procesos judiciales recuperados para esta cuenta aún.';
-                                    listaProceso.appendChild(mensaje);
-                                } else {
-                                    const accordion = document.createElement('div');
-                                    accordion.id = 'accordionExample';
-                                    accordion.classList.add('accordion');
-                                    accordion.classList.add('text-center');
-            
-                                    data.resultados.forEach((proceso, index) => {
-                                        const card = document.createElement('div');
-                                        card.classList.add('accordion-item');
-            
-                                        const cardHeader = document.createElement('h2');
-                                        cardHeader.classList.add('accordion-header');
-                                        cardHeader.id = `heading${index}`;
-                                        cardHeader.innerHTML = `
-                                            <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
-                                                Expediente: ${proceso.Expediente}
-                                            </button>
-                                        `;
-            
-                                        const collapse = document.createElement('div');
-                                        collapse.id = `collapse${index}`;
-                                        collapse.classList.add('accordion-collapse', 'collapse');
-                                        collapse.setAttribute('aria-labelledby', `heading${index}`);
-                                        collapse.setAttribute('data-bs-parent', '#accordionExample');
-            
-                                        const cardBody = document.createElement('div');
-                                        cardBody.classList.add('accordion-body');
-                                        cardBody.innerHTML = `
-                                            <table class="table table-info container">
-                                                <thead class="thead-dark">
-                                                    <tr>
-                                                        <th>RFC</th>
-                                                        <th>EXPEDIENTE</th>
-                                                        <th>JUZGADO</th>
-                                                        <th>JURISDICCIÓN</th>
-                                                        <th>FECHA DE REGISTRO DEL PROCESO JUDICIAL</th>
-                                                        <th>ESTADO DEL CASO</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>${proceso.RFCDespacho}</td>
-                                                        <td>${proceso.Expediente}</td>
-                                                        <td>${proceso.Juzgado}</td>
-                                                        <td>${proceso.Jurisdiccion}</td>
-                                                        <td>${proceso.FechaRegistro}</td>
-                                                        <td>${proceso.EstadoDelCaso}</td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                            <form id="form-${index}" enctype="multipart/form-data">
-                                                <div class="row">
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="FechaProximasAcciones-${index}">Fecha próximas acciones:</label>
-                                                            <input type="date" name="FechaProximasAcciones" id="FechaProximasAcciones-${index}" class="form-control text-center" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="ProximasAcciones-${index}">Próximas acciones:</label>
-                                                            <input type="text" name="ProximasAcciones" id="ProximasAcciones-${index}" class="form-control text-center" maxlength="100" required>
-                                                        </div>
-                                                    </div>
-                                                    
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="SoporteActuaciones-${index}">Soporte de actuaciones:</label>
-                                                            <input type="file" name="SoporteActuaciones" id="SoporteActuaciones-${index}" class="form-control text-center" maxlength="100" required>
-                                                        </div>
-                                                    </div>
-                                                    <div class="col-md-6">
-                                                        <div class="mb-3">
-                                                            <label for="DocumentosProcesales-${index}">Documentos procesales</label>
-                                                            <input type="file" name="DocumentosProcesales" id="DocumentosProcesales-${index}" class="form-control text-center" required>
-                                                        </div>
-                                                    </div>
+                <div class="col-md-9">
+                    <h2>SEGUIMIENTO Y GESTIÓN DEL CASO</h2>
+                    <hr>
+                    <%- include('partials/DatosDeudorGestionCaso') %>
+
+                    <div id="lista-procesoJudicial" class="text-center">
+                        <!-- Aquí se mostrarán los importes -->
+                    </div>
+                    <script>
+                        function mostrarProceso() {
+                            fetch('/sere/ObtenerProcesoJudicial?IDCuenta=<%= idCuenta %>')
+                                .then(response => response.json())
+                                .then(data => {
+                                    const listaProceso = document.getElementById('lista-procesoJudicial');
+                                    listaProceso.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+                    
+                                    if (data.resultados.length === 0) {
+                                        const mensaje = document.createElement('p');
+                                        mensaje.textContent = 'No hay procesos judiciales recuperados para esta cuenta aún.';
+                                        listaProceso.appendChild(mensaje);
+                                    } else {
+                                        const accordion = document.createElement('div');
+                                        accordion.id = 'accordionExample';
+                                        accordion.classList.add('accordion');
+                                        accordion.classList.add('text-center');
+                    
+                                        data.resultados.forEach((proceso, index) => {
+                                            const card = document.createElement('div');
+                                            card.classList.add('accordion-item');
+                    
+                                            const cardHeader = document.createElement('h2');
+                                            cardHeader.classList.add('accordion-header');
+                                            cardHeader.id = `heading${index}`;
+                                            cardHeader.innerHTML = `
+                                                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapse${index}" aria-expanded="false" aria-controls="collapse${index}">
+                                                    Expediente: ${proceso.Expediente}
+                                                </button>
+                                            `;
+                    
+                                            const collapse = document.createElement('div');
+                                            collapse.id = `collapse${index}`;
+                                            collapse.classList.add('accordion-collapse', 'collapse');
+                                            collapse.setAttribute('aria-labelledby', `heading${index}`);
+                                            collapse.setAttribute('data-bs-parent', '#accordionExample');
+                    
+                                            const cardBody = document.createElement('div');
+                                            cardBody.classList.add('accordion-body');
+                                            cardBody.innerHTML = `
+                                                <div class="table-responsive">
+                                                    <table class="table table-light container">
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th>RFC</th>
+                                                                <th>EXPEDIENTE</th>
+                                                                <th>JUZGADO</th>
+                                                                <th>JURISDICCIÓN</th>
+                                                                <th>FECHA DE REGISTRO DEL PROCESO JUDICIAL</th>
+                                                                <th>ESTADO DEL CASO</th>
+                                                            </tr>
+                                                        </thead>
+                                                        <tbody>
+                                                            <tr>
+                                                                <td>${proceso.RFCDespacho}</td>
+                                                                <td style="word-break: break-word; white-space: normal;">${proceso.Expediente}</td>
+                                                                <td style="word-break: break-word; white-space: normal;">${proceso.Juzgado}</td>
+                                                                <td style="word-break: break-word; white-space: normal;">${proceso.Jurisdiccion}</td>
+                                                                <td>${proceso.FechaRegistro}</td>
+                                                                <td>${proceso.EstadoDelCaso}</td>
+                                                            </tr>
+                                                        </tbody>
+                                                    </table>
                                                 </div>
-                                                <input type="hidden" name="RFC" value="${proceso.RFCDespacho}">
-                                                <input type="hidden" name="Id" value="${proceso.ID}">
-                                                <button type="submit" class="btn btn-primary">Guardar</button>
-                                            </form>
-                                        `;
-            
-                                        collapse.appendChild(cardBody);
-                                        card.appendChild(cardHeader);
-                                        card.appendChild(collapse);
-                                        accordion.appendChild(card);
-            
-                                        listaProceso.appendChild(accordion);
-            
-                                        document.getElementById(`form-${index}`).addEventListener('submit', function(event) {
-                                            event.preventDefault();
-                                            
-                                            const formData = new FormData(this);
-            
-                                            fetch('/sere/EstadoDelCaso?IDCuenta=<%= idCuenta %>', {
-                                                method: 'POST',
-                                                body: formData
-                                            })
-                                            .then(response => response.json())
-                                            .then(data => {
-                                                alert("Datos enviados correctamente");
-                                            })
-                                            .catch(error => {
-                                                console.error('Error:', error);
+                                                <form id="form-${index}" enctype="multipart/form-data">
+                                                    <div class="row">
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="FechaProximasAcciones-${index}">Fecha próximas acciones:</label>
+                                                                <input type="date" name="FechaProximasAcciones" id="FechaProximasAcciones-${index}" class="form-control text-center" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="ProximasAcciones-${index}">Próximas acciones:</label>
+                                                                <input type="text" name="ProximasAcciones" id="ProximasAcciones-${index}" class="form-control text-center" maxlength="100" required>
+                                                            </div>
+                                                        </div>
+                                                        <div class="col-md-6">
+                                                            <div class="mb-3">
+                                                                <label for="SoporteActuaciones-${index}">Soporte de actuaciones:</label>
+                                                                <input type="file" name="SoporteActuaciones" id="SoporteActuaciones-${index}" class="form-control text-center" maxlength="100" required>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <input type="hidden" name="RFC" value="${proceso.RFCDespacho}">
+                                                    <input type="hidden" name="Id" value="<%= idCuenta %>">
+                                                    <input type="hidden" name="IDProcesoJudicial" value="${proceso.IDProcesoJudicial}">
+                                                    <button type="submit" class="btn btn-primary">Guardar</button>
+                                                </form>
+
+                                                <!-- Contenedor para próximas acciones -->
+                                                <div id="acciones-${index}" class="mt-3"></div>
+
+                                                <!-- Formulario para documentos procesales -->
+                                                <form id="formDocumentos-${index}" enctype="multipart/form-data" class="mt-3">
+                                                    <div class="mb-3">
+                                                        <label for="DocumentosProcesales-${index}">Documentos procesales</label>
+                                                        <input type="file" name="DocumentosProcesales" id="DocumentosProcesales-${index}" class="form-control text-center" required>
+                                                    </div>
+                                                    <input type="hidden" name="RFC" value="${proceso.RFCDespacho}">
+                                                    <input type="hidden" name="Id" value="<%= idCuenta %>">
+                                                    <input type="hidden" name="IDProcesoJudicial" value="${proceso.IDProcesoJudicial}">
+                                                    <button type="submit" class="btn btn-primary">Subir Documentos</button>
+                                                </form>
+                                                
+                                                <!-- Contenedor para documentos procesales -->
+                                                <div id="documentos-${index}" class="mt-3"></div>
+                                            `;
+                    
+                                            collapse.appendChild(cardBody);
+                                            card.appendChild(cardHeader);
+                                            card.appendChild(collapse);
+                                            accordion.appendChild(card);
+                                            listaProceso.appendChild(accordion);
+                    
+                                            // Obtener y mostrar las próximas acciones
+                                            fetch(`/sere/ObtenerProximasAcciones?IDProcesoJudicial=${proceso.IDProcesoJudicial}`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    const proximasAcciones = data.proximasAcciones;
+                                                    const accionesTable = document.createElement('table');
+                                                    accionesTable.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'table-responsive');
+                    
+                                                    const accionesTableHead = `
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th>RFC</th>
+                                                                <th>Fecha Próxima Acción</th>
+                                                                <th>Próximas Acciones</th>
+                                                                <th>Soporte Actuaciones</th>
+                                                                <th>Fecha Registro</th>
+                                                            </tr>
+                                                        </thead>`;
+                                                    accionesTable.innerHTML = accionesTableHead;
+                    
+                                                    const accionesTableBody = document.createElement('tbody');
+                    
+                                                    proximasAcciones.forEach(accion => {
+                                                        const accionRow = document.createElement('tr');
+                                                        accionRow.innerHTML = `
+                                                            <td>${accion.RFCDespacho}</td>
+                                                            <td>${accion.FechaProximaAccion}</td>
+                                                            <td style="word-break: break-word; white-space: normal;">${accion.ProximasAcciones}<br> <a href="/sere/hola5?IDGestionCaso=${accion.IDGestionCaso}&IDCuenta=${accion.IDCuenta}">COMENTARIOS</a></td>
+                                                            <td><a href="${accion.SoporteActuaciones}" target="_blank"><i class="bi bi-file-earmark-post bi-lg"></i></a></td>
+                                                            <td>${accion.FechaRegistro}</td>
+                                                        `;
+                                                        accionesTableBody.appendChild(accionRow);
+                                                    });
+                    
+                                                    accionesTable.appendChild(accionesTableBody);
+                                                    document.getElementById(`acciones-${index}`).appendChild(accionesTable);
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error obteniendo próximas acciones:', error);
+                                                });
+                    
+                                            // Obtener y mostrar los documentos procesales
+                                            fetch(`/sere/ObtenerDocumentosProcesales?IDProcesoJudicial=${proceso.IDProcesoJudicial}`)
+                                                .then(response => response.json())
+                                                .then(data => {
+                                                    const documentosProcesales = data.documentosProcesales;
+                                                    const documentosTable = document.createElement('table');
+                                                    documentosTable.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'table-responsive');
+                    
+                                                    const documentosTableHead = `
+                                                        <thead class="thead-dark">
+                                                            <tr>
+                                                                <th>RFC</th>
+                                                                <th>Documento</th>
+                                                                <th>Fecha Subida</th>
+                                                            </tr>
+                                                        </thead>`;
+                                                    documentosTable.innerHTML = documentosTableHead;
+                    
+                                                    const documentosTableBody = document.createElement('tbody');
+                    
+                                                    documentosProcesales.forEach(doc => {
+                                                        const docRow = document.createElement('tr');
+                                                        docRow.innerHTML = `
+                                                            <td>${doc.RFCDespacho}</td>
+                                                            <td><a href="${doc.DocumentosProcesales}" target="_blank"><i class="bi bi-file-earmark-post bi-lg"></i></a></td>
+                                                            <td>${doc.FechaRegistro}</td>
+                                                        `;
+                                                        documentosTableBody.appendChild(docRow);
+                                                    });
+                    
+                                                    documentosTable.appendChild(documentosTableBody);
+                                                    document.getElementById(`documentos-${index}`).appendChild(documentosTable);
+                                                })
+                                                .catch(error => {
+                                                    console.error('Error obteniendo documentos procesales:', error);
+                                                });
+                    
+                                            // Evento submit para el formulario principal
+                                            document.getElementById(`form-${index}`).addEventListener('submit', function (event) {
+                                                event.preventDefault();
+                    
+                                                const formData = new FormData(this);
+                    
+                                                // Obtener la fecha y hora actual
+                                                const now = new Date();
+                                                const fecha = `${now.getFullYear()}-${('0' + (now.getMonth() + 1)).slice(-2)}-${('0' + now.getDate()).slice(-2)}`;
+                                                const hora = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}:${('0' + now.getSeconds()).slice(-2)}`;
+                                                const fechaHoraActual = `${fecha} ${hora}`;
+                    
+                                                // Agregar la fecha y hora actual al FormData
+                                                formData.append('fechaHoraActual', fechaHoraActual);
+                    
+                                                fetch('/sere/EstadoDelCaso?IDCuenta=<%= idCuenta %>', {
+                                                    method: 'POST',
+                                                    body: formData
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        mostrarProceso();
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                    });
+                                            });
+                    
+                                            // Evento submit para el formulario de documentos procesales
+                                            document.getElementById(`formDocumentos-${index}`).addEventListener('submit', function (event) {
+                                                event.preventDefault();
+                    
+                                                const formData = new FormData(this);
+                    
+                                                // Obtener la fecha y hora actual
+                                                const now = new Date();
+                                                const fecha = `${now.getFullYear()}-${('0' + (now.getMonth() + 1)).slice(-2)}-${('0' + now.getDate()).slice(-2)}`;
+                                                const hora = `${('0' + now.getHours()).slice(-2)}:${('0' + now.getMinutes()).slice(-2)}:${('0' + now.getSeconds()).slice(-2)}`;
+                                                const fechaHoraActual = `${fecha} ${hora}`;
+                    
+                                                // Agregar la fecha y hora actual al FormData
+                                                formData.append('fechaHoraActual', fechaHoraActual);
+                    
+                                                fetch('/sere/DocumentosProcesales?IDCuenta=<%= idCuenta %>', {
+                                                    method: 'POST',
+                                                    body: formData
+                                                })
+                                                    .then(response => response.json())
+                                                    .then(data => {
+                                                        mostrarProceso();
+                                                    })
+                                                    .catch(error => {
+                                                        console.error('Error:', error);
+                                                    });
                                             });
                                         });
-                                    });
-                                }
-                            });
-                    }
-                    mostrarProceso();
-                </script>
-                    <form action="#">
-                        <h2>Feedback del caso</h2>
-                        <hr>
-                        <div class="col-md-6">
-                            <div class="mb-3">
-                                <label for="RetroalimentacionCliente">Comentarios:</label>
-                                <textarea name="Retroalimentacion" id="Retroalimentacion" maxlength="450"
-                                    class="form-control" rows="6" required></textarea>
+                                    }
+                                });
+                        }
+                    
+                        mostrarProceso();
+                    </script>
+                    
+                        <form id="form-FeedbackCliente">
+                            <h2>Feedback del caso</h2>
+                            <hr>
+                            <div class="col-md-6">
+                                <div class="mb-3">
+                                    <label for="RetroalimentacionCliente">Comentarios:</label>
+                                    <textarea name="Retroalimentacion" id="Retroalimentacion" maxlength="450"
+                                        class="form-control" rows="6" required></textarea>
+                                </div>
                             </div>
+                            <input type="hidden" value="<%= RFC %>" name="RFC" id="RFC">
+                            <input type="hidden" name="Id" id="Id" value="<%= idCuenta %>">
+                            <input type="hidden" id="fechaHoraPagare" name="fechaHoraPagare">
+                            <button type="submit" class="btn btn-primary">Guardar</button>
+                        </form>
+
+                        <script>
+                            function getFormattedDate() {
+                                const now = new Date();
+                                const year = now.getFullYear();
+                                const month = String(now.getMonth() + 1).padStart(2, '0');
+                                const day = String(now.getDate()).padStart(2, '0');
+                                const hours = String(now.getHours()).padStart(2, '0');
+                                const minutes = String(now.getMinutes()).padStart(2, '0');
+                                const seconds = String(now.getSeconds()).padStart(2, '0');
+                                return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+                            }
+
+                            document.getElementById('form-FeedbackCliente').addEventListener('submit', function (event) {
+                                event.preventDefault();
+
+                                const RFC = document.getElementById('RFC').value;
+                                const idCuenta = document.getElementById('Id').value;
+                                const Retroalimentacion = document.getElementById('Retroalimentacion').value;
+                                const fechaHoraRegistro = getFormattedDate();
+
+                                fetch('/sere/Comentarios', {
+                                    method: 'POST',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({ RFC, idCuenta, Retroalimentacion, fechaHoraRegistro })
+                                })
+                                    .then(response => {
+                                        if (!response.ok) {
+                                            throw new Error('Error al enviar los datos');
+                                        }
+                                        return response.json(); // Si esperas una respuesta JSON del servidor
+                                    })
+                                    .then(data => {
+                                        console.log('Datos enviados correctamente:', data);
+                                        document.getElementById('Retroalimentacion').value = "";
+                                        mostrarComentarios();
+                                    })
+                                    .catch(error => {
+                                        console.error('Error al enviar los datos:', error);
+                                        // Aquí puedes manejar errores de envío
+                                    });
+                            });
+                        </script>
+                         <div id="lista-feedback" class="text-center">
+                            <!-- Aquí se mostrarán los importes -->
                         </div>
-                        <label for="RFC"></label>
-                        <input type="text" value="<%= RFC %>" name="RFC" id="RFC">
-                        <label for="Id"></label>
-                        <input type="number" name="Id" id="Id" value="<%= idCuenta %>">
-                        <label for="fechaHoraPagare"></label>
-                        <input type="datetime-local" id="fechaHoraPagare" name="fechaHoraPagare"><br>
-                        <button type="submit" class="btn btn-primary">Guardar</button>
-                    </form>
+                        <script>
+                            function mostrarComentarios() {
+                                fetch('/sere/ObtenerComentarios?IDCuenta=<%= idCuenta %>')
+                                    .then(response => response.json())
+                                    .then(data => {
+                                        const listaComentarios = document.getElementById('lista-feedback');
+                                        listaComentarios.innerHTML = ''; // Limpiar la lista antes de agregar nuevos elementos
+
+                                        if (data.resultados.length === 0) {
+                                            const mensaje = document.createElement('p');
+                                            mensaje.textContent = 'No hay datos recuperados para esta cuenta aún.';
+                                            listaComentarios.appendChild(mensaje);
+                                        } else {
+                                            const table = document.createElement('table');
+                                            table.classList.add('table', 'table-info', 'container');
+                                            table.innerHTML = `
+                                                    <thead class="thead-dark">
+                                                        <tr>
+                                                            <th>RFC</th>
+                                                            <th>RETROALIMENTACIÓN</th>
+                                                            <th>FECHA DE REGISTRO</th>
+                                                        </tr>
+                                                    </thead>
+                                                    <tbody>
+                                                `;
+
+                                            data.resultados.forEach(comentario => {
+                                                table.innerHTML += `
+                                                        <tr>
+                                                            <td>${comentario.RFCDespacho}</td>
+                                                            <td style=" word-break: break-word; white-space: normal;">${comentario.Retroalimentacion}</td>
+                                                            <td>${comentario.FechaRegistro}</td>
+                                                        </tr>
+                                                    `;
+                                            });
+                                            table.innerHTML += `
+                                                    </tbody>
+                                                `;
+
+                                            listaComentarios.appendChild(table);
+                                        }
+                                    });
+                            }
+                            mostrarComentarios();
+                        </script>
+                </div>
             </div>
-        </div>
     </div>
+    <div id="footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
         crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+        });
+    </script>
 </body>
 
 </html>
