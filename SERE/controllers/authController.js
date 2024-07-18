@@ -33,7 +33,7 @@ exports.getNombrePorRFC = (req, res) => {
       // console.log("Nombre encontrado:", results[0].Nombre); // Log para verificar el nombre encontrado
       res.json({ nombre: results[0].Nombre });
     } else {
-      console.log("No se encontró ningún nombre para el RFC:", rfc); // Log para el caso en que no se encuentre un nombre
+      // console.log("No se encontró ningún nombre para el RFC:", rfc); // Log para el caso en que no se encuentre un nombre
       res.json({ nombre: null });
     }
   });
@@ -41,7 +41,7 @@ exports.getNombrePorRFC = (req, res) => {
 
 // ALTA DE NUEVOS USUARIOS EN EL SISTEMA
 exports.altaUsuario = (req, res) => {
-  console.log(req.body);
+  // console.log(req.body);
   const { correo, nombre, contrasena, rfc, rfcAsociado } = req.body;
   // Verificar si el RFC ya tiene usuarios asociados
   const sqlCheckRFC = "SELECT COUNT(*) AS count FROM Usuarios WHERE RFC = ?";
@@ -74,7 +74,7 @@ exports.altaUsuario = (req, res) => {
             res.status(500).send("Error interno del servidor");
             return;
           }
-          console.log("Usuario insertado correctamente");
+          // console.log("Usuario insertado correctamente");
           res.status(200).send("Usuario insertado correctamente");
         }
       );

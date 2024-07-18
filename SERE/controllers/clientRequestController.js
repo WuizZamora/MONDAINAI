@@ -39,7 +39,7 @@ exports.AltaInfoEmpresaDespacho = (req, res) => {
 // FORMULARIO DE ALTA PARA INFORMACIÓN GENERAL DE LA CUENTA
 exports.guardarDatos = (req, res) => {
   const data = req.body;
-  console.log(data);
+  // console.log(data);
 
   const { RFC } = req.session.usuario; // Asegúrate de que este valor se obtiene de manera adecuada según tu aplicación
 
@@ -117,8 +117,8 @@ exports.guardarDatos = (req, res) => {
               .send("Error al guardar los datos del deudor");
           }
           // Si todo ha ido bien, enviar una respuesta de éxito con el IDCuenta
-          console.log("------------------------------------------");
-          console.log("ALTA INICIADA CON IDCUENTA:" + IDCuenta);
+          // console.log("------------------------------------------");
+          // console.log("ALTA INICIADA CON IDCUENTA:" + IDCuenta);
           res.status(200).json({
             message: "Datos guardados correctamente",
             IDCuenta: IDCuenta,
@@ -218,7 +218,7 @@ async function insertarContacto(IDCuenta, numeroContacto, body) {
       ObservacionesContacto || "N/A",
     ];
     await pool.query(sql, values);
-    console.log(`Contacto ${numeroContacto} insertado correctamente`);
+    // console.log(`Contacto ${numeroContacto} insertado correctamente`);
   }
 }
 
@@ -230,7 +230,7 @@ async function insertarMontoDeuda(IDCuenta, IDMonto, body) {
     const sql = `INSERT INTO Cliente_MontoDeDeuda (IDCuenta, IDMonto, DescripcionAdeudo, AdeudoMonto) VALUES (?, ?, ?, ?)`;
     const values = [IDCuenta, IDMonto, descripcionAdeudo, adeudoMonto];
     await pool.query(sql, values);
-    console.log(`Monto de deuda ${IDMonto} insertado correctamente`);
+    // console.log(`Monto de deuda ${IDMonto} insertado correctamente`);
   }
 }
 
@@ -296,7 +296,7 @@ async function insertarVariablesRiesgo(IDCuenta, body, files) {
   ];
 
   await pool.query(sql, values);
-  console.log("Datos de variables de riesgo insertados correctamente");
+  // console.log("Datos de variables de riesgo insertados correctamente");
 }
 
 // FORMULARIO PARA INGRESAR EL ESTADO DE CUENTA
@@ -369,7 +369,7 @@ exports.guardarEdoDeCuenta = [
           }
           return;
         }
-        console.log("Datos insertados correctamente en la base de datos");
+        // console.log("Datos insertados correctamente en la base de datos");
         res.status(204).end(); // Enviar una respuesta vacía con el código 204 al cliente
       });
     }
@@ -380,7 +380,7 @@ exports.guardarEdoDeCuenta = [
 exports.guardarHistorialPagos = (req, res) => {
   const IDCuenta = req.session.IDCuenta;
   const formData = req.body;
-  console.log(formData);
+  // console.log(formData);
   // Itera sobre los datos del formulario y los inserta en la base de datos
   Object.keys(formData).forEach((key) => {
     // Verifica que el nombre de la clave sea válido (corresponde a un campo del formulario)
@@ -500,7 +500,7 @@ exports.guardarDocumentosDescripcion = [
               );
             });
 
-            console.log("Datos insertados correctamente en la base de datos");
+            // console.log("Datos insertados correctamente en la base de datos");
             res.status(204).end();
           }
         );
@@ -556,7 +556,7 @@ exports.ValidarImportes = (req, res) => {
 // COMENTARIOS GENERALES POR CASO (UTILIZADOS POR CLIENTE Y DESPACHO)
 exports.Comentarios = (req, res) => {
   const { RFC, idCuenta, Retroalimentacion, fechaHoraRegistro } = req.body;
-  console.log(fechaHoraRegistro);
+  // console.log(fechaHoraRegistro);
   // Consulta SQL para insertar datos en la tabla Despacho_Retroalimentacion
   const insertQuery = `INSERT INTO Cliente_Retroalimentacion (IDCuenta, RFCDespacho, Retroalimentacion, FechaRegistro)
                            VALUES (?, ?, ?, ?)`;
@@ -572,7 +572,7 @@ exports.Comentarios = (req, res) => {
         .status(500)
         .json({ message: "Error al insertar datos en la base de datos" });
     } else {
-      console.log("Datos insertados correctamente");
+      // console.log("Datos insertados correctamente");
       res.status(200).json({
         message:
           "Datos recibidos y almacenados correctamente en la base de datos",

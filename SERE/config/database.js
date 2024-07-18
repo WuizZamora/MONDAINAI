@@ -17,7 +17,7 @@ pool.getConnection((err, connection) => {
   }
 
   if (connection) {
-    console.log('Conexión a la base de datos establecida en SECIE');
+    // console.log('Conexión a la base de datos establecida en SECIE');
     connection.release(); // Liberar la conexión después de usarla
   }
 });

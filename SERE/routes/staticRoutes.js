@@ -2,12 +2,13 @@ const express = require("express");
 const path = require("path");
 
 const app = express();
+const router = express.Router();
 
 // Define la ruta a los archivos estáticos del frontend
-const frontendPath = path.join(__dirname, "..", "public");
+const frontendPath = path.join(__dirname, "..", "views");
 
 // Middleware para servir archivos estáticos
-app.use(express.static(frontendPath));
+router.use(express.static(frontendPath));
 
 // Middleware para verificar si el usuario ha iniciado sesión
 const verificarAutenticacion = (req, res, next) => {
@@ -21,9 +22,9 @@ const verificarAutenticacion = (req, res, next) => {
 };
 
 // Ruta para cerrar sesión
-app.get("/logout", (req, res) => {
+router.get("/logout", (req, res) => {
   // Eliminar la sesión del usuario
-  req.session.destroy(err => {
+  req.session.destroy((err) => {
     if (err) {
       console.error("Error al cerrar sesión:", err);
       res.status(500).send("Error interno del servidor");
@@ -35,50 +36,55 @@ app.get("/logout", (req, res) => {
 });
 
 // Rutas que requieren autenticación
-app.get("/clientes", verificarAutenticacion, (req, res) => {
+router.get("/clientes", verificarAutenticacion, (req, res) => {
   res.sendFile(path.join(frontendPath, "html", "Clientes", "Clientes.html"));
 });
 
-app.get("/Contingencias", verificarAutenticacion, (req, res) => {
+router.get("/Contingencias", verificarAutenticacion, (req, res) => {
   res.sendFile(
     path.join(frontendPath, "html", "Clientes", "Contingencias.html")
   );
 });
 
-app.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
+router.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
   res.sendFile(
     path.join(frontendPath, "html", "Clientes", "Alta-InfoGeneral.html")
   );
 });
 
-app.get("/AltaContactosVariablesDeRiesgo", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(frontendPath,"html","Clientes","ejemplo.html")
-  );
-});
+router.get(
+  "/AltaContactosVariablesDeRiesgo",
+  verificarAutenticacion,
+  (req, res) => {
+    res.sendFile(path.join(frontendPath, "html", "Clientes", "ejemplo.html"));
+  }
+);
 
-app.get("/AltaEdoCuenta", verificarAutenticacion, (req, res) => {
+router.get("/AltaEdoCuenta", verificarAutenticacion, (req, res) => {
   res.sendFile(
     path.join(frontendPath, "html", "Clientes", "Alta-EdoCuenta.html")
   );
 });
 
-app.get("/AltaHistorialPagos", verificarAutenticacion, (req, res) => {
+router.get("/AltaHistorialPagos", verificarAutenticacion, (req, res) => {
   res.sendFile(
     path.join(frontendPath, "html", "Clientes", "Alta-HistorialDePagos.html")
   );
 });
 
-app.get("/AltaDescripcionDocumentos", verificarAutenticacion, (req, res) => {
+router.get("/AltaDescripcionDocumentos", verificarAutenticacion, (req, res) => {
   res.sendFile(
-    path.join(frontendPath, "html", "Clientes", "Alta-DescripcionDocumentos.html")
+    path.join(
+      frontendPath,
+      "html",
+      "Clientes",
+      "Alta-DescripcionDocumentos.html"
+    )
   );
 });
 
-app.get("/AltaUsuario", (req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "html", "Alta-Usuarios.html")
-  );
+router.get("/AltaUsuario", (req, res) => {
+  res.sendFile(path.join(frontendPath, "html", "Alta-Usuarios.html"));
 });
 
 // Ruta para servir la página principal
@@ -87,8 +93,8 @@ app.get("/AltaUsuario", (req, res) => {
 // });
 
 // Ruta para servir el formulario de inicio de sesión
-app.get("/login", (req, res) => {
+router.get("/login", (req, res) => {
   res.sendFile(path.join(frontendPath, "html", "login.html"));
 });
 
-module.exports = app;
+module.exports = router;

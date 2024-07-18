@@ -2,12 +2,18 @@ require('dotenv').config({ path: __dirname + '/.env' });
 const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
-const database = require("./config/database"); // Importa la conexión a la base de datos
-const staticRoutes = require("./routes/staticRoutes"); // Importa las rutas estáticas
-const formRoutes = require("./routes/formRoutes"); // Importa las rutas de manejo de formularios
-const getRoutes = require("./routes/getRoutes")
+const path = require("path");
+const staticRoutes = require("./routes/staticRoutes");
+const formRoutes = require("./routes/formRoutes");
+const getRoutes = require("./routes/getRoutes");
 
 const app = express();
+
+// Establecer la carpeta 'views' para las plantillas
+app.set("views", path.join(__dirname, "views"));
+
+// Configurar EJS como motor de plantillas
+app.set("view engine", "ejs");
 
 // Middleware para permitir CORS
 app.use(cors());
@@ -21,6 +27,9 @@ app.use(
   })
 );
 
+// Middleware para servir archivos estáticos
+const frontendPath = path.join(__dirname, 'public'); // Ajusta esto según la estructura de tu proyecto
+app.use(express.static(frontendPath));
 
 // Middleware para las rutas estáticas
 app.use(staticRoutes);
@@ -28,7 +37,7 @@ app.use(staticRoutes);
 // Middleware para las rutas de manejo de formularios
 app.use(formRoutes);
 
-//GET
+// Middleware para las rutas GET
 app.use(getRoutes);
 
 module.exports = app; // Exportar la aplicación Express

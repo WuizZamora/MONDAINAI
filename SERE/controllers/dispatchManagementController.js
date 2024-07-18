@@ -59,11 +59,11 @@ exports.cotizacion = [
           if (error) {
             throw error;
           }
-          console.log("Ruta de cotización guardada en la base de datos.");
+          // console.log("Ruta de cotización guardada en la base de datos.");
         }
       );
 
-      console.log(JSON.stringify(datos) + " " + rutaCotizacion);
+      // console.log(JSON.stringify(datos) + " " + rutaCotizacion);
       // Aquí puedes manejar los archivos como desees
       res.status(200).json({ message: "Files uploaded successfully" });
     } catch (error) {
@@ -271,7 +271,7 @@ exports.Plazos = (req, res) => {
 // RETROALIMENTA LA GARANTÍA PROPORCIONADA EN EL ALTA
 exports.Garantia = (req, res) => {
   const data = req.body;
-  console.log(data);
+  // console.log(data);
 
   const { ID, RFC, TipoGarantia, Documento, fecha, Retroalimentacion } = data;
 
@@ -527,7 +527,7 @@ exports.EstadoDelCaso = [
   },
 ];
 
-//AÑADE DOCUMENTOS PROCESALES 
+//AÑADE DOCUMENTOS PROCESALES
 exports.DocumentosProcesales = [
   (req, res, next) => {
     const IDCuenta = req.query.IDCuenta;
