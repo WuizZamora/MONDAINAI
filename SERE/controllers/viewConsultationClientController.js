@@ -1,6 +1,19 @@
 const pool = require("../config/database");
 const moment = require("moment");
 
+exports.renderObtenerCotizacion = (req, res) => {
+  const { IDPerfil } = req.session.usuario;
+  const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
+  const query = "SELECT * FROM Despacho_Cotizacion WHERE IDCuenta = ?"; // Consulta SQL modificada
+  pool.query(query, [IDCuenta], (error, results) => {
+    if (error) {
+      console.error("Error ejecutando la consulta:", error.stack);
+      return res.status(500).send("Error en el servidor");
+    }
+    res.json({ resultados: results, IDPerfil: IDPerfil });
+  });
+};
+
 exports.renderObtenerGastosHonorarios = (req, res) => {
   const { IDPerfil } = req.session.usuario;
   const IDCuenta = req.query.IDCuenta; // Obtener el ID de cuenta de la solicitud
@@ -23,6 +36,15 @@ exports.renderObtenerImportes = (req, res) => {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
     }
+    // Formatear las fechas
+    results = results.map((row) => {
+      return {
+        ...row,
+        FechaImporteRecuperado: moment(row.FechaImporteRecuperado).format(
+          "YYYY-MM-DD HH:mm:ss"
+        )
+      };
+    });
     res.json({ resultados: results, IDPerfil: IDPerfil });
   });
 };
@@ -315,7 +337,7 @@ exports.renderObtenerIncobrabilidad = (req, res) => {
     results = results.map((row) => {
       return {
         ...row,
-        FechaRegistro: moment(row.FechaRegistroPlazo).format(
+        FechaRegistro: moment(row.FechaRegistro).format(
           "YYYY-MM-DD HH:mm:ss"
         ),
       };

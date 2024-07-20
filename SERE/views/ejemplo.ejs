@@ -14,7 +14,7 @@
     <div id="header"></div>
     <div class="container text-center">
         <%- include('partials/NavSere') %>
-            <h2>Listado de Casos</h2>
+            <h2>Listado de Casos</h2> <%= IDPerfil %> 
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="input-group mb-3">
@@ -32,12 +32,13 @@
                         <th>Fecha de Asignación</th>
                         <th>Razon Social</th>
                         <th>Tipo de Caso</th>
+                        <% if (IDPerfil === 'AD') { %>
                         <th>Abogado Responsable</th>
                         <th>Abogado Asistente</th>
                         <th>Estado de Cuenta</th>
-                        <th>Fecha de Cierre</th>
                         <th>Acciones</th>
-
+                        <% } %>
+                        <th>Fecha de Cierre</th>
                     </tr>
                 </thead>
                 <tbody id="clienteTableBody">
@@ -57,6 +58,7 @@
                             <td>
                                 <%= dato.TipoDeCaso %>
                             </td>
+                            <% if (IDPerfil === 'AD') { %>
                             <td>
                                 <select class="form-select abogado-responsable">
                                     <option selected disabled value=""></option>
@@ -85,11 +87,13 @@
                                     <option value="cerrado">Cerrado</option>
                                 </select>
                             </td>
-                            <td class="fecha-cierre"></td>
                             <td>
                                 <button class="btn btn-danger btn-asignar"
-                                    data-id="<%= dato.IDCuenta %>">Asignar</button>
+                                data-id="<%= dato.IDCuenta %>">Asignar</button>
                             </td>
+                            <% } %>
+
+                            <td class="fecha-cierre"></td>
                         </tr>
                         <% }); %>
                 </tbody>

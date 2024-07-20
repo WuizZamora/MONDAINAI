@@ -6,6 +6,15 @@ exports.renderIndex = (req, res) => {
   res.render("index", { Nombre });
 };
 
+exports.renderClientes = (req, res) => {
+  res.render("Clientes");
+};
+
+exports.renderContingencias = (req, res) => {
+  const { IDPerfil } = req.session.usuario;
+  res.render("Contingencias", { IDPerfil });
+};
+
 exports.renderAsignarRol = (req, res) => {
   try {
     const { RFC, RFCAsociado, IDPerfil } = req.session.usuario;
@@ -44,40 +53,149 @@ exports.renderNavSere = (req, res) => {
   res.render("partials/NavSere");
 };
 
+// VAMOS A DARLE
 exports.renderEjemplo = (req, res) => {
-  const { RFCAsociado } = req.session.usuario;
+  const { RFCAsociado, IDPerfil, RFC } = req.session.usuario;
 
-  // Consultas SQL
-  const queryDatos = `
+  let queryDatos;
+  let queryRFCAsociados = null;
+  let queryParams = [];
+
+  if (IDPerfil === 'AD') {
+    // Consultas para el perfil AD
+    queryDatos = `
+        SELECT 
+          c.IDCuenta, 
+          c.FechaDeAsignacion, 
+          c.TipoDeCaso,
+          d.RazonSocial
+        FROM 
+          Cliente_InfGeneralCuenta c
+        JOIN 
+          Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
+        WHERE 
+          c.RFCDespacho = ? AND EXISTS (
+            SELECT 1
+            FROM Despacho_Cotizacion dc
+            WHERE dc.IDCuenta = c.IDCuenta
+              AND dc.IDCotizacion = (
+                SELECT MAX(dc2.IDCotizacion)
+                FROM Despacho_Cotizacion dc2
+                WHERE dc2.IDCuenta = c.IDCuenta
+              )
+              AND dc.Validacion = TRUE
+          )
+      `;
+
+    queryRFCAsociados = `
+        SELECT RFC FROM Usuarios WHERE RFCAsociado = ?
+      `;
+
+    queryParams = [RFCAsociado];
+  } else if (!IDPerfil) {
+    // Consulta alternativa cuando IDPerfil no existe
+    queryDatos = `
+      WITH UltimosCasos AS (
+          SELECT IDCuenta, MAX(IDAsignacionDeCaso) AS UltimoIDAsignacionDeCaso
+          FROM Despacho_AsignacionDeCaso
+          GROUP BY IDCuenta
+      ),
+      CasosConRFC AS (
+          SELECT a.IDCuenta, a.IDAsignacionDeCaso
+          FROM Despacho_AsignacionDeCaso a
+          JOIN UltimosCasos u ON a.IDCuenta = u.IDCuenta AND a.IDAsignacionDeCaso = u.UltimoIDAsignacionDeCaso
+          WHERE a.AbogadoResponsable = 'ZAPL0108266K6' OR a.AbogadoAsistente = 'ZAPL0108266K6'
+      )
       SELECT 
-        Cliente_InfGeneralCuenta.IDCuenta, 
-        Cliente_InfGeneralCuenta.FechaDeAsignacion, 
-        Cliente_InfGeneralCuenta.TipoDeCaso,
-        Cliente_InfDeudor.RazonSocial
+        c.IDCuenta, 
+        c.FechaDeAsignacion, 
+        c.TipoDeCaso,
+        d.RazonSocial
       FROM 
-        Cliente_InfGeneralCuenta
+        Cliente_InfGeneralCuenta c
       JOIN 
-        Cliente_InfDeudor ON Cliente_InfGeneralCuenta.IDCuenta = Cliente_InfDeudor.IDCuenta
+        Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
       WHERE 
-        Cliente_InfGeneralCuenta.RFCDespacho = ?
+        c.IDCuenta IN (
+          SELECT IDCuenta
+          FROM CasosConRFC
+        )
+        AND EXISTS (
+          SELECT 1
+          FROM Despacho_Cotizacion dc
+          WHERE dc.IDCuenta = c.IDCuenta
+            AND dc.IDCotizacion = (
+              SELECT MAX(dc2.IDCotizacion)
+              FROM Despacho_Cotizacion dc2
+              WHERE dc2.IDCuenta = c.IDCuenta
+            )
+            AND dc.Validacion = TRUE
+        )
     `;
+    queryParams = [];
+  } else {
+    // Consultas para otros perfiles
+    queryDatos = `
+        SELECT 
+          c.IDCuenta, 
+          c.FechaDeAsignacion, 
+          c.TipoDeCaso,
+          d.RazonSocial
+        FROM 
+          Cliente_InfGeneralCuenta c
+        JOIN 
+          Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
+        WHERE 
+          c.RFCUsuario = ? AND EXISTS (
+            SELECT 1
+            FROM Despacho_Cotizacion dc
+            WHERE dc.IDCuenta = c.IDCuenta
+              AND dc.IDCotizacion = (
+                SELECT MAX(dc2.IDCotizacion)
+                FROM Despacho_Cotizacion dc2
+                WHERE dc2.IDCuenta = c.IDCuenta
+              )
+              AND dc.Validacion = TRUE
+          )
+      `;
 
-  const queryRFCAsociados = `
-      SELECT RFC FROM Usuarios WHERE RFCAsociado = ?
-    `;
+    queryParams = [RFC];
+  }
 
-  pool.query(queryDatos, [RFCAsociado], (error, results) => {
+  // Ejecutar la consulta de datos
+  pool.query(queryDatos, queryParams, (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta de datos:", error);
       return res.status(500).send("Error interno del servidor");
     }
 
-    pool.query(queryRFCAsociados, [RFCAsociado], (error, rfcResults) => {
-      if (error) {
-        console.error("Error ejecutando la consulta de RFC asociados:", error);
-        return res.status(500).send("Error interno del servidor");
-      }
+    // Si el perfil es AD, ejecutar también la consulta de RFC asociados
+    if (queryRFCAsociados) {
+      pool.query(queryRFCAsociados, [RFCAsociado], (error, rfcResults) => {
+        if (error) {
+          console.error("Error ejecutando la consulta de RFC asociados:", error);
+          return res.status(500).send("Error interno del servidor");
+        }
 
+        const formattedResults = results.map((result) => {
+          const formattedDate = new Date(
+            result.FechaDeAsignacion
+          ).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          });
+          return {
+            ...result,
+            FechaDeAsignacion: formattedDate,
+          };
+        });
+
+        const rfcAsociados = rfcResults.map((row) => row.RFC);
+
+        res.render("ejemplo", { datos: formattedResults, rfcAsociados, IDPerfil });
+      });
+    } else {
       const formattedResults = results.map((result) => {
         const formattedDate = new Date(
           result.FechaDeAsignacion
@@ -92,32 +210,65 @@ exports.renderEjemplo = (req, res) => {
         };
       });
 
-      const rfcAsociados = rfcResults.map((row) => row.RFC);
-
-      res.render("ejemplo", { datos: formattedResults, rfcAsociados });
-    });
+      res.render("ejemplo", { datos: formattedResults, rfcAsociados: [], IDPerfil });
+    }
   });
 };
 
 // Ruta para obtener los datos
 exports.renderDatosDelDeudor = (req, res) => {
-  const query = `
-       SELECT 
+  const { RFCAsociado, IDPerfil } = req.session.usuario;
+  let query = `
+    SELECT 
       Cliente_InfGeneralCuenta.IDCuenta AS IDCuenta,
       Cliente_InfGeneralCuenta.NoClientePadre AS NumeroClientePadre,
       Cliente_InfGeneralCuenta.NoClienteHijo AS NumeroClienteHijo,
       Cliente_InfDeudor.Rfc AS RFC,
-      Cliente_InfDeudor.RazonSocial AS RazonSocial
-  FROM 
+      Cliente_InfDeudor.RazonSocial AS RazonSocial,
+      CASE
+        WHEN (
+          SELECT Validacion 
+          FROM Despacho_Cotizacion 
+          WHERE Despacho_Cotizacion.IDCuenta = Cliente_InfGeneralCuenta.IDCuenta
+          ORDER BY Despacho_Cotizacion.IDCotizacion DESC
+          LIMIT 1
+        ) = TRUE THEN 'validada'
+        WHEN EXISTS (
+          SELECT 1 
+          FROM Despacho_Cotizacion 
+          WHERE Despacho_Cotizacion.IDCuenta = Cliente_InfGeneralCuenta.IDCuenta
+        ) THEN 'no_validada'
+        ELSE 'no_cotizacion'
+      END AS EstadoCotizacion
+    FROM 
       Cliente_InfGeneralCuenta
-  JOIN 
-      Cliente_InfDeudor ON Cliente_InfGeneralCuenta.IDCuenta = Cliente_InfDeudor.IDCuenta;
-  
-    `;
+    JOIN 
+      Cliente_InfDeudor ON Cliente_InfGeneralCuenta.IDCuenta = Cliente_InfDeudor.IDCuenta
+  `;
 
-  pool.query(query, (err, results) => {
-    if (err) throw err;
-    res.render("partials/DatosDelDeudor", { data: results });
+  if (IDPerfil === "AD" || IDPerfil === "AM") {
+    query += `WHERE Cliente_InfGeneralCuenta.RFCDespacho = ?;`;
+  } else {
+    query += `WHERE Cliente_InfGeneralCuenta.RFCUsuario = ?;`;
+  }
+
+  const parametro =
+    IDPerfil === "AD" || IDPerfil === "AM"
+      ? RFCAsociado
+      : req.session.usuario.RFC;
+
+  pool.query(query, [parametro], (error, results) => {
+    if (error) {
+      console.error("Error ejecutando la consulta de datos:", error);
+      return res.status(500).send("Error interno del servidor");
+    }
+
+    const formattedResults = results.map((result) => ({
+      ...result,
+      EstadoCotizacion: result.EstadoCotizacion,
+    }));
+
+    res.render("partials/DatosDelDeudor", { datos: formattedResults, IDPerfil });
   });
 };
 
@@ -372,10 +523,11 @@ exports.renderdatos = (req, res) => {
 
 // Endpoint para obtener datos
 exports.renderdatos1 = (req, res) => {
-  const id = req.query.IDCuenta;
+  const { RFC, IDPerfil } = req.session.usuario;
+  const idCuenta = req.query.IDCuenta;
 
   const query = "SELECT * FROM Cliente_InfGeneralCuenta WHERE IDCuenta = ?";
-  pool.query(query, [id], (err, results) => {
+  pool.query(query, [idCuenta], (err, results) => {
     if (err) {
       console.error("Error ejecutando la consulta:", err);
       res.status(500).send("Error en la consulta a la base de datos");
@@ -385,7 +537,7 @@ exports.renderdatos1 = (req, res) => {
     // console.log("Resultados de la consulta:", results); // Verificar los resultados
 
     // Renderiza la vista EJS y pasa los resultados
-    res.render("datos1", { data: results });
+    res.render("datos1", { idCuenta, RFC, IDPerfil, data: results });
   });
 };
 
@@ -422,6 +574,24 @@ const obtenerDatosDeudor = (req, res, next) => {
   });
 };
 
+const obtenerAbogados = async (idCuenta) => {
+  const queryAbogados = `
+    SELECT AbogadoResponsable, AbogadoAsistente
+    FROM Despacho_AsignacionDeCaso
+    WHERE IDCuenta = ?
+  `;
+
+  return new Promise((resolve, reject) => {
+    pool.query(queryAbogados, [idCuenta], (error, results) => {
+      if (error) {
+        reject(error);
+      } else {
+        resolve(results);
+      }
+    });
+  });
+};
+
 exports.renderhola2 = [
   obtenerDatosDeudor,
   async (req, res) => {
@@ -452,7 +622,7 @@ exports.renderhola2 = [
         WHERE IDCuenta = ?
       `;
 
-      const [resultsDeuda, resultsGarantia, resultsTipoCaso] =
+      const [resultsDeuda, resultsGarantia, resultsTipoCaso, resultsAbogados] =
         await Promise.all([
           new Promise((resolve, reject) => {
             pool.query(queryDeuda, [idCuenta], (error, results) => {
@@ -481,6 +651,7 @@ exports.renderhola2 = [
               }
             });
           }),
+          obtenerAbogados(idCuenta), // Llamada a la función para obtener abogados
         ]);
 
       const totalDeuda =
@@ -500,6 +671,14 @@ exports.renderhola2 = [
         TipoDeCaso = resultsTipoCaso[0].TipoDeCaso;
       }
 
+      let AbogadoResponsable = "";
+      let AbogadoAsistente = "";
+
+      if (resultsAbogados.length > 0) {
+        AbogadoResponsable = resultsAbogados[0].AbogadoResponsable;
+        AbogadoAsistente = resultsAbogados[0].AbogadoAsistente;
+      }
+
       res.render("hola2", {
         idCuenta,
         totalDeuda,
@@ -509,6 +688,8 @@ exports.renderhola2 = [
         TipoGarantia,
         RutaDocumentacionLegal,
         TipoDeCaso,
+        AbogadoResponsable, // Pasar el ID del abogado responsable al frontend
+        AbogadoAsistente, // Pasar el ID del abogado asistente al frontend
       });
     } catch (error) {
       console.error("Error executing query:", error);
@@ -519,50 +700,104 @@ exports.renderhola2 = [
 
 exports.renderhola3 = [
   obtenerDatosDeudor,
-  (req, res) => {
-    const { RFC, IDPerfil } = req.session.usuario;
-    const idCuenta = req.query.IDCuenta;
-    if (!idCuenta) {
-      res.status(400).send("IDCuenta es requerido");
-      return;
-    }
-    const queryGarantia = `
-      SELECT TipoGarantia 
-      FROM Cliente_VariablesDeRiesgo 
-      WHERE IDCuenta = ?
-    `;
-    pool.query(queryGarantia, [idCuenta], (error, resultsGarantia) => {
-      if (error) {
-        console.error("Error executing query:", error);
-        res.status(500).send("Error en el servidor");
+  async (req, res) => {
+    try {
+      const { RFC, IDPerfil } = req.session.usuario;
+      const idCuenta = req.query.IDCuenta;
+
+      if (!idCuenta) {
+        res.status(400).send("IDCuenta es requerido");
         return;
       }
 
+      const queryGarantia = `
+        SELECT TipoGarantia 
+        FROM Cliente_VariablesDeRiesgo 
+        WHERE IDCuenta = ?
+      `;
+
+      // Obtener los datos de garantía
+      const resultsGarantia = await new Promise((resolve, reject) => {
+        pool.query(queryGarantia, [idCuenta], (error, results) => {
+          if (error) {
+            reject(error);
+          } else {
+            resolve(results);
+          }
+        });
+      });
+
+      // Obtener los datos de los abogados
+      const resultsAbogados = await obtenerAbogados(idCuenta);
+
       // Manejo de caso cuando no se encuentran datos de garantía
       let TipoGarantia = "";
-
       if (resultsGarantia.length > 0) {
         TipoGarantia = resultsGarantia[0].TipoGarantia;
       }
 
-      res.render("hola3", { idCuenta, RFC, IDPerfil, TipoGarantia });
-    });
+      // Manejo de caso cuando no se encuentran datos de abogados
+      let AbogadoResponsable = "";
+      let AbogadoAsistente = "";
+
+      if (resultsAbogados.length > 0) {
+        AbogadoResponsable = resultsAbogados[0].AbogadoResponsable;
+        AbogadoAsistente = resultsAbogados[0].AbogadoAsistente;
+      }
+
+      res.render("hola3", {
+        idCuenta,
+        RFC,
+        IDPerfil,
+        TipoGarantia,
+        AbogadoResponsable, // Pasar el nombre del abogado responsable al frontend
+        AbogadoAsistente, // Pasar el nombre del abogado asistente al frontend
+      });
+    } catch (error) {
+      console.error("Error executing query:", error);
+      res.status(500).send("Error en el servidor");
+    }
   },
 ];
 
 exports.renderhola4 = [
   obtenerDatosDeudor,
-  (req, res) => {
-    const { RFC, IDPerfil } = req.session.usuario;
-    const idCuenta = req.query.IDCuenta;
-    if (!idCuenta) {
-      res.status(400).send("IDCuenta es requerido");
-      return;
-    }
+  async (req, res) => {
+    try {
+      const { RFC, IDPerfil } = req.session.usuario;
+      const idCuenta = req.query.IDCuenta;
 
-    res.render("hola4", { idCuenta, RFC, IDPerfil });
+      if (!idCuenta) {
+        res.status(400).send("IDCuenta es requerido");
+        return;
+      }
+
+      // Obtener los datos de los abogados
+      const resultsAbogados = await obtenerAbogados(idCuenta);
+
+      // Manejo de caso cuando no se encuentran datos de abogados
+      let AbogadoResponsable = "";
+      let AbogadoAsistente = "";
+
+      if (resultsAbogados.length > 0) {
+        AbogadoResponsable = resultsAbogados[0].AbogadoResponsable;
+        AbogadoAsistente = resultsAbogados[0].AbogadoAsistente;
+      }
+
+      res.render("hola4", {
+        idCuenta,
+        RFC,
+        IDPerfil,
+        AbogadoResponsable, // Pasar el nombre del abogado responsable al frontend
+        AbogadoAsistente, // Pasar el nombre del abogado asistente al frontend
+      });
+    } catch (error) {
+      console.error("Error executing query:", error);
+      res.status(500).send("Error en el servidor");
+    }
   },
 ];
+
 
 exports.renderhola5 = [
   obtenerDatosDeudor,

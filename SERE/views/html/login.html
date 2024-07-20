@@ -67,9 +67,15 @@
                 </div>
             </div>
             <div class="col-md-6 mb-4">
-                <form id="loginForm" action="/sere/login" method="post"><br>
+                <form id="loginForm"><br>
                     <h1 class="text-center">MONDAINAI SERE</h1>
                     <h4 class="h3 mb-3 fw-normal text-center">Inicio de Sesión</h4>
+                    <!-- Agrega mensaje de alerta -->
+                    <div id="error-message" class="alert alert-danger d-none" role="alert">
+                        <strong>
+                            Correo o contraseña incorrectos
+                        </strong>
+                    </div>
                     <div class="mb-3">
                         <div class="form-floating">
                             <input type="text" id="correo" name="correo" class="form-control" autocomplete="off"
@@ -92,7 +98,7 @@
                     <button type="submit" class="btn btn-danger">Iniciar sesión</button><br><br>
                     <hr>
                     <p>Crear cuenta nueva</p>
-                    <a href="/sere/AltaUsuario" class="btn btn-secondary">Registrate</a>
+                    <a href="/sere/AltaUsuario" class="btn btn-secondary">Registrate</a><br>
                 </form>
             </div>
         </div>
@@ -126,12 +132,49 @@
         document.getElementById('correo').addEventListener('blur', function (event) {
             this.value = this.value.trim(); // Elimina los espacios en blanco al inicio y al final cuando el usuario sale del campo de texto
         });
+
+        document.getElementById('loginForm').addEventListener('submit', function (event) {
+            event.preventDefault(); // Prevent the form from submitting the traditional way
+
+            const formData = new FormData(this);
+            const data = {
+                correo: formData.get('correo'),
+                contrasena: formData.get('contrasena')
+            };
+
+            fetch('/sere/login', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+                .then(response => response.json().then(data => ({ status: response.status, body: data })))
+                .then(({ status, body }) => {
+                    if (status !== 200) {
+                        if (status === 401) {
+                            document.getElementById('error-message').classList.remove('d-none');
+                            document.getElementById('error-message').textContent = body.message;
+                        } else {
+                            alert(body.message || 'Error interno del servidor');
+                        }
+                    } else {
+                        window.location.href = '/sere/';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    alert('Error interno del servidor');
+                });
+        });
+
+
         $(function () {
             $("#header").load("/header");
             $("#footer").load("/footer");
         });
     </script>
+    <div id="footer"></div>
 </body>
-<div id="footer"></div>
 
 </html>

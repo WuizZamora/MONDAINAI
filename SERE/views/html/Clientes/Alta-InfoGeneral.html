@@ -279,7 +279,7 @@
                             if (response.nombre) {
                                 $("#nombreAsociado").val(response.nombre);
                             } else {
-                                $("#nombreAsociado").val("No encontrado");
+                                $("#nombreAsociado").val("No registrado");
                             }
                         },
                         error: function () {
@@ -334,7 +334,7 @@
                             .catch(error => {
                                 console.error('Error:', error);
                                 document.getElementById("error-message").classList.remove("d-none");
-                                document.getElementById("error-message").textContent = 'Error al guardar los datos.';
+                                document.getElementById("error-message").textContent = 'Error al guardar los datos. Verifica toda la información ingresada o si el RFC del despacho esta registrado';
                             });
                     }
 

@@ -32,6 +32,7 @@
                     <h2>DETALLES DEL PROCESO JUDICIAL</h2>
                     <hr>
                     <%- include('partials/DatosDeudorGestionCaso') %>
+                    <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                         <form id="procesoJudicial-form">
                             <div class="row">
                                 <h2>Proceso Judicial</h2>
@@ -82,10 +83,9 @@
                                                 presentación de la
                                                 demanda
                                             </option>
-                                            <option value="En Etapa De Descubrimiento">En etapa de descubrimiento
+                                            <option value="En Etapa De Desahogo">En etapa de desahogo
                                             </option>
-                                            <option value="En Etapa De Audiencias Preliminares">En etapa de audiencias
-                                                preliminares
+                                            <option value="En Etapa De Audiencias">En etapa de audiencias
                                             </option>
                                             <option value="En Etapa De Medios Alternativos De Resolucion De Disputas">En
                                                 etapa de medios
@@ -112,7 +112,7 @@
                             <label for="fechaHoraPagare"></label>
                             <input type="datetime-local" id="fechaHoraPagare" name="fechaHoraPagare"
                                 style="display: none;"><br>
-                            <button type="submit" class="btn btn-primary">Guardar</button>
+                            <button type="submit" class="btn btn-danger">Guardar</button>
                         </form>
                         <script>
                             document.addEventListener("DOMContentLoaded", function () {
@@ -163,7 +163,8 @@
                                         });
                                 });
                             });
-                        </script>
+                        </script> <br>
+                        <% } %>
                         <div id="lista-procesoJudicial" class="text-center">
                             <!-- Aquí se mostrarán los importes -->
                         </div>
@@ -181,10 +182,10 @@
                                             listaProceso.appendChild(mensaje);
                                         } else {
                                             const table = document.createElement('table');
-                                            table.classList.add('table', 'table-info', 'container');
+                                            table.classList.add('table', 'table-hover', 'table-striped-columns', 'container');
                                             table.innerHTML = `
                                                     <thead class="thead-dark">
-                                                        <tr>
+                                                        <tr class="table-dark">
                                                             <th>RFC</th>
                                                             <th>EXPEDIENTE</th>
                                                             <th>JUZGADO</th>
@@ -218,7 +219,7 @@
                             }
                             mostrarProceso();
                         </script>
-
+<% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                         <% if (TipoGarantia==='TituloDeCredito' ) { %>
                             <form id="pagares-form">
                                 <div class="row">
@@ -291,7 +292,7 @@
                                     </div>
                                 </div>
 
-                                <button type="button" id="add-suscriptor" class="btn btn-primary">+ Suscriptor</button>
+                                <button type="button" id="add-suscriptor" class="btn btn-dark">+ Suscriptor</button>
 
                                 <div id="avales-container">
                                     <div class="aval">
@@ -314,7 +315,7 @@
                                     </div>
                                 </div>
 
-                                <button type="button" id="add-aval" class="btn btn-primary">+ Aval</button><br>
+                                <button type="button" id="add-aval" class="btn btn-dark">+ Aval</button><br>
                                 <div style="display: none;">
                                     <label for="RFC"></label>
                                     <input type="text" value="<%= RFC %>" name="RFC" id="RFC">
@@ -324,7 +325,7 @@
                                     <input type="datetime-local" id="fechaHoraPagare" name="fechaHoraPagare"><br>
                                 </div>
                                 <br>
-                                <button type="submit" class="btn btn-primary">Guardar</button>
+                                <button type="submit" class="btn btn-danger">Guardar</button>
                             </form>
 
                             <script>
@@ -545,6 +546,7 @@
                                 mostrarPagares();
 
                             </script>
+                            <% } %>
                             <% } %>
                 </div>
             </div>

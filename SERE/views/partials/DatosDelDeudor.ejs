@@ -14,16 +14,16 @@
 <body>
     <div id="header"></div>
     <div class="container text-center">
-        
         <%- include('NavSere') %>
-        <div class="card mb-3">
-            <img src="/images/sere/contrato.jpg" class="card-img-top" alt="..." height="100">
-            <div class="card-body">
-              <h5 class="card-title">CONTRATO</h5>
-              <p class="card-text">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Illum dolore facilis aut fuga eaque sed molestiae temporibus labore amet, repellendus magnam tempora impedit suscipit modi perferendis recusandae a blanditiis id</p>
+
+        <div class="d-flex justify-content-center">
+            <div class="col-md-8">
+                <div class="alert alert-dark" role="alert">
+                    <strong>Nota:</strong> El ícono gris indica que no se ha añadido una cotización, el ícono rojo indica que la cotización añadida está pendiente de validación, y el ícono azul indica que la última cotización ha sido validada.
+                </div>
             </div>
-          </div>
-            <h2 class="text-center">Información del Cliente</h2>
+        </div>
+            <h2 class="text-center">Información de los casos</h2>
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="input-group mb-3">
@@ -39,7 +39,7 @@
                     <thead class="table-dark">
                         <tr>
                             <th>Número de Caso</th>
-                            <th>RFC</th>
+                            <th>RFC DEL DEUDOR</th>
                             <th># Cliente Padre</th>
                             <th># Cliente Hijo</th>
                             <th>Razón Social</th>
@@ -48,7 +48,7 @@
                         </tr>
                     </thead>
                     <tbody id="clienteTableBody">
-                        <% data.forEach(cliente=> { %>
+                        <% datos.forEach(cliente=> { %>
                             <tr>
                                 <td>
                                     <%= cliente.IDCuenta %>
@@ -67,8 +67,20 @@
                                 </td>
                                 <td><a href="/sere/datos?IDCuenta=<%= cliente.IDCuenta %>" class="btn btn-dark">ver</a>
                                 </td>
-                                <td><a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>"
-                                        class="btn btn-secondary">añadir</a></td>
+                                <td>
+                                    <a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>"
+                                       class="btn 
+                                              <%= cliente.EstadoCotizacion === 'validada' ? 'btn-primary' : 
+                                                  cliente.EstadoCotizacion === 'no_validada' ? 'btn-danger' : 
+                                                  'btn-secondary' %>">
+                                                  <% if (IDPerfil === 'AD') { %>
+                                                    añadir
+                                                <% } else{ %>
+                                                    Ver
+                                                <%} %>
+
+                                    </a>
+                                  </td>                                
                             </tr>
                             <% }); %>
                     </tbody>
@@ -82,20 +94,26 @@
             <style>
                 .pagination .page-link {
                     color: #dc3545;
-                    background-color: #ffffff; /* Rojo (danger) */
-                    border-color: #dc3545; /* Rojo (danger) */
+                    background-color: #ffffff;
+                    /* Rojo (danger) */
+                    border-color: #dc3545;
+                    /* Rojo (danger) */
                 }
-        
+
                 .pagination .page-link:hover {
                     color: #ffffff;
-                    background-color: #ff5654; /* Rojo más oscuro al pasar el mouse */
-                    border-color: #bd2130; /* Rojo más oscuro al pasar el mouse */
+                    background-color: #ff5654;
+                    /* Rojo más oscuro al pasar el mouse */
+                    border-color: #bd2130;
+                    /* Rojo más oscuro al pasar el mouse */
                 }
-        
+
                 .pagination .page-item.active .page-link {
                     color: #ffffff;
-                    background-color: #E52421; /* Rojo más oscuro para la página activa */
-                    border-color: #bd2130; /* Rojo más oscuro para la página activa */
+                    background-color: #E52421;
+                    /* Rojo más oscuro para la página activa */
+                    border-color: #bd2130;
+                    /* Rojo más oscuro para la página activa */
                 }
             </style>
     </div>
@@ -168,8 +186,8 @@
                 updatePagination();
             });
 
-            // Botón de búsqueda (opcional)
-            $('#btnBuscar').click(function () {
+            // Botón de búsqueda
+            $('#btnBuscar').on('click', function () {
                 const filtro = $('#filtroNumeroCaso').val().trim().toLowerCase();
 
                 rows.forEach(row => {

@@ -36,36 +36,36 @@ exports.cotizacion = [
   (req, res) => {
     try {
       const datos = req.body;
+      console.log(datos);
+      const { ID, RFC, TipoDeCaso, Comentarios, fechaCotizacion, validacion} = req.body;
       const IDCuenta = req.query.IDCuenta;
-      const validacion = parseInt(req.body.validacion);
-      const TipoCaso = req.body.TipoDeCaso;
-      const fecha = req.body.fechaCotizacion;
       const cotizacion = req.files["Cotizacion"]
         ? req.files["Cotizacion"][0].filename
         : "N/A";
       const rutaCotizacion = `uploads/${IDCuenta}/${cotizacion}`;
+      console.log(rutaCotizacion);
       // Guardar rutaCotizacion en la base de datos
       pool.query(
-        "INSERT INTO Cliente_Cotizacion(IDCuenta, TipoDeCaso, Comentarios, Cotizacion, FechaCotizacion, Validacion) VALUES (?, ?, ?, ?, ?, ?)",
+        "INSERT INTO Despacho_Cotizacion(IDCuenta, RFCDespacho, TipoDeCaso, Comentarios, Cotizacion, FechaCotizacion) VALUES (?, ?, ?, ?, ?, ?)",
         [
-          IDCuenta,
-          TipoCaso,
-          datos.Comentarios,
+          ID,
+          RFC,
+          TipoDeCaso,
+          Comentarios,
           rutaCotizacion,
-          fecha,
-          validacion,
+          fechaCotizacion
         ],
-        (error, results, fields) => {
+        (error, results) => {
           if (error) {
-            throw error;
+            console.error("Error ejecutando la consulta:", error.stack);
+            return res.status(500).send("Error en el servidor");
           }
-          // console.log("Ruta de cotización guardada en la base de datos.");
+          res.status(201).send({
+            message: "Datos insertados correctamente",
+            id: results.insertId,
+          });
         }
       );
-
-      // console.log(JSON.stringify(datos) + " " + rutaCotizacion);
-      // Aquí puedes manejar los archivos como desees
-      res.status(200).json({ message: "Files uploaded successfully" });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }
@@ -83,7 +83,7 @@ exports.asignarCaso = (req, res) => {
   } = req.body;
 
   const query = `
-      INSERT INTO Cliente_AsignacionDeCaso (IDCuenta, AbogadoResponsable, AbogadoAsistente, EstadoDeCuenta, FechaDeCierre)
+      INSERT INTO Despacho_AsignacionDeCaso (IDCuenta, AbogadoResponsable, AbogadoAsistente, EstadoDeCuenta, FechaDeCierre)
       VALUES (?, ?, ?, ?, ?)
       ON DUPLICATE KEY UPDATE
         AbogadoResponsable = VALUES(AbogadoResponsable),

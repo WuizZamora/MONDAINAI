@@ -18,6 +18,8 @@ const verificarAutenticacion = (req, res, next) => {
 
 // Ruta principal
 router.get("/", verificarAutenticacion, viewClient.renderIndex);
+router.get("/Clientes", verificarAutenticacion, viewClient.renderClientes);
+router.get("/Contingencias", verificarAutenticacion, viewClient.renderContingencias);
 router.get("/AsignarRol", verificarAutenticacion, viewClient.renderAsignarRol);
 router.get("/NavSere", verificarAutenticacion, viewClient.renderNavSere);
 router.get("/Ejemplo", verificarAutenticacion, viewClient.renderEjemplo);
@@ -29,6 +31,7 @@ router.get("/hola3", verificarAutenticacion, viewClient.renderhola3);
 router.get("/hola4", verificarAutenticacion, viewClient.renderhola4);
 router.get("/hola5", verificarAutenticacion, viewClient.renderhola5);
 
+router.get("/ObtenerCotizacion", viewConsultationClient.renderObtenerCotizacion);
 router.get("/ObtenerGastosHonorarios", viewConsultationClient.renderObtenerGastosHonorarios);
 router.get("/ObtenerImportes", viewConsultationClient.renderObtenerImportes);
 router.get("/ObtenerPlazos", viewConsultationClient.renderObtenerPlazos);

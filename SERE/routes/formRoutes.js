@@ -24,6 +24,7 @@ router.post("/guardar-HistorialPagos", clientController.guardarHistorialPagos);
 router.post("/guardar-DocumentosDescripcion", clientController.guardarDocumentosDescripcion);
 
 // VERIFICACION, RETROALIMENTACION Y VALIDACIONES CLIENTE
+router.post("/ValidarCotizacion", clientController.ValidarCotizacion);
 router.post("/ValidarGastosHonorarios", clientController.ValidarGastosHonorarios);
 router.post("/ValidarImportes", clientController.ValidarImportes);
 

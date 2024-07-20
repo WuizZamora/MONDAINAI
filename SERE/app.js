@@ -3,9 +3,9 @@ const express = require("express");
 const cors = require("cors");
 const session = require("express-session");
 const path = require("path");
-const staticRoutes = require("./routes/staticRoutes");
-const formRoutes = require("./routes/formRoutes");
-const getRoutes = require("./routes/getRoutes");
+const staticRoutes = require("./routes/staticRoutes"); // Importa las rutas estáticas
+const formRoutes = require("./routes/formRoutes"); // Importa las rutas de manejo de formularios
+const getRoutes = require("./routes/getRoutes")
 
 const app = express();
 
@@ -40,4 +40,4 @@ app.use(formRoutes);
 // Middleware para las rutas GET
 app.use(getRoutes);
 
-module.exports = app; // Exportar la aplicación Express
+module.exports = app; 

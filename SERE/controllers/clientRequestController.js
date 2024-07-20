@@ -509,6 +509,27 @@ exports.guardarDocumentosDescripcion = [
   },
 ];
 
+// VALIDACIÓN DE CLIENTE PARA LA COTIZACION DEL DESPACHO
+exports.ValidarCotizacion = (req, res) => {
+  const { id, validado, fechaValidacion, RFCValidacion } = req.body;
+  const query = `
+      UPDATE Despacho_Cotizacion 
+      SET Validacion = ?, RFCUsuario = ?, FechaValidacion = ? 
+      WHERE IDCotizacion = ?
+    `;
+  pool.query(
+    query,
+    [validado, RFCValidacion, fechaValidacion, id],
+    (error) => {
+      if (error) {
+        console.error("Error ejecutando la consulta:", error.stack);
+        return res.status(500).send("Error en el servidor");
+      }
+      res.sendStatus(200);
+    }
+  );
+};
+
 // VALIDACIÓN DE CLIENTE PARA LOS HONORARIOS DEL DESPACHO
 exports.ValidarGastosHonorarios = (req, res) => {
   const { id, validado, fechaHoraValidacion, RFCValidacion } = req.body;

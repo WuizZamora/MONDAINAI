@@ -36,15 +36,15 @@ router.get("/logout", (req, res) => {
 });
 
 // Rutas que requieren autenticación
-router.get("/clientes", verificarAutenticacion, (req, res) => {
-  res.sendFile(path.join(frontendPath, "html", "Clientes", "Clientes.html"));
-});
+// router.get("/clientes", verificarAutenticacion, (req, res) => {
+//   res.sendFile(path.join(frontendPath, "html", "Clientes", "Clientes.html"));
+// });
 
-router.get("/Contingencias", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "html", "Clientes", "Contingencias.html")
-  );
-});
+// router.get("/Contingencias", verificarAutenticacion, (req, res) => {
+//   res.sendFile(
+//     path.join(frontendPath, "html", "Clientes", "Contingencias.html")
+//   );
+// });
 
 router.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
   res.sendFile(

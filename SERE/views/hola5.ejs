@@ -48,7 +48,7 @@
                         <input type="hidden" name="Id" id="Id" value="<%= idCuenta %>">
                         <input type="hidden" name="IDGestion" id="IDGestion" value="<%= IDGestion %>">
                         <input type="hidden" id="fechaHoraPagare" name="fechaHoraPagare">
-                        <button type="submit" class="btn btn-primary">Guardar</button>
+                        <button type="submit" class="btn btn-danger">Guardar</button>
                     </form>
 
                     <script>
@@ -95,7 +95,7 @@
                                     // Aquí puedes manejar errores de envío
                                 });
                         });
-                    </script>
+                    </script> <br>
                     <div id="lista-feedbackAccion" class="text-center">
                         <!-- Aquí se mostrarán los importes -->
                     </div>
@@ -113,10 +113,10 @@
                                         listaComentariosAccion.appendChild(mensaje);
                                     } else {
                                         const table = document.createElement('table');
-                                        table.classList.add('table', 'table-info', 'container');
+                                        table.classList.add('table', 'table-hover', 'table-striped-columns', 'container');
                                         table.innerHTML = `
                                                 <thead class="thead-dark">
-                                                    <tr>
+                                                    <tr class="table-dark">
                                                         <th>RFC</th>
                                                         <th>RETROALIMENTACIÓN</th>
                                                         <th>FECHA DE REGISTRO</th>

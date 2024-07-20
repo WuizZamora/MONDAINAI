@@ -41,43 +41,39 @@ exports.getNombrePorRFC = (req, res) => {
 
 // ALTA DE NUEVOS USUARIOS EN EL SISTEMA
 exports.altaUsuario = (req, res) => {
-  // console.log(req.body);
   const { correo, nombre, contrasena, rfc, rfcAsociado } = req.body;
-  // Verificar si el RFC ya tiene usuarios asociados
+  
   const sqlCheckRFC = "SELECT COUNT(*) AS count FROM Usuarios WHERE RFC = ?";
   pool.query(sqlCheckRFC, [rfc], (err, results) => {
     if (err) {
       console.error("Error al verificar el RFC:", err);
-      res.status(500).send("Error interno del servidor");
+      res.status(500).json({ error: "Error interno del servidor" });
       return;
     }
 
     const { count } = results[0];
 
-    // Generar hash bcrypt de la contraseña
+    if (count > 0) {
+      res.status(400).json({ error: "El RFC ya está asociado a otro usuario" });
+      return;
+    }
+
     bcrypt.hash(contrasena, 10, function (err, hash) {
       if (err) {
         console.error("Error al cifrar la contraseña:", err);
-        res.status(500).send("Error interno del servidor");
+        res.status(500).json({ error: "Error interno del servidor" });
         return;
       }
 
-      // INSERSIÓN A LA TABLA USUARIOS CON LA CONTRASEÑA YA ENCRIPTADA
-      const sqlInsert =
-        "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado) VALUES (?, ?, ?, ?, ?)";
-      pool.query(
-        sqlInsert,
-        [rfc, correo, nombre, hash, rfcAsociado],
-        (err, result) => {
-          if (err) {
-            console.error("Error al insertar usuario:", err);
-            res.status(500).send("Error interno del servidor");
-            return;
-          }
-          // console.log("Usuario insertado correctamente");
-          res.status(200).send("Usuario insertado correctamente");
+      const sqlInsert = "INSERT INTO Usuarios (RFC, Correo, Nombre, Contraseña, RFCAsociado) VALUES (?, ?, ?, ?, ?)";
+      pool.query(sqlInsert, [rfc, correo, nombre, hash, rfcAsociado], (err, result) => {
+        if (err) {
+          console.error("Error al insertar usuario:", err);
+          res.status(500).json({ error: "Error interno del servidor" });
+          return;
         }
-      );
+        res.status(200).json({ message: "Usuario insertado correctamente" });
+      });
     });
   });
 };
@@ -91,13 +87,13 @@ exports.login = (req, res) => {
   pool.query(sql, [correo], (err, results) => {
     if (err) {
       console.error("Error al buscar usuario:", err);
-      res.status(500).send("Error interno del servidor");
+      res.status(500).json({ message: "Error interno del servidor" });
       return;
     }
 
     // VERIFICAR SI SE ENCONTRÓ EL USUARIO
     if (results.length === 0) {
-      res.status(401).send("Usuario o contraseña incorrectos");
+      res.status(401).json({ message: "Usuario o contraseña incorrectos" });
       return;
     }
 
@@ -110,20 +106,20 @@ exports.login = (req, res) => {
       (error, result) => {
         if (error) {
           console.error("Error al comparar contraseñas:", error);
-          res.status(500).send("Error interno del servidor");
+          res.status(500).json({ message: "Error interno del servidor" });
           return;
         }
 
         if (!result) {
-          res.status(401).send("Usuario o contraseña incorrectos");
+          res.status(401).json({ message: "Usuario o contraseña incorrectos" });
           return;
         }
 
         // AUTENTICACIÓN EXITOSA, GUARDAR EL USUARIO EN LA SESIÓN
         req.session.usuario = usuarioEncontrado;
 
-        // Redirigir al usuario a la página principal después de iniciar sesión
-        res.redirect("/sere/");
+        // Responder con éxito
+        res.status(200).json({ message: "Autenticación exitosa" });
       }
     );
   });
