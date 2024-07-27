@@ -35,7 +35,7 @@
                     <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                         <form id="procesoJudicial-form">
                             <div class="row">
-                                <h2>Proceso Judicial</h2>
+                                <h2>PROCESO JUDICIAL</h2><hr>
                                 <div class="col-md-4">
                                     <div class="mb-3">
                                         <label for="Expediente">Expediente: </label>
@@ -187,11 +187,11 @@
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
                                                             <th>RFC</th>
-                                                            <th>EXPEDIENTE</th>
-                                                            <th>JUZGADO</th>
-                                                            <th>JURISDICCIÓN</th>
-                                                            <th>FECHA DE REGISTRO DEL PROCESO JUDICIAL</th>
-                                                            <th>ESTADO DEL CASO</th>
+                                                            <th>Expediente</th>
+                                                            <th>Juzgado</th>
+                                                            <th>Jurisdicción</th>
+                                                            <th>Fecha de registro del proceso judicial</th>
+                                                            <th>Estado del caso</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -223,7 +223,7 @@
                         <% if (TipoGarantia==='TituloDeCredito' ) { %>
                             <form id="pagares-form">
                                 <div class="row">
-                                    <h2>Diagnostico del título del crédito:</h2>
+                                    <h2>DIAGNOSTICO DEL TÍTULO DEL CRÉDITO:</h2>
                                     <hr>
                                     <div class="col-md-3">
                                         <div class="mb-3">
@@ -248,9 +248,9 @@
                                     </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="Importe">Importe: ($)</label>
+                                            <label for="Importe">Importe original: ($)</label>
                                             <input type="number" id="Importe" name="Importe"
-                                                class="form-control text-center" min="0" required>
+                                                class="form-control text-center" min="0" oninput="updateMonto()" required>
                                         </div>
                                     </div>
 
@@ -258,17 +258,30 @@
                                         <div class="mb-3">
                                             <label for="Interes">Interés: (%)</label>
                                             <input type="number" id="Interes" name="Interes"
-                                                class="form-control text-center" min="0" required>
+                                                class="form-control text-center" min="0" oninput="updateMonto()" required>
                                         </div>
                                     </div>
                                     <div class="col-md-3">
                                         <div class="mb-3">
-                                            <label for="Monto">Monto: ($)</label>
+                                            <label for="Monto">Importe total: ($)</label>
                                             <input type="number" id="Monto" name="Monto"
-                                                class="form-control text-center" min="0" required>
+                                                class="form-control text-center" min="0" readonly>
                                         </div>
                                     </div>
                                 </div>
+                                <script>
+                                    function updateMonto() {
+                                        // Obtener los valores de los campos
+                                        const importe = parseFloat(document.getElementById('Importe').value) || 0;
+                                        const interes = parseFloat(document.getElementById('Interes').value) || 0;
+                                
+                                        // Calcular el importe total
+                                        const montoTotal = importe * (1 + interes / 100);
+                                
+                                        // Actualizar el campo "Importe total"
+                                        document.getElementById('Monto').value = montoTotal.toFixed(2);
+                                    }
+                                </script>
 
 
                                 <div id="suscriptores-container">
@@ -326,7 +339,7 @@
                                 </div>
                                 <br>
                                 <button type="submit" class="btn btn-danger">Guardar</button>
-                            </form>
+                            </form><br>
 
                             <script>
                                 document.getElementById('pagares-form').addEventListener('submit', function (event) {
@@ -474,36 +487,105 @@
                                             listaPagares.innerHTML = ''; // Limpiar contenido anterior si es necesario
 
                                             data.forEach(pagare => {
-                                                const pagareHTML = document.createElement('div');
-                                                pagareHTML.innerHTML = `
-                    <p>ID de Cuenta: ${pagare.idCuenta}</p>
-                    <h3>ID de Pagare: ${pagare.id}</h3>
-                    <p>RFC: ${pagare.rfcDespacho}</p>
-                    <p>Fecha de Prescripción: ${pagare.fechaPrescripcion}</p>
-                    <p>Importe: ${pagare.importe}</p>
-                    <p>Fecha de Suscripción: ${pagare.fechaSuscripcion}</p>
-                    <p>Fecha de Vencimiento: ${pagare.fechaVencimiento}</p>
-                    <p>Monto: ${pagare.monto}</p>
-                    <p>Interés: ${pagare.interes}</p>
-                    <p>Fecha y Hora del Pagare: ${pagare.fechaHoraPagare}</p>
-                    <h4>Suscriptores:</h4>
-                    <ul>
-                        ${uniqueSuscriptores(pagare.suscriptores).map(suscriptor => `
-                            <li>Nombre: ${suscriptor.nombre}</li>
-                            <li>Domicilio: ${suscriptor.domicilio}</li>
-                        `).join('')}
-                    </ul>
-                    <h4>Aval(es):</h4>
-                    <ul>
-                        ${uniqueAvales(pagare.avales).map(aval => `
-                            <li>Nombre: ${aval.nombre}</li>
-                            <li>Dirección: ${aval.direccion}</li>
-                        `).join('')}
-                    </ul>
-                    <hr>
-                `;
-                                                listaPagares.appendChild(pagareHTML);
-                                            });
+    const pagareHTML = document.createElement('div');
+    pagareHTML.innerHTML = `
+        <div class="container text-start">
+            <div class="accordion" id="accordionPagare${pagare.id}">
+                <div class="accordion-item">
+                    <h2 class="accordion-header" id="headingPagare${pagare.id}">
+                        <button class="accordion-button collapsed custom-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePagare${pagare.id}" aria-expanded="false" aria-controls="collapsePagare${pagare.id}">
+                            Pagaré - ${pagare.id}
+                        </button>
+                    </h2>
+                    <div id="collapsePagare${pagare.id}" class="accordion-collapse collapse" aria-labelledby="headingPagare${pagare.id}" data-bs-parent="#accordionPagare${pagare.id}">
+                        <div class="accordion-body">
+                            <div class="container text-start">
+                                <table class="table table-bordered table-striped-columns">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th colspan="2" class="text-center">Detalles del Pagaré</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr>
+                                            <td class="table-dark">RFC</td>
+                                            <td>${pagare.rfcDespacho}</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="table-dark">Fecha y Hora del Pagaré</td>
+                                            <td>${pagare.fechaHoraPagare}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fecha de Prescripción</td>
+                                            <td>${pagare.fechaPrescripcion}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fecha de Suscripción</td>
+                                            <td>${pagare.fechaSuscripcion}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Fecha de Vencimiento</td>
+                                            <td>${pagare.fechaVencimiento}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Importe original ($)</td>
+                                            <td>${pagare.importe}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Interés (%)</td>
+                                            <td>${pagare.interes}</td>
+                                        </tr>
+                                        <tr>
+                                            <td>Importe total ($)</td>
+                                            <td>${pagare.monto}</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <h4 class="text-center">Suscriptor(es):</h4>
+                                <table class="table table-bordered table-striped-columns">
+                                    <thead>
+                                        <tr class="table-dark">
+                                            <th>Nombre</th>
+                                            <th>Domicilio</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="table-striped-columns">
+                                        ${uniqueSuscriptores(pagare.suscriptores).map(suscriptor => `
+                                            <tr>
+                                                <td>${suscriptor.nombre}</td>
+                                                <td>${suscriptor.domicilio}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+
+                                <h4 class="text-center">Aval(es):</h4>
+                                <table class="table table-bordered table-striped-columns">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Nombre</th>
+                                            <th>Dirección</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        ${uniqueAvales(pagare.avales).map(aval => `
+                                            <tr>
+                                                <td>${aval.nombre}</td>
+                                                <td>${aval.direccion}</td>
+                                            </tr>
+                                        `).join('')}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    listaPagares.appendChild(pagareHTML);
+});
                                         })
                                         .catch(error => {
                                             console.error('Error al obtener los pagares:', error);
@@ -551,6 +633,23 @@
                 </div>
             </div>
     </div>
+    <style>
+          .custom-header {
+                background-color: #95979B;
+                color: white;
+                /* Color del texto */
+            }
+
+            .custom-header:not(.collapsed) {
+                background-color: #95979b93;
+                color: black;
+            }
+
+            .custom-header.collapsed {
+                background-color: #95979B;
+                color: white;
+            }
+    </style> <br>
     <div id="footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"

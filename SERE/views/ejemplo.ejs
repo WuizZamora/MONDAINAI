@@ -14,7 +14,7 @@
     <div id="header"></div>
     <div class="container text-center">
         <%- include('partials/NavSere') %>
-            <h2>Listado de Casos</h2> <%= IDPerfil %> 
+            <h2>LISTADO DE CASOS</h2> <hr>
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="input-group mb-3">
@@ -24,13 +24,21 @@
                                 class="bi bi-search"></i></button>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control text-center" id="filtroRazonSocial"
+                               placeholder="Ingrese razón social">
+                        <button class="btn btn-outline-secondary" type="button" id="btnBuscarRazonSocial"><i
+                                class="bi bi-search"></i></button>
+                    </div>
+                </div>
             </div>
             <table class="table table-striped table-bordered" id="clienteTable">
                 <thead class="thead-dark">
                     <tr class="table-dark">
-                        <th># DE CASO</th>
+                        <th># de caso</th>
                         <th>Fecha de Asignación</th>
-                        <th>Razon Social</th>
+                        <th>Razón Social del deudor</th>
                         <th>Tipo de Caso</th>
                         <% if (IDPerfil === 'AD') { %>
                         <th>Abogado Responsable</th>
@@ -187,29 +195,31 @@
         $(function () {
             $("#header").load("/header");
             $("#footer").load("/footer");
-
-         // JavaScript para la paginación y filtro
-         const rowsPerPage = 15;
+    
+            // Variables y configuración inicial
+            const rowsPerPage = 10;
             const tableBody = document.getElementById('clienteTableBody');
             const pagination = document.getElementById('pagination');
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            let pageCount = Math.ceil(rows.length / rowsPerPage);
+            let rows = Array.from(tableBody.querySelectorAll('tr'));
             let currentPage = 1;
-
+    
             function displayPage(page) {
                 const startRow = (page - 1) * rowsPerPage;
                 const endRow = startRow + rowsPerPage;
-
-                rows.forEach((row, index) => {
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+    
+                visibleRows.forEach((row, index) => {
                     row.style.display = (index >= startRow && index < endRow) ? '' : 'none';
                 });
-
+    
                 updatePagination();
             }
-
+    
             function setupPagination() {
                 pagination.innerHTML = '';
-
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
+    
                 for (let i = 1; i <= pageCount; i++) {
                     const li = document.createElement('li');
                     li.className = `page-item ${i === currentPage ? 'active' : ''}`;
@@ -223,44 +233,42 @@
                     pagination.appendChild(li);
                 }
             }
-
+    
             function updatePagination() {
-                pageCount = Math.ceil(rows.length / rowsPerPage);
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
                 setupPagination();
+                if (pageCount < currentPage) {
+                    currentPage = pageCount || 1;
+                    displayPage(currentPage);
+                }
             }
-
+    
             displayPage(currentPage);
             setupPagination();
-
-            // Filtro por número de caso
-            $('#filtroNumeroCaso').on('input', function () {
-                const filtro = this.value.trim().toLowerCase();
-
+    
+            // Función para filtrar filas de la tabla
+            function filtrar() {
+                const filtroNumeroCaso = $('#filtroNumeroCaso').val().trim().toLowerCase();
+                const filtroRazonSocial = $('#filtroRazonSocial').val().trim().toLowerCase();
+    
                 rows.forEach(row => {
                     const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
-                    const match = numeroCaso.includes(filtro);
-
-                    row.style.display = match ? '' : 'none';
+                    const razonSocial = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase();
+    
+                    const matchNumeroCaso = numeroCaso.includes(filtroNumeroCaso);
+                    const matchRazonSocial = razonSocial.includes(filtroRazonSocial);
+    
+                    row.style.display = (matchNumeroCaso && matchRazonSocial) ? '' : 'none';
                 });
-
+    
                 currentPage = 1;
                 updatePagination();
-            });
-
-            // Botón de búsqueda (opcional)
-            $('#btnBuscar').click(function () {
-                const filtro = $('#filtroNumeroCaso').val().trim().toLowerCase();
-
-                rows.forEach(row => {
-                    const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
-                    const match = numeroCaso.includes(filtro);
-
-                    row.style.display = match ? '' : 'none';
-                });
-
-                currentPage = 1;
-                updatePagination();
-            });
+            }
+    
+            // Eventos para activar el filtrado
+            $('#filtroNumeroCaso, #filtroRazonSocial').on('input', filtrar);
+            $('#btnBuscar, #btnBuscarRazonSocial').on('click', filtrar);
         });
     </script>
 </body>

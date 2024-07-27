@@ -16,14 +16,14 @@
     <div class="container text-center">
         <%- include('NavSere') %>
 
-        <div class="d-flex justify-content-center">
-            <div class="col-md-8">
-                <div class="alert alert-dark" role="alert">
-                    <strong>Nota:</strong> El ícono gris indica que no se ha añadido una cotización, el ícono rojo indica que la cotización añadida está pendiente de validación, y el ícono azul indica que la última cotización ha sido validada.
+            <div class="d-flex justify-content-center">
+                <div class="col-md-8">
+                    <div class="alert alert-dark" role="alert">
+                        <strong>Nota:</strong> El ícono <span class="text-danger">rojo</span> indica que no se ha añadido una cotización, el ícono <span class="text-warning">amarillo</span> indica que la cotización añadida está pendiente de autorización, y el ícono <span class="text-success">verde</span> indica que la última cotización ha sido autorizada.
+                    </div>
                 </div>
             </div>
-        </div>
-            <h2 class="text-center">Información de los casos</h2>
+            <h2 class="text-center">INFORMACIÓN DE LOS CASOS</h2>
             <div class="row justify-content-center">
                 <div class="col-md-6">
                     <div class="input-group mb-3">
@@ -33,18 +33,27 @@
                                 class="bi bi-search"></i></button>
                     </div>
                 </div>
+                <div class="col-md-6">
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control text-center" id="filtroRazonSocial"
+                               placeholder="Ingrese razón social">
+                        <button class="btn btn-outline-secondary" type="button" id="btnBuscarRazonSocial"><i
+                                class="bi bi-search"></i></button>
+                    </div>
+                </div>
             </div>
             <div class="table-responsive">
                 <table class="table table-striped table-hover" id="clienteTable">
                     <thead class="table-dark">
                         <tr>
-                            <th>Número de Caso</th>
-                            <th>RFC DEL DEUDOR</th>
-                            <th># Cliente Padre</th>
-                            <th># Cliente Hijo</th>
-                            <th>Razón Social</th>
-                            <th>Solicitud</th>
-                            <th>Cotizacion</th>
+                            <th>Número de caso</th>
+                            <th>RFC del deudor</th>
+                            <th># Cliente padre</th>
+                            <th># Cliente hijo</th>
+                            <th>Razón social</th>
+                            <th>Formulario del caso</th>
+                            <th>Cotización</th>
+
                         </tr>
                     </thead>
                     <tbody id="clienteTableBody">
@@ -68,19 +77,18 @@
                                 <td><a href="/sere/datos?IDCuenta=<%= cliente.IDCuenta %>" class="btn btn-dark">ver</a>
                                 </td>
                                 <td>
-                                    <a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>"
-                                       class="btn 
-                                              <%= cliente.EstadoCotizacion === 'validada' ? 'btn-primary' : 
-                                                  cliente.EstadoCotizacion === 'no_validada' ? 'btn-danger' : 
-                                                  'btn-secondary' %>">
-                                                  <% if (IDPerfil === 'AD') { %>
-                                                    añadir
-                                                <% } else{ %>
-                                                    Ver
+                                    <a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>" class="btn 
+                                              <%= cliente.EstadoCotizacion === 'validada' ? 'btn-success' : 
+                                                  cliente.EstadoCotizacion === 'no_validada' ? 'btn-warning' : 
+                                                  'btn-danger' %>">
+                                        <% if (IDPerfil==='AD' ) { %>
+                                            añadir
+                                            <% } else{ %>
+                                                Ver
                                                 <%} %>
 
                                     </a>
-                                  </td>                                
+                                </td>
                             </tr>
                             <% }); %>
                     </tbody>
@@ -126,29 +134,31 @@
         $(function () {
             $("#header").load("/header");
             $("#footer").load("/footer");
-
-            // JavaScript para la paginación y filtro
-            const rowsPerPage = 15;
+    
+            // Variables y configuración inicial
+            const rowsPerPage = 10;
             const tableBody = document.getElementById('clienteTableBody');
             const pagination = document.getElementById('pagination');
-            const rows = Array.from(tableBody.querySelectorAll('tr'));
-            let pageCount = Math.ceil(rows.length / rowsPerPage);
+            let rows = Array.from(tableBody.querySelectorAll('tr'));
             let currentPage = 1;
-
+    
             function displayPage(page) {
                 const startRow = (page - 1) * rowsPerPage;
                 const endRow = startRow + rowsPerPage;
-
-                rows.forEach((row, index) => {
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+    
+                visibleRows.forEach((row, index) => {
                     row.style.display = (index >= startRow && index < endRow) ? '' : 'none';
                 });
-
+    
                 updatePagination();
             }
-
+    
             function setupPagination() {
                 pagination.innerHTML = '';
-
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
+    
                 for (let i = 1; i <= pageCount; i++) {
                     const li = document.createElement('li');
                     li.className = `page-item ${i === currentPage ? 'active' : ''}`;
@@ -162,46 +172,46 @@
                     pagination.appendChild(li);
                 }
             }
-
+    
             function updatePagination() {
-                pageCount = Math.ceil(rows.length / rowsPerPage);
+                let visibleRows = rows.filter(row => row.style.display !== 'none');
+                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
                 setupPagination();
+                if (pageCount < currentPage) {
+                    currentPage = pageCount || 1;
+                    displayPage(currentPage);
+                }
             }
-
+    
             displayPage(currentPage);
             setupPagination();
-
-            // Filtro por número de caso
-            $('#filtroNumeroCaso').on('input', function () {
-                const filtro = this.value.trim().toLowerCase();
-
+    
+            // Función para filtrar filas de la tabla
+            function filtrar() {
+                const filtroNumeroCaso = $('#filtroNumeroCaso').val().trim().toLowerCase();
+                const filtroRazonSocial = $('#filtroRazonSocial').val().trim().toLowerCase();
+    
                 rows.forEach(row => {
                     const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
-                    const match = numeroCaso.includes(filtro);
-
-                    row.style.display = match ? '' : 'none';
+                    const razonSocial = row.querySelector('td:nth-child(5)').textContent.trim().toLowerCase();
+    
+                    const matchNumeroCaso = numeroCaso.includes(filtroNumeroCaso);
+                    const matchRazonSocial = razonSocial.includes(filtroRazonSocial);
+    
+                    row.style.display = (matchNumeroCaso && matchRazonSocial) ? '' : 'none';
                 });
-
+    
                 currentPage = 1;
                 updatePagination();
-            });
-
-            // Botón de búsqueda
-            $('#btnBuscar').on('click', function () {
-                const filtro = $('#filtroNumeroCaso').val().trim().toLowerCase();
-
-                rows.forEach(row => {
-                    const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
-                    const match = numeroCaso.includes(filtro);
-
-                    row.style.display = match ? '' : 'none';
-                });
-
-                currentPage = 1;
-                updatePagination();
-            });
+            }
+    
+            // Eventos para activar el filtrado
+            $('#filtroNumeroCaso, #filtroRazonSocial').on('input', filtrar);
+            $('#btnBuscar, #btnBuscarRazonSocial').on('click', filtrar);
         });
     </script>
+    
+    
 </body>
 
 </html>

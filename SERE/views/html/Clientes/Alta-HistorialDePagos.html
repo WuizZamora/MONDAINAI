@@ -37,12 +37,12 @@
             <div class="table-responsive">
                 <table class="table table-hover text-center table-sm" id="dataTable">
                     <thead>
-                        <tr>
+                        <tr class="table-dark">
                             <th scope="col">#</th>
-                            <th scope="col">FECHA DE LA TRANSACCIÓN</th>
+                            <th scope="col">FECHA DE COBRO</th>
                             <th scope="col">NO. DE FACTURA / RECIBO</th>
                             <th scope="col">MONTO PAGADO</th>
-                            <th scope="col">ESTADO DEL PAGO REALIZADO CON:</th>
+                            <th scope="col">ESTADO DEL PAGO REALIZADO:</th>
                             <th scope="col">OBSERVACIONES</th>
                         </tr>
                     </thead>
@@ -61,8 +61,8 @@
                             <td>
                                 <select class="form-select" name="EstadoDelPago1" id="EstadoDelPago1" required>
                                     <option selected disabled value=""></option>
-                                    <option value="Pago Realizado A Tiempo">Tiempo</option>
-                                    <option value="Pago Realizado Con Retraso">Retraso</option>
+                                    <option value="Pago Realizado A Tiempo">En tiempo</option>
+                                    <option value="Pago Realizado Con Retraso">Con retraso</option>
                                 </select>
                             </td>
                             <td>

@@ -23,7 +23,7 @@
             enctype="multipart/form-data" novalidate>
             <div id="contactosContainer">
                 <div class="row mb-3 align-items-end contactoContainer">
-                    <h4>DEL CONTACTO PRINCIPAL:</h4>
+                    <h4>DEL CONTACTO ADICIONAL 1:</h4>
                     <div class="col-md-3">
                         <div class="mb-3">
                             <label class="form-label" for="NombreContacto1">NOMBRE: *</label>
@@ -115,7 +115,7 @@
                                     <button class="accordion-button custom-header" type="button"
                                         data-bs-toggle="collapse" data-bs-target="#panelsStayOpen-collapseOne"
                                         aria-expanded="true" aria-controls="panelsStayOpen-collapseOne">
-                                        MONTO DE LA DEUDA
+                                        ESTADO DE CUENTA GLOBAL 
                                     </button>
                                 </h2>
                                 <div id="panelsStayOpen-collapseOne" class="accordion-collapse collapse show">
@@ -186,7 +186,7 @@
                                 </div>
                                 <div class="col-md-8">
                                     <div class="card-body">
-                                        <h5 class="card-title">Estado de cuenta</h5>
+                                        <h5 class="card-title">Estado de cuenta detallado</h5>
                                         <p class="card-text"><small class="text-body-secondary">Presiona el ícono para llenar esa parte del formulario</small></p>
                                     </div>
                                 </div>
@@ -213,11 +213,12 @@
                         </div>
                     </div>
                 </div>
+                <hr>
                 <div class="row d-flex justify-content-center text-justify">
                     <div class="col-md-8">
                         <div class="alert alert-danger" role="alert">
                             <strong>Importante:</strong> En esta sección de la solicitud, solo se permite agregar un
-                            archivo, preferiblemente en formato <strong>PDF</strong>. Si tienes más de un archivo,
+                            archivo, de preferencia en formato <strong>PDF</strong>. Si tienes más de un archivo,
                             comprímelos en un
                             archivo <strong>ZIP</strong> y añádelos a la solicitud.
                         </div>
@@ -256,20 +257,20 @@
 
                 <div class="col-md-3" id="campoOtros" style="display: none;">
                     <div class="mb-3">
-                        <label class="form-label" for="OtroTipoGarantia">¿Cuál?</label>
+                        <label class="form-label" for="OtroTipoGarantia">¿CUÁL?</label>
                         <input type="text" class="form-control" name="OtroTipoGarantia" id="OtroTipoGarantia">
                     </div>
                 </div>
 
                 <div class="col-md-3">
                     <div class="mb-3">
-                        <label class="form-label" for="DocumentacionLegal">DOCUMENTACIÓN LEGAL: </label>
+                        <label class="form-label" for="DocumentacionLegal">DOCUMENTACIÓN LEGAL DE LA GARANTIA: </label>
                         <input type="file" class="form-control" name="DocumentacionLegal" id="DocumentacionLegal"
                             required>
                     </div>
                 </div>
                 
-                <h6>DAÑOS RECLAMADOS JUDICIAL:</h6>
+                <h5>DAÑOS RECLAMADOS JUDICIAL:</h5><hr>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label" for="DescripcionDanosReclamados">DESCRIBA LOS DAÑOS
@@ -285,7 +286,9 @@
                             DAÑOS:</label>
                         <input type="file" class="form-control" name="DocumentacionDanosReclamados" required>
                     </div>
-                </div>
+                </div> 
+                <h5>ACTITUD DEL DEUDOR E INFORMACIÓN CREDITICIA DEL CLIENTE:</h5>
+                <hr>
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label" for="DescripcionActitudDeudor">DESCRIBA LA ACTITUD DEL DEUDOR:</label>
@@ -297,7 +300,7 @@
                 <div class="col-md-6">
                     <div class="mb-3">
                         <label class="form-label" for="DocumentacionDanosReclamados">ADJUNTA LA DOCUMENTACIÓN
-                            SOPORTE:</label>
+                            SOPORTE ACTITUD DEL DEUDOR:</label>
                         <input type="file" class="form-control" name="DocumentacionSoporteActitudDeudor"
                             id="DocumentacionDanosReclamados" required>
                     </div>
@@ -317,7 +320,7 @@
                     </div>
                 </div>
 
-                <h6>CUENTAS BANCARIAS:</h6>
+                <h5>CUENTAS BANCARIAS:</h5> <hr>
 
                 <div class="col-md-3">
                     <div class="mb-3">

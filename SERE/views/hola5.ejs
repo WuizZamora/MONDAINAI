@@ -28,14 +28,20 @@
                             class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
                     </div>
                 </div>
-                <div class="col-md-9">
+                <div class="col-md-9 text-start">
                     <%- include('partials/DatosDeudorGestionCaso') %>
-                    <h5>Acción: <%= ProximasAcciones %>
-                    </h5>
-                    <h5>Fecha de próxima acción: <%= FechaProximaAccion %>
-                    </h5>
-                    <form id="form-FeedbackAccion">
-                        <h2>Feedback por accion</h2>
+                    <p>
+                        <strong>
+                            Acción:
+                        </strong> <%= ProximasAcciones %>
+                    </p>
+                    <p>
+                        <strong>
+                            Fecha de próxima acción:
+                        </strong> <%= FechaProximaAccion %>
+                    </p>
+                    <form id="form-FeedbackAccion" class="text-center">
+                        <h2>FEEDBACK POR ACCIÓN</h2>
                         <hr>
                         <div class="col-md-6">
                             <div class="mb-3">
@@ -118,8 +124,8 @@
                                                 <thead class="thead-dark">
                                                     <tr class="table-dark">
                                                         <th>RFC</th>
-                                                        <th>RETROALIMENTACIÓN</th>
-                                                        <th>FECHA DE REGISTRO</th>
+                                                        <th>Feedback</th>
+                                                        <th>Fecha de registro</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

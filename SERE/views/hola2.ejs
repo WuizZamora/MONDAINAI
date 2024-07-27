@@ -16,7 +16,7 @@
         <%- include('partials/NavSere') %>
             <div class="row">
                 <% if (TipoDeCaso==='Cuenta Incobrable' ) { %>
-                    <h2>Cuenta Incobrable</h2>
+                    <h2>CUENTA INCOBRABLE</h2>
                     <hr>
                     <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                     <form id="form-incobrabilidad" enctype="multipart/form-data">
@@ -27,7 +27,7 @@
                                     required>
                             </div>
                             <div class="col-md-6">
-                                <label for="ComentariosFormato">Comentarios:</label>
+                                <label for="ComentariosFormato">COMENTARIOS:</label>
                                 <textarea name="ComentariosFormato" id="ComentariosFormato" maxlength="450"
                                     class="form-control" rows="6" required></textarea>
                             </div>
@@ -102,10 +102,10 @@
                                         listaFormato.appendChild(mensaje);
                                     } else {
                                         const table = document.createElement('table');
-                                        table.classList.add('table', 'table-warning', 'container');
+                                        table.classList.add('table', 'table-striped', 'container');
                                         table.innerHTML = `
                                 <thead class="thead-dark">
-                                    <tr>
+                                    <tr class="table-dark">
                                         <th>RFC</th>
                                         <th>FORMATO INCOBRABILIDAD</th>
                                         <th>COMENTARIOS</th>
@@ -153,8 +153,8 @@
                             <h2>INFORMACIÓN FINANCIERA Y LEGAL</h2>
                             <hr>
                             <%- include('partials/DatosDeudorGestionCaso') %>
-                                <h2>Resumen de Deuda inicial:</h2>
-                                <table class="table table-striped table-responsive-md">
+                                <h2>RESÚMEN DE LA DEUDA INICIAL:</h2><hr>
+                                <table class="table table-striped table-responsive-md table-striped-columns">
                                     <!-- Ajustes en la tabla para que sea responsiva -->
                                     <thead>
                                         <tr class="table-dark">
@@ -176,7 +176,7 @@
                                     </tbody>
                                 </table>
                                 <br><br>
-                                <h2>Costos y Honorarios</h2> 
+                                <h2>COSTOS Y HONORARIO</h2> 
                                 <hr>
                                 
                                 <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
@@ -320,7 +320,7 @@
                                                         <th>Cantidad</th>
                                                         <th>Descripción</th>
                                                         <th>Soporte</th>
-                                                        ${data.IDPerfil === 'C6' ? `<th>Validar</th>` : '<th>Validación</th>'}
+                                                        ${data.IDPerfil === 'C6' ? `<th>Autorizar</th>` : '<th>Autorización</th>'}
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -338,7 +338,7 @@
                                                         <input type="text" class="form-control" value="<%= RFC %>" name="RFCValidacion" id="RFCValidacion-${costo.IDCostosHonorarios}" style="display:none;">
                                                         <input type="datetime-local" class="form-control" value="${getFormattedDate(costo.FechaHoraValidacion)}" name="fechaHoraValidacion" id="fechaHoraValidacion-${costo.IDCostosHonorarios}" style="display:none;">
                                                         ` : `
-                                                        <td>${costo.Validacion ? 'Validado' : 'Pendiente de Validación'}</td>
+                                                        <td>${costo.Validacion ? 'Autorizado' : 'Pendiente de autorización'}</td>
                                                         `}
                                                     </tr>
                                                 `;
@@ -384,13 +384,13 @@
                                                 document.getElementById('fechaHora').value = fechaHora;
                                             }
                                         </script>
-                                        <h2>Importe Recuperado</h2>
+                                        <h2>IMPORTE RECUPERADO</h2>
                                         <hr>
                                         <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                                         <form id="importe-form" enctype="multipart/form-data">
                                             <div class="row align-items-end">
                                                 <div class="col-md-4">
-                                                    <label for="ImporteRecuperado">Importe recuperado por despacho S/IVA
+                                                    <label for="ImporteRecuperado">Importe cobrado por despacho S/IVA
                                                         ($)</label>
                                                     <input type="text" id="ImporteRecuperado" name="ImporteRecuperado"
                                                         class="form-control text-center" pattern="[0-9]+([.,][0-9]+)?"
@@ -404,7 +404,7 @@
                                                 </div>
 
                                                 <div class="col-md-4">
-                                                    <label for="SoporteImporte">Soporte:</label>
+                                                    <label for="SoporteImporte">Soporte del cobro:</label>
                                                     <input type="file" id="SoporteImporte" name="SoporteImporte"
                                                         class="form-control text-center" required>
                                                 </div>
@@ -511,12 +511,12 @@
                                                             table.innerHTML = `
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
-                                                            <th>Importe Recuperado</th>
-                                                            <th>Importe Restante</th>
+                                                            <th>Importe cobrado</th>
+                                                            <th>Importe restante</th>
                                                             <th>Observaciones</th>
-                                                            <th>Fecha Importe Recuperado</th>
-                                                            <th>Soporte</th>
-                                                            ${data.IDPerfil === 'C6' ? '<th>Validar</th>' : '<th>Validación</th>'}
+                                                            <th>Fecha importe cobrado</th>
+                                                            <th>Soporte del cobro</th>
+                                                            ${data.IDPerfil === 'C6' ? '<th>Autorizar</th>' : '<th>Autorización</th>'}
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -536,7 +536,7 @@
                                                                 <input type="text" class="form-control" value="<%= RFC %>" name="RFCValidacion" id="RFCValidacion-${importe.IDImporteRecuperado}" style="display:none;">
                                                                 <input type="datetime-local" class="form-control" value="${getFormattedDate(importe.FechaValidacion)}" name="fechaHoraValidacion" id="fechaHoraValidacion-${importe.IDImporteRecuperado}" style="display:none;">
                                                             </td>` : `
-                                                            <td>${importe.Validacion ? 'Validado' : 'Pendiente de Validación'}</td>
+                                                            <td>${importe.Validacion ? 'Autorizado' : 'Pendiente de autorización'}</td>
                                                             `}
                                                         </tr>
                                                     `;
@@ -570,7 +570,7 @@
                                             mostrarImporte();
                                         </script>
 
-                                        <h2>Plazos y fechas límites</h2>
+                                        <h2>PLAZOS Y FECHAS LÍMITE</h2>
                                         <hr>
                                         <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                                         <form id="plazos-form">
@@ -673,9 +673,9 @@
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
                                                             <th>RFC</th>
-                                                            <th>FECHA IMPORTANTE</th>
-                                                            <th>DESCRIPCION</th>
-                                                            <th>FECHA EN LA QUE SE INGRESO EL PLAZO</th>
+                                                            <th>Fecha importante</th>
+                                                            <th>Descripción</th>
+                                                            <th>Fecha en la que se ingreso la fecha</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -701,7 +701,7 @@
                                             }
                                             mostrarPlazo();
                                         </script>
-                                        <h2>Estado legal de la garantia: </h2>
+                                        <h2>ESTADO LEGAL DE LA GARANTÍA: </h2>
                                         <hr>
                                         <% if (['AD', 'AM'].includes(IDPerfil) || RFC === AbogadoAsistente || RFC === AbogadoResponsable) { %>
                                         <form id="garantia-form">
@@ -805,8 +805,8 @@
                                                             table.innerHTML = `
                                                                 <thead class="thead-dark">
                                                                     <tr class="table-dark">
-                                                                        <th>TIPO DE GARANTIA</th>
-                                                                        <th>DOCUMENTO SOPORTE</th>
+                                                                        <th>Tipo de garantía</th>
+                                                                        <th>Documento soporte</th>
                                                                     </tr>
                                                                 </thead>
                                                                 <tbody>

@@ -79,13 +79,13 @@
                                                 <div class="table-responsive">
                                                     <table class="table table-light container">
                                                         <thead class="thead-dark">
-                                                            <tr>
+                                                            <tr class="table-dark">
                                                                 <th>RFC</th>
-                                                                <th>EXPEDIENTE</th>
-                                                                <th>JUZGADO</th>
-                                                                <th>JURISDICCIÓN</th>
-                                                                <th>FECHA DE REGISTRO DEL PROCESO JUDICIAL</th>
-                                                                <th>ESTADO DEL CASO</th>
+                                                                <th>Expediente</th>
+                                                                <th>Juzgado</th>
+                                                                <th>Jurisdicción</th>
+                                                                <th>Fecha de registro del proceso judicial</th>
+                                                                <th>Estado del caso</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -201,14 +201,14 @@
                                                 .then(data => {
                                                     const documentosProcesales = data.documentosProcesales;
                                                     const documentosTable = document.createElement('table');
-                                                    documentosTable.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'table-responsive');
+                                                    documentosTable.classList.add('table', 'table-striped', 'table-bordered', 'table-hover', 'table-striped-columns');
                     
                                                     const documentosTableHead = `
                                                         <thead class="thead-dark">
                                                             <tr class ="table-dark">
                                                                 <th>RFC</th>
                                                                 <th>Documento</th>
-                                                                <th>Fecha Subida</th>
+                                                                <th>Fecha de carga</th>
                                                             </tr>
                                                         </thead>`;
                                                     documentosTable.innerHTML = documentosTableHead;
@@ -296,7 +296,7 @@
                     </script>
                     
                         <form id="form-FeedbackCliente">
-                            <h2>Feedback del caso</h2>
+                            <h2>FEEDBACK DEL CASO</h2>
                             <hr>
                             <div class="col-md-6">
                                 <div class="mb-3">
@@ -377,8 +377,8 @@
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
                                                             <th>RFC</th>
-                                                            <th>RETROALIMENTACIÓN</th>
-                                                            <th>FECHA DE REGISTRO</th>
+                                                            <th>Feedback</th>
+                                                            <th>Fecha y horas de registro</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>

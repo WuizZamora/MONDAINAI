@@ -47,11 +47,12 @@
                             <th scope="row">1</th>
                             <td>
                                 <select class="form-select text-center" id="TipoDocumento1" name="TipoDocumento1"
-                                    onchange="mostrarPromedio(1)" required>
+                                    onchange="mostrarFechas(1)" required>
                                     <option selected disabled value=""></option>
                                     <option value="factura">Factura</option>
                                     <option value="contrato">Contrato</option>
                                     <option value="ticket">Ticket</option>
+                                    <option value="otros">Otros</option>
                                 </select>
                             </td>
                             <td>
@@ -60,24 +61,24 @@
                             </td>
 
                             <td>
-                                <input type="date" class="form-control text-center" id="FechaSoporte1"
-                                    name="FechaSoporte1" required />
+                                <input type="date" class="form-control" id="FechaSoporte1"
+                                    oninput="calcularDiferencia()">
                             </td>
                             <td>
-                                <input type="date" class="form-control text-center" id="FechaSoporteVencimiento1"
-                                    name="FechaSoporteVencimiento1" required />
+                                <input type="date" class="form-control" id="FechaSoporteVencimiento1"
+                                    oninput="calcularDiferencia()">
                             </td>
                             <td>
                                 <input type="number" class="form-control text-center" id="ImporteTotal1"
                                     name="ImporteTotal1" inputmode="numeric" required />
                             </td>
                             <td>
-                                <input type="number" class="form-control text-center" id="ImporteRestante1"
-                                    name="ImporteRestante1" inputmode="numeric" required />
+                                <input type="number" class="form-control" id="ImporteRestante1"
+                                    oninput="calcularDiferencia()" inputmode="numeric" required>
                             </td>
                             <td>
                                 <input type="text" class="form-control text-center" id="PromedioPonderado1"
-                                    name="PromedioPonderado1" value="1" readonly required style="display: none" />
+                                    name="PromedioPonderado1" readonly required>
                             </td>
                         </tr>
                     </tbody>
@@ -92,9 +93,19 @@
             </button>
             <br><br>
             <div class="row mb-3 align-items-end justify-content-center">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Atención:</strong> Sube el estado de cuenta detallado y los documentos soporte
+                                en formato .zip
+                            </div>
+                        </div>
+                    </div>
+                </div>
                 <div class="col-md-6">
                     <div class="mb-3">
-                        <label class="form-label">SUBA LA DOCUMENTACIÓN SOPORTE DE LAS FACTURAS EN UN .ZIP</label>
+                        <label class="form-label" style="display: none;"></label>
                         <input type="file" class="form-control" name="SoporteEdoDeCuenta" required>
                     </div>
                 </div>
@@ -115,7 +126,7 @@
             </div>
         </div>
     </div>
-    </form>
+
     <div id="footer"></div>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
@@ -164,65 +175,104 @@
         });
 
         function agregarFila() {
-            var table = document.getElementById("dataTable");
-            var rowCount = table.rows.length;
+    var table = document.getElementById("dataTable");
+    var rowCount = table.rows.length;
 
-            var row = table.insertRow(rowCount);
-            var cell1 = row.insertCell(0);
-            var cell2 = row.insertCell(1);
-            var cell3 = row.insertCell(2);
-            var cell4 = row.insertCell(3);
-            var cell5 = row.insertCell(4);
-            var cell6 = row.insertCell(5);
-            var cell7 = row.insertCell(6);
-            var cell8 = row.insertCell(7);
+    var row = table.insertRow(rowCount);
+    var cell1 = row.insertCell(0);
+    var cell2 = row.insertCell(1);
+    var cell3 = row.insertCell(2);
+    var cell4 = row.insertCell(3);
+    var cell5 = row.insertCell(4);
+    var cell6 = row.insertCell(5);
+    var cell7 = row.insertCell(6);
+    var cell8 = row.insertCell(7);
 
-            cell1.innerHTML = rowCount;
-            cell2.innerHTML =
-                '<select class="form-select text-center" id="TipoDocumento' +
-                rowCount +
-                '" name="TipoDocumento' +
-                rowCount +
-                '" onchange="mostrarPromedio(' +
-                rowCount +
-                ')" required> <option selected disabled value=""></option> <option value="factura">Factura</option><option value="contrato">Contrato</option><option value="ticket">Ticket</option></select>';
-            cell3.innerHTML =
-                '<input type="text" name="NoDeDocumento' +
-                rowCount +
-                '" id="NoDeDocumento' +
-                rowCount +
-                '" class="form-control" maxlength="150" required>';
-            cell4.innerHTML =
-                '<input type="date" class="form-control text-center" id="FechaSoporte' +
-                rowCount +
-                '" name = "FechaSoporte' +
-                rowCount +
-                '" required>';
-            cell5.innerHTML =
-                '<input type="date" class="form-control text-center" id="FechaSoporteVencimiento' +
-                rowCount +
-                '" name = "FechaSoporteVencimiento' +
-                rowCount +
-                '"  required>';
-            cell6.innerHTML =
-                '<input type="number" class="form-control text-center" id="ImporteTotal' +
-                rowCount +
-                '" name = "ImporteTotal' +
-                rowCount +
-                '" required>';
-            cell7.innerHTML =
-                '<input type="number" class="form-control text-center" id="ImporteRestante' +
-                rowCount +
-                '" name = "ImporteRestante' +
-                rowCount +
-                '" required>';
-            cell8.innerHTML =
-                '<input type="text" class="form-control text-center" id="PromedioPonderado' +
-                rowCount +
-                '" name = "PromedioPonderado' +
-                rowCount +
-                '" value="##" readonly required" style="display: none;">';
+    cell1.innerHTML = rowCount;
+    cell2.innerHTML =
+        '<select class="form-select text-center" id="TipoDocumento' +
+        rowCount +
+        '" name="TipoDocumento' +
+        rowCount +
+        '" onchange="mostrarFechas(' +
+        rowCount +
+        ')" required> <option selected disabled value=""></option> <option value="factura">Factura</option><option value="contrato">Contrato</option><option value="ticket">Ticket</option><option value="Otros">Otros</option></select>';
+    cell3.innerHTML =
+        '<input type="text" name="NoDeDocumento' +
+        rowCount +
+        '" id="NoDeDocumento' +
+        rowCount +
+        '" class="form-control" maxlength="150" required oninput="calcularDiferencia()">';
+    cell4.innerHTML =
+        '<input type="date" class="form-control text-center" id="FechaSoporte' +
+        rowCount +
+        '" name = "FechaSoporte' +
+        rowCount +
+        '" required oninput="calcularDiferencia()">';
+    cell5.innerHTML =
+        '<input type="date" class="form-control text-center" id="FechaSoporteVencimiento' +
+        rowCount +
+        '" name = "FechaSoporteVencimiento' +
+        rowCount +
+        '" required oninput="calcularDiferencia()">';
+    cell6.innerHTML =
+        '<input type="number" class="form-control text-center" id="ImporteTotal' +
+        rowCount +
+        '" name = "ImporteTotal' +
+        rowCount +
+        '" required oninput="calcularDiferencia()">';
+    cell7.innerHTML =
+        '<input type="number" class="form-control text-center" id="ImporteRestante' +
+        rowCount +
+        '" name = "ImporteRestante' +
+        rowCount +
+        '" required oninput="calcularDiferencia()">';
+    cell8.innerHTML =
+        '<input type="text" class="form-control text-center" id="PromedioPonderado' +
+        rowCount +
+        '" name="PromedioPonderado' +
+        rowCount +
+        '" readonly required>';
+
+    // Llamar a la función para actualizar los cálculos
+    calcularDiferencia();
+}
+
+function calcularDiferencia() {
+    // Obtenemos todas las filas de la tabla
+    const filas = document.querySelectorAll('#dataTable tbody tr');
+
+    // Iteramos por cada fila
+    filas.forEach((fila, index) => {
+        const fechaSoporte = fila.querySelector(`[id^="FechaSoporte"]`).value;
+        const fechaSoporteVencimiento = fila.querySelector(`[id^="FechaSoporteVencimiento"]`).value;
+
+        if (fechaSoporte && fechaSoporteVencimiento) {
+            const fecha1 = new Date(fechaSoporte);
+            const fecha2 = new Date(fechaSoporteVencimiento);
+
+            const diferenciaMs = fecha2 - fecha1;
+            const diferenciaDias = Math.floor(diferenciaMs / (1000 * 60 * 60 * 24));
+
+            calcularOperacion(fila, diferenciaDias);
+        } else {
+            fila.querySelector(`[id^="PromedioPonderado"]`).value = '';
         }
+    });
+}
+
+function calcularOperacion(fila, diferenciaDias) {
+    const importeRestante = parseFloat(fila.querySelector(`[id^="ImporteRestante"]`).value);
+
+    if (importeRestante && diferenciaDias) {
+        const resultadoOperacion = (importeRestante * diferenciaDias) / importeRestante;
+        fila.querySelector(`[id^="PromedioPonderado"]`).value = resultadoOperacion.toFixed(2); // Limitar a dos decimales
+    } else {
+        fila.querySelector(`[id^="PromedioPonderado"]`).value = '';
+    }
+}
+
+
 
         function eliminarFila() {
             var table = document.getElementById("dataTable");
@@ -236,17 +286,16 @@
             }
         }
 
-        function mostrarPromedio(rowCount) {
+        function mostrarFechas(rowCount) {
             var tipoDocumento = document.getElementById("TipoDocumento" + rowCount).value;
-            var promedioPonderado = document.getElementById("PromedioPonderado" + rowCount);
+            // var promedioPonderado = document.getElementById("PromedioPonderado" + rowCount);
             var fechaVencimiento = document.getElementById("FechaSoporteVencimiento" + rowCount);
 
             if (tipoDocumento === "factura") {
-                promedioPonderado.style.display = "";
                 // Limpiar el campo de fecha de vencimiento solo si es factura
                 fechaVencimiento.value = "";
             } else {
-                promedioPonderado.style.display = "";
+
                 if (tipoDocumento === "ticket" || tipoDocumento === "contrato") {
                     // Obtener la fecha actual
                     var today = new Date();
