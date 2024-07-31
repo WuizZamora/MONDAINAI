@@ -10,6 +10,13 @@ exports.renderObtenerCotizacion = (req, res) => {
       console.error("Error ejecutando la consulta:", error.stack);
       return res.status(500).send("Error en el servidor");
     }
+    // Formatear las fechas antes de enviar la respuesta
+    results = results.map((row) => {
+      return {
+        ...row,
+        FechaCotizacion: moment(row.FechaRegistro).format("YYYY-MM-DD"),
+      };
+    });
     res.json({ resultados: results, IDPerfil: IDPerfil });
   });
 };

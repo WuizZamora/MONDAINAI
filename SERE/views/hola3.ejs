@@ -186,7 +186,7 @@
                                             table.innerHTML = `
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
-                                                            <th>RFC</th>
+                                                            <th>Abogado</th>
                                                             <th>Expediente</th>
                                                             <th>Juzgado</th>
                                                             <th>Jurisdicción</th>
@@ -200,7 +200,7 @@
                                             data.resultados.forEach(proceso => {
                                                 table.innerHTML += `
                                                         <tr>
-                                                            <td>${proceso.RFCDespacho}</td>
+                                                            <td>${proceso.RFCDespacho.substring(0, 4)}</td>
                                                             <td style=" word-break: break-word; white-space: normal;">${proceso.Expediente}</td>
                                                             <td style=" word-break: break-word; white-space: normal;">${proceso.Juzgado}</td>
                                                             <td style=" word-break: break-word; white-space: normal;">${proceso.Jurisdiccion}</td>
@@ -494,7 +494,7 @@
                 <div class="accordion-item">
                     <h2 class="accordion-header" id="headingPagare${pagare.id}">
                         <button class="accordion-button collapsed custom-header" type="button" data-bs-toggle="collapse" data-bs-target="#collapsePagare${pagare.id}" aria-expanded="false" aria-controls="collapsePagare${pagare.id}">
-                            Pagaré - ${pagare.id}
+                            PAGARÉ - ${pagare.fechaPrescripcion}
                         </button>
                     </h2>
                     <div id="collapsePagare${pagare.id}" class="accordion-collapse collapse" aria-labelledby="headingPagare${pagare.id}" data-bs-parent="#accordionPagare${pagare.id}">
@@ -508,8 +508,8 @@
                                     </thead>
                                     <tbody>
                                         <tr>
-                                            <td class="table-dark">RFC</td>
-                                            <td>${pagare.rfcDespacho}</td>
+                                            <td class="table-dark">Abogado</td>
+                                            <td>${pagare.rfcDespacho.substring(0, 4)}</td>
                                         </tr>
                                         <tr>
                                             <td class="table-dark">Fecha y Hora del Pagaré</td>

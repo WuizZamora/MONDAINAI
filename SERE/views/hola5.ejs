@@ -134,7 +134,7 @@
                                         data.resultados.forEach(comentario => {
                                             table.innerHTML += `
                                                     <tr>
-                                                        <td>${comentario.RFCDespacho}</td>
+                                                        <td>${comentario.RFCDespacho.substring(0,4)}</td>
                                                         <td style=" word-break: break-word; white-space: normal;">${comentario.Retroalimentacion}</td>
                                                         <td>${comentario.FechaRegistro}</td>
                                                     </tr>

@@ -181,7 +181,7 @@
                         table.innerHTML = `
             <thead class="thead-dark">
                 <tr class="table-dark">
-                    <th>RFC Despacho</th>
+                    <th>Despacho</th>
                     <th>Fecha Cotizacion</th>
                     <th>Tipo de Caso</th>
                     <th>Comentarios</th>
@@ -195,7 +195,7 @@
                         data.resultados.forEach(cotizacion => {
                             table.innerHTML += `
                 <tr>
-                    <td>${cotizacion.RFCDespacho}</td>
+                    <td>${cotizacion.RFCDespacho.substring(0, 4)}</td>
                     <td>${cotizacion.FechaCotizacion}</td>
                     <td>${cotizacion.TipoDeCaso}</td>
                     <td>${cotizacion.Comentarios}</td>

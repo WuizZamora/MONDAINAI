@@ -27,11 +27,21 @@
                 <div class="col-md-6">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control text-center" id="filtroRazonSocial"
-                               placeholder="Ingrese razón social">
+                               placeholder="Ingrese razón social del deudor">
                         <button class="btn btn-outline-secondary" type="button" id="btnBuscarRazonSocial"><i
                                 class="bi bi-search"></i></button>
                     </div>
                 </div>
+                <% if (!IDPerfil || IDPerfil === 'AD' ) { %>
+                    <div class="col-md-6">
+                        <div class="input-group mb-3">
+                            <input type="text" class="form-control text-center" id="filtroRazonSocialTitular"
+                                   placeholder="Ingrese razón social del titular de la cuenta">
+                            <button class="btn btn-outline-secondary" type="button" id="btnBuscarRazonSocialTitular"><i
+                                    class="bi bi-search"></i></button>
+                        </div>
+                    </div>
+                <% } %>
             </div>
             <table class="table table-striped table-bordered" id="clienteTable">
                 <thead class="thead-dark">
@@ -39,6 +49,12 @@
                         <th># de caso</th>
                         <th>Fecha de Asignación</th>
                         <th>Razón Social del deudor</th>
+                        <% if (!IDPerfil || IDPerfil === 'AD') { %>
+                            <th>Titular de la cuenta</th>    
+                        <% } %>
+                        <% if (!IDPerfil || IDPerfil !== 'AD' ) { %>
+                            <th>Despacho</th>
+                        <% } %>
                         <th>Tipo de Caso</th>
                         <% if (IDPerfil === 'AD') { %>
                         <th>Abogado Responsable</th>
@@ -63,6 +79,16 @@
                             <td>
                                 <%= dato.RazonSocial %>
                             </td>
+                            <% if (!IDPerfil || IDPerfil === 'AD') { %>
+                             <td>
+                                <%= dato.NombreUsuario %>
+                             </td>
+                            <% } %>
+                            <% if (!IDPerfil || IDPerfil !== 'AD' ) { %>
+                                <td>
+                                    <%= dato.NombreDespacho %>
+                                </td>
+                            <% } %>
                             <td>
                                 <%= dato.TipoDeCaso %>
                             </td>
@@ -196,7 +222,6 @@
             $("#header").load("/header");
             $("#footer").load("/footer");
     
-            // Variables y configuración inicial
             const rowsPerPage = 10;
             const tableBody = document.getElementById('clienteTableBody');
             const pagination = document.getElementById('pagination');
@@ -247,28 +272,29 @@
             displayPage(currentPage);
             setupPagination();
     
-            // Función para filtrar filas de la tabla
             function filtrar() {
                 const filtroNumeroCaso = $('#filtroNumeroCaso').val().trim().toLowerCase();
                 const filtroRazonSocial = $('#filtroRazonSocial').val().trim().toLowerCase();
+                const filtroRazonSocialTitular = $('#filtroRazonSocialTitular').val().trim().toLowerCase();
     
                 rows.forEach(row => {
                     const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
                     const razonSocial = row.querySelector('td:nth-child(3)').textContent.trim().toLowerCase();
+                    const razonSocialTitular = row.querySelector('td:nth-child(4)').textContent.trim().toLowerCase();
     
                     const matchNumeroCaso = numeroCaso.includes(filtroNumeroCaso);
                     const matchRazonSocial = razonSocial.includes(filtroRazonSocial);
+                    const matchRazonSocialTitular = razonSocialTitular.includes(filtroRazonSocialTitular);
     
-                    row.style.display = (matchNumeroCaso && matchRazonSocial) ? '' : 'none';
+                    row.style.display = (matchNumeroCaso && matchRazonSocial && matchRazonSocialTitular) ? '' : 'none';
                 });
     
                 currentPage = 1;
                 updatePagination();
             }
     
-            // Eventos para activar el filtrado
-            $('#filtroNumeroCaso, #filtroRazonSocial').on('input', filtrar);
-            $('#btnBuscar, #btnBuscarRazonSocial').on('click', filtrar);
+            $('#filtroNumeroCaso, #filtroRazonSocial, #filtroRazonSocialTitular').on('input', filtrar);
+            $('#btnBuscar, #btnBuscarRazonSocial, #btnBuscarRazonSocialTitular').on('click', filtrar);
         });
     </script>
 </body>

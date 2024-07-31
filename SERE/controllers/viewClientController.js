@@ -56,65 +56,72 @@ exports.renderNavSere = (req, res) => {
 // VAMOS A DARLE
 exports.renderEjemplo = (req, res) => {
   const { RFCAsociado, IDPerfil, RFC } = req.session.usuario;
-
   let queryDatos;
   let queryRFCAsociados = null;
   let queryParams = [];
 
-  if (IDPerfil === 'AD') {
-    // Consultas para el perfil AD
+  if (IDPerfil === "AD") {
     queryDatos = `
-        SELECT 
-          c.IDCuenta, 
-          c.FechaDeAsignacion, 
-          c.TipoDeCaso,
-          d.RazonSocial
-        FROM 
-          Cliente_InfGeneralCuenta c
-        JOIN 
-          Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
-        WHERE 
-          c.RFCDespacho = ? AND EXISTS (
-            SELECT 1
-            FROM Despacho_Cotizacion dc
-            WHERE dc.IDCuenta = c.IDCuenta
-              AND dc.IDCotizacion = (
-                SELECT MAX(dc2.IDCotizacion)
-                FROM Despacho_Cotizacion dc2
-                WHERE dc2.IDCuenta = c.IDCuenta
-              )
-              AND dc.Validacion = TRUE
-          )
-      `;
-
+      SELECT 
+        c.IDCuenta, 
+        c.FechaDeAsignacion, 
+        c.TipoDeCaso,
+        d.RazonSocial, 
+        c.RFCUsuario,
+        u.Nombre AS NombreUsuario -- Añadir esta línea para obtener el nombre del usuario
+      FROM 
+        Cliente_InfGeneralCuenta c
+      JOIN 
+        Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
+      JOIN 
+        Usuarios u ON c.RFCUsuario = u.RFC -- Añadir este JOIN para enlazar con la tabla Usuarios
+      WHERE 
+        c.RFCDespacho = ? AND EXISTS (
+          SELECT 1
+          FROM Despacho_Cotizacion dc
+          WHERE dc.IDCuenta = c.IDCuenta
+            AND dc.IDCotizacion = (
+              SELECT MAX(dc2.IDCotizacion)
+              FROM Despacho_Cotizacion dc2
+              WHERE dc2.IDCuenta = c.IDCuenta
+            )
+            AND dc.Validacion = TRUE
+        )
+    `;
     queryRFCAsociados = `
-        SELECT RFC FROM Usuarios WHERE RFCAsociado = ?
-      `;
-
+      SELECT RFC FROM Usuarios WHERE RFCAsociado = ?
+    `;
     queryParams = [RFCAsociado];
   } else if (!IDPerfil) {
-    // Consulta alternativa cuando IDPerfil no existe
     queryDatos = `
       WITH UltimosCasos AS (
-          SELECT IDCuenta, MAX(IDAsignacionDeCaso) AS UltimoIDAsignacionDeCaso
-          FROM Despacho_AsignacionDeCaso
-          GROUP BY IDCuenta
+        SELECT IDCuenta, MAX(IDAsignacionDeCaso) AS UltimoIDAsignacionDeCaso
+        FROM Despacho_AsignacionDeCaso
+        GROUP BY IDCuenta
       ),
       CasosConRFC AS (
-          SELECT a.IDCuenta, a.IDAsignacionDeCaso
-          FROM Despacho_AsignacionDeCaso a
-          JOIN UltimosCasos u ON a.IDCuenta = u.IDCuenta AND a.IDAsignacionDeCaso = u.UltimoIDAsignacionDeCaso
-          WHERE a.AbogadoResponsable = 'ZAPL0108266K6' OR a.AbogadoAsistente = 'ZAPL0108266K6'
+        SELECT a.IDCuenta, a.IDAsignacionDeCaso
+        FROM Despacho_AsignacionDeCaso a
+        JOIN UltimosCasos u ON a.IDCuenta = u.IDCuenta AND a.IDAsignacionDeCaso = u.UltimoIDAsignacionDeCaso
+        WHERE a.AbogadoResponsable = 'ZAPL0108266K7' OR a.AbogadoAsistente = 'ZAPL0108266K7'
       )
       SELECT 
         c.IDCuenta, 
         c.FechaDeAsignacion, 
         c.TipoDeCaso,
-        d.RazonSocial
+        d.RazonSocial,
+        c.RFCDespacho,
+        c.RFCUsuario,
+        u.Nombre AS NombreUsuario, -- Añadir esta línea para obtener el nombre del usuario
+        ud.Nombre AS NombreDespacho -- Añadir esta línea para obtener el nombre del usuario
       FROM 
         Cliente_InfGeneralCuenta c
       JOIN 
         Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
+      JOIN 
+        Usuarios u ON c.RFCUsuario = u.RFC -- Añadir este JOIN para enlazar con la tabla Usuarios
+      JOIN 
+        Usuarios ud ON c.RFCDespacho = ud.RFC -- Añadir este JOIN para enlazar con la tabla Usuarios
       WHERE 
         c.IDCuenta IN (
           SELECT IDCuenta
@@ -134,83 +141,106 @@ exports.renderEjemplo = (req, res) => {
     `;
     queryParams = [];
   } else {
-    // Consultas para otros perfiles
     queryDatos = `
-        SELECT 
-          c.IDCuenta, 
-          c.FechaDeAsignacion, 
-          c.TipoDeCaso,
-          d.RazonSocial
-        FROM 
-          Cliente_InfGeneralCuenta c
-        JOIN 
-          Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
-        WHERE 
-          c.RFCUsuario = ? AND EXISTS (
-            SELECT 1
-            FROM Despacho_Cotizacion dc
-            WHERE dc.IDCuenta = c.IDCuenta
-              AND dc.IDCotizacion = (
-                SELECT MAX(dc2.IDCotizacion)
-                FROM Despacho_Cotizacion dc2
-                WHERE dc2.IDCuenta = c.IDCuenta
-              )
-              AND dc.Validacion = TRUE
-          )
-      `;
-
+      SELECT 
+        c.IDCuenta, 
+        c.FechaDeAsignacion, 
+        c.TipoDeCaso,
+        d.RazonSocial,
+        c.RFCDespacho,
+        u.Nombre AS NombreDespacho -- Añadir esta línea para obtener el nombre del usuario
+      FROM 
+        Cliente_InfGeneralCuenta c
+      JOIN 
+        Cliente_InfDeudor d ON c.IDCuenta = d.IDCuenta
+      JOIN 
+      Usuarios u ON c.RFCDespacho = u.RFC -- Añadir este JOIN para enlazar con la tabla Usuarios
+      WHERE 
+        c.RFCUsuario = ? AND EXISTS (
+          SELECT 1
+          FROM Despacho_Cotizacion dc
+          WHERE dc.IDCuenta = c.IDCuenta
+            AND dc.IDCotizacion = (
+              SELECT MAX(dc2.IDCotizacion)
+              FROM Despacho_Cotizacion dc2
+              WHERE dc2.IDCuenta = c.IDCuenta
+            )
+            AND dc.Validacion = TRUE
+        )
+    `;
     queryParams = [RFC];
   }
 
-  // Ejecutar la consulta de datos
   pool.query(queryDatos, queryParams, (error, results) => {
     if (error) {
       console.error("Error ejecutando la consulta de datos:", error);
       return res.status(500).send("Error interno del servidor");
     }
 
-    // Si el perfil es AD, ejecutar también la consulta de RFC asociados
     if (queryRFCAsociados) {
       pool.query(queryRFCAsociados, [RFCAsociado], (error, rfcResults) => {
         if (error) {
-          console.error("Error ejecutando la consulta de RFC asociados:", error);
+          console.error(
+            "Error ejecutando la consulta de RFC asociados:",
+            error
+          );
           return res.status(500).send("Error interno del servidor");
         }
 
         const formattedResults = results.map((result) => {
-          const formattedDate = new Date(
-            result.FechaDeAsignacion
-          ).toLocaleDateString("es-ES", {
-            day: "2-digit",
-            month: "2-digit",
-            year: "numeric",
-          });
           return {
             ...result,
-            FechaDeAsignacion: formattedDate,
+            FechaDeAsignacion: new Date(
+              result.FechaDeAsignacion
+            ).toLocaleDateString("es-ES", {
+              day: "2-digit",
+              month: "2-digit",
+              year: "numeric",
+            }),
+            FechaDeCierre: result.FechaDeCierre
+              ? new Date(result.FechaDeCierre).toLocaleDateString("es-ES", {
+                  day: "2-digit",
+                  month: "2-digit",
+                  year: "numeric",
+                })
+              : "N/A",
           };
         });
 
         const rfcAsociados = rfcResults.map((row) => row.RFC);
 
-        res.render("ejemplo", { datos: formattedResults, rfcAsociados, IDPerfil });
+        res.render("ejemplo", {
+          datos: formattedResults,
+          rfcAsociados,
+          IDPerfil,
+        });
       });
     } else {
       const formattedResults = results.map((result) => {
-        const formattedDate = new Date(
-          result.FechaDeAsignacion
-        ).toLocaleDateString("es-ES", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-        });
         return {
           ...result,
-          FechaDeAsignacion: formattedDate,
+          FechaDeAsignacion: new Date(
+            result.FechaDeAsignacion
+          ).toLocaleDateString("es-ES", {
+            day: "2-digit",
+            month: "2-digit",
+            year: "numeric",
+          }),
+          FechaDeCierre: result.FechaDeCierre
+            ? new Date(result.FechaDeCierre).toLocaleDateString("es-ES", {
+                day: "2-digit",
+                month: "2-digit",
+                year: "numeric",
+              })
+            : "N/A",
         };
       });
 
-      res.render("ejemplo", { datos: formattedResults, rfcAsociados: [], IDPerfil });
+      res.render("ejemplo", {
+        datos: formattedResults,
+        rfcAsociados: [],
+        IDPerfil,
+      });
     }
   });
 };
@@ -268,7 +298,10 @@ exports.renderDatosDelDeudor = (req, res) => {
       EstadoCotizacion: result.EstadoCotizacion,
     }));
 
-    res.render("partials/DatosDelDeudor", { datos: formattedResults, IDPerfil });
+    res.render("partials/DatosDelDeudor", {
+      datos: formattedResults,
+      IDPerfil,
+    });
   });
 };
 
@@ -797,7 +830,6 @@ exports.renderhola4 = [
     }
   },
 ];
-
 
 exports.renderhola5 = [
   obtenerDatosDeudor,
