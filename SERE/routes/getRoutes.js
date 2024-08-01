@@ -22,6 +22,7 @@ router.get("/Clientes", verificarAutenticacion, viewClient.renderClientes);
 router.get("/Contingencias", verificarAutenticacion, viewClient.renderContingencias);
 router.get("/AsignarRol", verificarAutenticacion, viewClient.renderAsignarRol);
 router.get("/NavSere", verificarAutenticacion, viewClient.renderNavSere);
+router.get("/AltaInfGeneral", verificarAutenticacion, viewClient.renderAltaInfGeneral);
 router.get("/Ejemplo", verificarAutenticacion, viewClient.renderEjemplo);
 router.get("/DatosDelDeudor", verificarAutenticacion, viewClient.renderDatosDelDeudor);
 router.get("/datos", verificarAutenticacion, viewClient.renderdatos);

@@ -11,7 +11,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <%- include('partials/NavMondainaiSere') %>
+    <!-- <div id="header"></div> -->
     <div class="container text-center">
         <%- include('partials/NavSere') %>
             <div class="row">
@@ -106,10 +107,10 @@
                                                 table.innerHTML = `
                                 <thead class="thead-dark">
                                     <tr class="table-dark">
-                                        <th>ABOGADO</th>
+                                        <th>USUARIO QUE CAPTURA</th>
                                         <th>FORMATO INCOBRABILIDAD</th>
                                         <th>COMENTARIOS</th>
-                                        <th>FECHA EN LA QUE SE INGRESO</th>
+                                        <th>FECHA DE CAPTURA</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -137,21 +138,10 @@
                             </script>
 
                             <% } else { %>
-                                <div class="col-md-3 align-items-center d-flex justify-content-center">
-                                    <!-- Añadida la clase para centrar -->
-                                    <div class="list-group">
-                                        <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
-                                        <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
-                        list-group-item-action">Información Financiera y Legal</a>
-                                        <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
-                                            class="list-group-item list-group-item-action">Detalles del Proceso
-                                            Judicial</a>
-                                        <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
-                                            class="list-group-item list-group-item-action">Seguimiento y Gestión del
-                                            Caso</a>
-                                    </div>
+                                <div style="padding-left: 3rem; padding-right: 3rem;">
+                                    <%- include('partials/NavSereGestion') %>
                                 </div>
-                                <div class="col-md-9">
+                                <div class="col-md-12">
                                     <h2>INFORMACIÓN FINANCIERA Y LEGAL</h2>
                                     <hr>
                                     <%- include('partials/DatosDeudorGestionCaso') %>
@@ -326,12 +316,14 @@
                                                                     mensaje.textContent = 'No hay costos y honorarios para esta cuenta aún.';
                                                                     listaCostos.appendChild(mensaje);
                                                                 } else {
+                                                                    const tableResponsive = document.createElement('div');
+                                                                    tableResponsive.classList.add('table-responsive-sm')
                                                                     const table = document.createElement('table');
                                                                     table.classList.add('table', 'table-hover', 'table-striped-columns', 'container');
                                                                     table.innerHTML = `
                                                 <thead class="thead-dark">
                                                     <tr class="table-dark">
-                                                        <th>Abogado</th>
+                                                        <th>Usuario que captura</th>
                                                         <th>Tipo</th>
                                                         <th>Cantidad</th>
                                                         <th>Descripción</th>
@@ -527,16 +519,18 @@
                                                                             mensaje.textContent = 'No hay importes recuperados para esta cuenta aún.';
                                                                             listaImportes.appendChild(mensaje);
                                                                         } else {
+                                                                            const tableResponsive = document.createElement('div');
+                                                                    tableResponsive.classList.add('table-responsive-sm')
                                                                             const table = document.createElement('table');
                                                                             table.classList.add('table', 'table-striped-columns', 'container');
                                                                             table.innerHTML = `
                                                                                 <thead class="thead-dark">
                                                                                     <tr class="table-dark">
-                                                                                        <th>Abogado</th>
+                                                                                        <th>Usuario que captura</th>
                                                                                         <th>Importe cobrado</th>
                                                                                         <th>Importe restante</th>
                                                                                         <th>Observaciones</th>
-                                                                                        <th>Fecha importe cobrado</th>
+                                                                                        <th>Fecha de captura</th>
                                                                                         <th>Soporte del cobro</th>
                                                                                         ${data.IDPerfil === 'C6' ? '<th>Autorizar</th>' : '<th>Autorización</th>'}
                                                                                     </tr>
@@ -702,15 +696,17 @@
                                                                                     mensaje.textContent = 'No hay plazos o fechas importantes recuperados para esta cuenta aún.';
                                                                                     listaPlazos.appendChild(mensaje);
                                                                                 } else {
+                                                                                    const tableResponsive = document.createElement('div');
+                                                                    tableResponsive.classList.add('table-responsive-sm')
                                                                                     const table = document.createElement('table');
                                                                                     table.classList.add('table', 'table-striped-columns', 'container');
                                                                                     table.innerHTML = `
                                                     <thead class="thead-dark">
                                                         <tr class="table-dark">
-                                                            <th>Abogado</th>
+                                                            <th>Usuario que captura</th>
                                                             <th>Fecha importante</th>
                                                             <th>Descripción</th>
-                                                            <th>Fecha en la que se ingreso la fecha</th>
+                                                            <th>Fecha de captura</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody>
@@ -851,6 +847,8 @@
                                                                                             mensaje.textContent = 'No hay retroalimentacion de la garantia recuperada para esta cuenta aún.';
                                                                                             listaGarantia.appendChild(mensaje);
                                                                                         } else {
+                                                                                            const tableResponsive = document.createElement('div');
+                                                                    tableResponsive.classList.add('table-responsive-sm')
                                                                                             const table = document.createElement('table');
                                                                                             table.classList.add('table', 'table-striped', 'table-striped-columns', 'container');
                                                                                             table.innerHTML = `
@@ -872,7 +870,7 @@
                                                                     <tr>
                                                                         <td class="table-dark">
                                                                             <strong>
-                                                                             Abogado:
+                                                                             Usuario que captura:
                                                                             </strong>
                                                                         </td>
                                                                         <td colspan="2">${garantia.RFCDespacho.substring(0, 4)}</td>
@@ -880,7 +878,7 @@
                                                                     <tr>
                                                                         <td class="table-dark">
                                                                             <strong>
-                                                                                Retroalimentación:
+                                                                                Diagnostico de la garantía:
                                                                             </strong>
                                                                         </td>
                                                                         <td colspan="2" style=" word-break: break-word; white-space: normal;">${garantia.RetroAlimentacion}</td>
@@ -888,7 +886,7 @@
                                                                     <tr>
                                                                         <td class="table-dark">
                                                                             <strong>
-                                                                                Fecha de Registro:
+                                                                                Fecha de captura:
                                                                             </strong>
                                                                         </td>
                                                                         <td colspan="2">${garantia.FechaRegistro}</td>

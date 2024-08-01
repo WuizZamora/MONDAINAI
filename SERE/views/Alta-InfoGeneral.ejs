@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SOLICITUD | ALTA</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+    <link rel="stylesheet" href="/sere/css/Alta-InfoGeneral.css">
+</head>
+
+<body>
+    <div id="header"></div>
+    <div class="container text-center">
+        <div id="NavSere"></div>
+        <h2>Información general de la cuenta</h2>
+        <hr>
+        <form method="post" class="needs-validation"
+            id="mi-formulario" novalidate>
+            <div class="row mb-3 align-items-end">
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="NoClientePadre"># DE CLIENTE PADRE: *</label>
+                        <input type="text" class="form-control" name="NoClientePadre" id="NoClientePadre" maxlength="10"
+                            required>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="NoClienteHijo"># DE CLIENTE HIJO: *</label>
+                        <input type="text" class="form-control" name="NoClienteHijo" id="NoClienteHijo" maxlength="10"
+                            required>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="TipoDeCaso">TIPO DE CASO (C): *</label>
+                        <select class="form-select" name="TipoDeCaso" id="TipoDeCaso" required>
+                            <option selected disabled value=""></option>
+                            <option value="ExtraJudicial">EXTRAJUDICIAL</option>
+                            <option value="Judicial">JUDICIAL</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3 mx-auto">
+                    <div class="mb-3">
+                        <label class="form-label" for="FechaDeAsignacion">FECHA DE ASIGNACIÓN: *</label>
+                        <input type="date" class="form-control" name="FechaDeAsignacion" id="FechaDeAsignacion" readonly
+                            required>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="RFCDespacho">RFC DEL DESPACHO A ASIGNAR AL CASO: *</label>
+                        <input type="text" class="form-control" name="RFCDespacho" id="RFCDespacho" maxlength="13"
+                            required>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label">NOMBRE DEL DESPACHO ASOCIADO AL RFC: </label>
+                        <input id="nombreAsociado" type="text" class="form-control text-center text-danger" readonly required>
+                    </div>
+                </div>
+
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <div class="alert alert-warning" role="alert">
+                            <strong>Nota:</strong> Si en el nombre del despacho aparece como 'NO REGISTRADO', comunícate a la línea de atención MONDAINAI
+                        </div>
+                    </div>
+                </div>
+
+                <h2>Información del deudor y contacto principal</h2>
+                <hr>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="RegimenDeudor">TIPO DE DEUDOR: *</label>
+                        <select class="form-select" name="RegimenDeudor" id="RegimenDeudor" required>
+                            <option selected disabled value=""></option>
+                            <option value="Persona Moral">Persona Moral</option>
+                            <option value="Persona Fisica">Persona Física</option>
+                            <option value="Persona Fisica con Actividad Empresarial">
+                                Persona Física con Actividad Empresarial
+                            </option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="DivDireccionComercial">
+                    <div class="mb-3">
+                        <label class="form-label" for="DireccionComercial">DIRECCIÓN COMERCIAL:</label>
+                        <input type="text" class="form-control" name="DireccionComercial" id="DireccionComercial"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="DivPoderNotarial">
+                    <div class="mb-3">
+                        <label class="form-label" for="PoderNotarial">¿CUENTA CON ALGÚN PODER NOTARIAL?</label>
+                        <select class="form-select" name="PoderNotarial" id="PoderNotarial"
+                            onchange="mostrarCampoDetalle()" required>
+                            <option selected disabled value=""></option>
+                            <option value="Si">SI</option>
+                            <option value="No">NO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3" id="campoDetalle">
+                    <div class="mb-3">
+                        <label class="form-label" for="PoderNotarialDetalle">¿QUÉ FACULTADES?</label>
+                        <input type="text" class="form-control" name="PoderNotarialDetalle" id="PoderNotarialDetalle"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="DivDomicilioFiscal">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioFiscal">DOMICILIO FISCAL:</label>
+                        <input type="text" class="form-control" name="DomicilioFiscal" id="DomicilioFiscal"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="DivDomicilioPersonal">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioPersonal">DOMICILIO PERSONAL:</label>
+                        <input type="text" class="form-control" name="DomicilioPersonal" id="DomicilioPersonal"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3" id="DivDomicilioLaboral">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioLaboral">DOMICILIO LABORAL:</label>
+                        <input type="text" class="form-control" name="DomicilioLaboral" id="DomicilioLaboral"
+                            maxlength="150" />
+                    </div>
+                </div>
+                <!-- CAMPOS GENERALES -->
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="RazonSocial">NOMBRE O RAZÓN SOCIAL</label>
+                        <input type="text" class="form-control" name="RazonSocial" id="RazonSocial" maxlength="150" />
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="Rfc">R.F.C: *</label>
+                        <input type="text" class="form-control" name="Rfc" id="Rfc" maxlength="13" required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="Curp">CURP: *</label>
+                        <input type="text" class="form-control" name="Curp" id="Curp" maxlength="18" required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioEntrega">DOMICILIO DE ENTREGA Ó SERVICIO:</label>
+                        <input type="text" class="form-control" name="DomicilioEntrega" id="DomicilioEntrega"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioAlternativo">DOMICILIO ALTERNATIVO:</label>
+                        <input type="text" class="form-control" name="DomicilioAlternativo" id="DomicilioAlternativo"
+                            maxlength="150" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="ViaPrincipalDeContacto">¿VÍA PRINCIPAL DE CONTACTO?: *</label>
+                        <input type="text" class="form-control" name="ViaPrincipalDeContacto"
+                            id="ViaPrincipalDeContacto" maxlength="150"
+                            placeholder="Correo, teléfono, visita domiciliaria " required />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="DomicilioConfirmado">EN EL PROCESO DE OTORGAMIENTO DE CRÉDITO,
+                            ¿EL DOMICILIO DEL
+                            CLIENTE FUE CONFIRMADO FÍSICAMENTE?: *</label>
+                        <select class="form-select" name="DomicilioConfirmado" id="DomicilioConfirmado"
+                            onchange="mostrarCampoFechaValidacion()" required>
+                            <option selected disabled value=""></option>
+                            <option value="Si">SI</option>
+                            <option value="No">NO</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="col-md-3" id="campoFechaValidacion">
+                    <div class="mb-3">
+                        <label class="form-label" for="FechaValidacion">FECHA DE VALIDACIÓN DEL DOMICILIO:</label>
+                        <input type="date" class="form-control" name="FechaValidacion" id="FechaValidacion" />
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="NumeroCelular">NÚMERO DE CELULAR: *</label>
+                        <input type="text" class="form-control" name="NumeroCelular" id="NumeroCelular" required />
+                        <small id="avisoCelular" class="form-text text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="TelefonoFijoUno">TELÉFONO FIJO #1: *</label>
+                        <input type="text" class="form-control" name="TelefonoFijoUno" id="TelefonoFijoUno" required />
+                        <small id="avisoFijoUno" class="form-text text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="TelefonoFijoDos">TELÉFONO FIJO #2:</label>
+                        <input type="text" class="form-control" name="TelefonoFijoDos" id="TelefonoFijoDos" />
+                        <small id="avisoFijoDos" class="form-text text-danger"></small>
+                    </div>
+                </div>
+
+                <div class="col-md-3">
+                    <div class="mb-3">
+                        <label class="form-label" for="correo">CORREO ELECTRÓNICO:</label>
+                        <input type="email" class="form-control" name="correo" id="correo" />
+                        <small id="resultado" class="form-text text-danger"></small>
+                    </div>
+                </div>
+            </div>
+            <button id="Registrar" type="submit" class="btn btn-danger btn-lg">Registrar</button> <br><br>
+        </form>
+        <div id="success-message" class="alert alert-success d-none" role="alert">
+            <strong>Datos guardados correctamente</strong> <br>Por favor presione siguiente para seguir con tu registro.
+        </div>
+        <!-- Agrega mensaje de alerta -->
+        <div id="error-message" class="alert alert-danger d-none" role="alert">
+            Por favor complete todos los campos marcados en rojo antes de enviar el
+            formulario.
+        </div>
+
+        <nav aria-label="Page navigation example">
+            <ul class="pagination justify-content-end">
+                <li class="page-item disabled">
+                    <a class="page-link">Previous</a>
+                </li>
+                <li class="page-item disabled" id="nextPageButton"> <!-- Añadido id y clase disabled -->
+                    <a class="page-link" href="/sere/AltaContactosVariablesDeRiesgo" tabindex="-1"
+                        aria-disabled="true">Next</a>
+                </li>
+            </ul>
+        </nav>
+
+    </div>
+    <div id="footer"></div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
+        crossorigin="anonymous"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="/sere/js/Alta-InfoGeneral.js"></script>
+    <script>
+
+        // Función para buscar el nombre por RFC asociado
+        $(document).ready(function () {
+            $("input[name='RFCDespacho']").on("input", function () {
+                var rfcAsociado = $(this).val();
+                if (rfcAsociado.length === 13) {
+                    $.ajax({
+                        url: `/sere/getNombrePorRFC/${rfcAsociado}`,
+                        method: "GET",
+                        success: function (response) {
+                            if (response.nombre) {
+                                $("#nombreAsociado").val(response.nombre);
+                            } else {
+                                $("#nombreAsociado").val("'NO REGISTRADO'");
+                            }
+                        },
+                        error: function () {
+                            $("#nombreAsociado").val("Error al buscar nombre");
+                        }
+                    });
+                } else {
+                    $("#nombreAsociado").val("");
+                }
+            });
+        });
+        window.addEventListener("DOMContentLoaded", function () {
+            var forms = document.querySelectorAll(".needs-validation");
+
+            Array.prototype.forEach.call(forms, function (form) {
+                form.addEventListener("submit", function (event) {
+                    event.preventDefault();
+                    if (!form.checkValidity()) {
+                        event.stopPropagation();
+                        document.getElementById("error-message").classList.remove("d-none");
+                        document.getElementById("nextPageButton").classList.add("disabled");
+                        document.getElementById("nextPageButton").children[0].setAttribute("aria-disabled", "true");
+                        document.getElementById("nextPageButton").children[0].setAttribute("tabindex", "-1");
+                    } else {
+                        document.getElementById("error-message").classList.add("d-none");
+
+                        // Usa fetch para enviar los datos
+                        fetch('/sere/guardar-datos', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json',
+                            },
+                            body: JSON.stringify(Object.fromEntries(new FormData(form)))
+                        })
+                            .then(response => response.json())
+                            .then(data => {
+                                // Mensaje de éxito y habilitación del botón
+                                document.getElementById("success-message").classList.remove("d-none");
+                                document.getElementById("success-message").innerHTML = data.message + "<br>El número de control de la cuenta es: <strong>" + data.IDCuenta + "</strong>";  // Use innerHTML here
+                                document.getElementById("nextPageButton").classList.remove("disabled");
+                                document.getElementById("nextPageButton").children[0].removeAttribute("aria-disabled");
+                                document.getElementById("nextPageButton").children[0].removeAttribute("tabindex");
+
+                                // Bloquear todos los campos de entrada del formulario
+                                Array.from(form.elements).forEach(element => {
+                                    if (element.tagName === 'INPUT' || element.tagName === 'SELECT' || element.tagName === 'TEXTAREA' || element.tagName === 'BUTTON') {
+                                        element.disabled = true;
+                                    }
+                                });
+                            })
+
+                            .catch(error => {
+                                console.error('Error:', error);
+                                document.getElementById("error-message").classList.remove("d-none");
+                                document.getElementById("error-message").textContent = 'Error al guardar los datos. Verifica toda la información ingresada o si el RFC del despacho esta registrado';
+                            });
+                    }
+
+                    form.classList.add("was-validated");
+                }, false);
+            });
+        });
+
+        $(function () {
+            $("#header").load("/header");
+            $("#footer").load("/footer");
+            $("#NavSere").load("/sere/NavSere");
+        });
+
+        // Convertir RFC a mayúsculas y eliminar espacios
+        function formatRFC(inputId) {
+            const input = document.getElementById(inputId);
+            input.addEventListener('input', function () {
+                this.value = this.value.toUpperCase().replace(/\s+/g, '');
+            });
+            input.addEventListener('blur', function () {
+                this.value = this.value.toUpperCase().replace(/\s+/g, '');
+            });
+        }
+
+        formatRFC('RFCDespacho');
+        formatRFC('Rfc');
+    </script>
+</body>
+
+</html>

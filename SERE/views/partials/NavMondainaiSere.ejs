@@ -1,0 +1,128 @@
+<nav class="navbar navbar-light" style="background-color: #ffffff;">
+    <div class="container-fluid d-flex flex-column">
+        <!-- Sección superior con Logo y Frase -->
+        <div class="navbar-top d-flex justify-content-between align-items-center">
+            <!-- Logo con margen ajustado -->
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <img src="/images/logo.svg" width="200" class="d-inline-block align-text-top">
+            </a>
+            <img src="/images/frase.png" width="200" class="d-inline-block frase">
+        </div>
+
+        <!-- Botón de alternancia para desplegar el menú -->
+        <!-- <button class="navbar-toggler" id="navbar-togglerMondainai" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button> -->
+
+        <!-- Sección de navegación oculta por defecto -->
+        <!-- <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <div class="navbar-bottom w-100" style="background-color:#E52421; border-radius: 20px;">
+                <ul class="navbar-nav d-flex flex-column align-items-center">
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="/">INICIO</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Nosotros">NOSOTROS</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            ECOSISTEMA DE RECURSOS
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li><a class="dropdown-item" href="/secie">SECIE</a></li>
+                            <li><a class="dropdown-item" href="/sere">SERE</a></li>
+                            <li><a class="dropdown-item" href="#">Servicios</a></li>
+                            <li><a class="dropdown-item" href="#">Capacitaciones</a></li>
+                            <li><a class="dropdown-item" href="#">Impulso financiero</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/Contacto">CONTACTO</a>
+                    </li>
+                </ul>
+            </div>
+        </div> -->
+    </div>
+</nav>
+
+<style>
+    /* Ocultar el contenido de la barra de navegación por defecto */
+    .navbar-collapse {
+        display: none;
+    }
+
+    /* Mostrar el contenido de la barra de navegación al hacer clic en el botón */
+    .navbar-toggler.collapsed ~ .navbar-collapse {
+        display: block;
+    }
+
+    /* Estilo del botón de alternancia */
+    #navbar-togglerMondainai {
+        background-color: #E52421; /* Color de fondo del botón */
+        padding: 0.5rem; /* Espaciado interno del botón */
+    }
+
+    /* Asegúrate de que el contenido de la barra de navegación esté bien alineado */
+    .navbar-nav {
+        font-size: 1rem;
+    }
+
+    .navbar-top {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: .5rem;
+        /* Espacio entre la sección superior e inferior */
+    }
+
+    .navbar-brand {
+        margin-left: 1rem;
+        /* Ajusta el margen del logo según el diseño deseado */
+    }
+
+    .frase {
+        margin-right: 1rem;
+        /* Ajusta el margen de la frase según el diseño deseado */
+    }
+
+    /* Media query para pantallas con un ancho máximo de 768px */
+    @media (max-width: 768px) {
+        .navbar-brand {
+            margin-left: 0.5rem;
+            /* Reducir el margen para pantallas más pequeñas */
+        }
+
+        .frase {
+            margin-right: 0.5rem;
+            /* Reducir el margen para pantallas más pequeñas */
+        }
+    }
+
+    /* Media query para pantallas con un ancho máximo de 480px */
+    @media (max-width: 480px) {
+        .navbar-brand {
+            margin-left: 0.5rem;
+            /* Ajusta el margen del logo para pantallas muy pequeñas */
+        }
+
+        .frase {
+            margin-right: 0.5rem;
+            /* Ajusta el margen de la frase para pantallas muy pequeñas */
+        }
+    }
+
+    .nav-link {
+        color: #ffffff;
+    }
+
+    .nav-item {
+        padding-left: 2rem;
+        padding-right: 2rem;
+    }
+
+    .bi-box-arrow-right {
+        color: #ffffff;
+    }
+</style>

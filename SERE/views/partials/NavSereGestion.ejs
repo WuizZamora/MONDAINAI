@@ -1,51 +1,49 @@
 <nav class="navbar navbar-expand-lg navbar-light" style=" border-radius: 20px;">
     <div class="container-fluid justify-content-center">
         <!-- Botón de alternancia para dispositivos móviles -->
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" id="navbar-togglerSereGestion" type="button" data-bs-toggle="collapse"
+            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
-
         <!-- Sección inferior con botones de navegación -->
         <div class="collapse navbar-collapse justify-content-between" id="navbarNav">
-            <div class="navbar-bottom w-100" style="background-color: #95979B; border-radius: 20px;">
+            <div class="navbar-bottom w-100" style="background-color: #25509F; border-radius: 20px;">
                 <ul class="navbar-nav d-flex justify-content-between align-items-center w-100">
                     <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" aria-current="page" href="/sere/">Menú principal</a>
+                        <a class="nav-link" aria-current="page" href="/sere/Ejemplo">Casos</a>
                     </li>
                     <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="/sere/clientes">Clientes</a>
+                        <a class="nav-link" href="/sere/hola2?IDCuenta=<%= idCuenta %>">Información financiera y
+                            legal</a>
                     </li>
                     <li class="nav-item flex-fill text-center">
-                        <a class="nav-link disabled text-muted" href="#">Empleados</a>
+                        <a class="nav-link" href="/sere/hola3?IDCuenta=<%= idCuenta %>">Detalles del
+                            proceso judicial</a>
                     </li>
                     <li class="nav-item flex-fill text-center">
-                        <a class="nav-link disabled text-muted" href="#">Proveedores</a>
-                    </li>
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link disabled text-muted" href="#">Gobierno</a>
-                    </li>
-                    <li class="nav-item flex-fill text-center">
-                        <a class="nav-link" href="#">Soporte</a>
-                    </li>
-                    <li class="nav-item flex-fill text-center">
-                        <form action="/sere/logout" method="get" class="m-0 p-0 w-100">
-                            <button type="submit" class="btn w-100 h-100 nav-link">
-                                <i class="bi bi-box-arrow-in-right"></i>
-                            </button>
-                        </form>
+                        <a class="nav-link" href="/sere/hola4?IDCuenta=<%= idCuenta %>">Seguimiento
+                            y gestión del caso</a>
                     </li>
                 </ul>
             </div>
         </div>
-
-
-
     </div>
 </nav>
 
 
 <style>
+    /* Mostrar el contenido de la barra de navegación al hacer clic en el botón */
+    #navbar-togglerSereGestion.collapsed + .navbar-collapse {
+        display: block;
+    }
+
+    /* Estilo del botón de alternancia */
+    #navbar-togglerSereGestion {
+        background-color:#25509F; /* Color de fondo del botón */
+        padding: 0.5rem; /* Espaciado interno del botón */
+    }
+
+
     .navbar-nav .nav-item {
         flex: 1;
         text-align: center;

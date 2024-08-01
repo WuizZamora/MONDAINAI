@@ -12,14 +12,18 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <%- include('NavMondainaiSere') %>
+    <!-- <div id="header"></div> -->
     <div class="container text-center">
         <%- include('NavSere') %>
 
             <div class="d-flex justify-content-center">
                 <div class="col-md-8">
                     <div class="alert alert-dark" role="alert">
-                        <strong>Nota:</strong> El ícono <span class="text-danger">rojo</span> indica que no se ha añadido una cotización, el ícono <span class="text-warning">amarillo</span> indica que la cotización añadida está pendiente de autorización, y el ícono <span class="text-success">verde</span> indica que la última cotización ha sido autorizada.
+                        <strong>Nota:</strong> El ícono <span class="text-danger">rojo</span> indica que no se ha
+                        añadido una cotización, el ícono <span class="text-warning">amarillo</span> indica que la
+                        cotización añadida está pendiente de autorización, y el ícono <span
+                            class="text-success">verde</span> indica que la última cotización ha sido autorizada.
                     </div>
                 </div>
             </div>
@@ -36,7 +40,7 @@
                 <div class="col-md-6">
                     <div class="input-group mb-3">
                         <input type="text" class="form-control text-center" id="filtroRazonSocial"
-                               placeholder="Ingrese razón social">
+                            placeholder="Ingrese razón social">
                         <button class="btn btn-outline-secondary" type="button" id="btnBuscarRazonSocial"><i
                                 class="bi bi-search"></i></button>
                     </div>
@@ -50,7 +54,7 @@
                             <th>RFC del deudor</th>
                             <th># Cliente padre</th>
                             <th># Cliente hijo</th>
-                            <th>Razón social</th>
+                            <th>Razón social del deudor</th>
                             <th>Formulario del caso</th>
                             <th>Cotización</th>
 
@@ -77,17 +81,20 @@
                                 <td><a href="/sere/datos?IDCuenta=<%= cliente.IDCuenta %>" class="btn btn-dark">ver</a>
                                 </td>
                                 <td>
-                                    <a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>" class="btn 
-                                              <%= cliente.EstadoCotizacion === 'validada' ? 'btn-success' : 
-                                                  cliente.EstadoCotizacion === 'no_validada' ? 'btn-warning' : 
-                                                  'btn-danger' %>">
-                                        <% if (IDPerfil==='AD' ) { %>
-                                            añadir
-                                            <% } else{ %>
-                                                Ver
-                                                <%} %>
-
-                                    </a>
+                                    <% if (Usuario_Activo===0) { %>
+                                        <p class="text-danger">Usuario inactivo</p>
+                                        <% } else { %>
+                                            <a href="/sere/datos1?IDCuenta=<%= cliente.IDCuenta %>" class="btn 
+                                        <%= cliente.EstadoCotizacion === 'validada' ? 'btn-success' : 
+                                            cliente.EstadoCotizacion === 'no_validada' ? 'btn-warning' : 
+                                            'btn-danger' %>">
+                                                <% if (IDPerfil==='AD' ) { %>
+                                                    añadir
+                                                    <% } else { %>
+                                                        Ver
+                                                        <% } %>
+                                            </a>
+                                            <% } %>
                                 </td>
                             </tr>
                             <% }); %>
@@ -134,84 +141,77 @@
         $(function () {
             $("#header").load("/header");
             $("#footer").load("/footer");
-    
-            // Variables y configuración inicial
-            const rowsPerPage = 10;
-            const tableBody = document.getElementById('clienteTableBody');
-            const pagination = document.getElementById('pagination');
-            let rows = Array.from(tableBody.querySelectorAll('tr'));
-            let currentPage = 1;
-    
-            function displayPage(page) {
-                const startRow = (page - 1) * rowsPerPage;
-                const endRow = startRow + rowsPerPage;
-                let visibleRows = rows.filter(row => row.style.display !== 'none');
-    
-                visibleRows.forEach((row, index) => {
-                    row.style.display = (index >= startRow && index < endRow) ? '' : 'none';
-                });
-    
-                updatePagination();
-            }
-    
-            function setupPagination() {
-                pagination.innerHTML = '';
-                let visibleRows = rows.filter(row => row.style.display !== 'none');
-                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
-    
-                for (let i = 1; i <= pageCount; i++) {
-                    const li = document.createElement('li');
-                    li.className = `page-item ${i === currentPage ? 'active' : ''}`;
-                    li.innerHTML = `<a class="page-link" href="#">${i}</a>`;
-                    li.setAttribute('data-page', i);
-                    li.addEventListener('click', (e) => {
-                        e.preventDefault();
-                        currentPage = i;
-                        displayPage(currentPage);
-                    });
-                    pagination.appendChild(li);
-                }
-            }
-    
-            function updatePagination() {
-                let visibleRows = rows.filter(row => row.style.display !== 'none');
-                let pageCount = Math.ceil(visibleRows.length / rowsPerPage);
-                setupPagination();
-                if (pageCount < currentPage) {
-                    currentPage = pageCount || 1;
-                    displayPage(currentPage);
-                }
-            }
-    
-            displayPage(currentPage);
-            setupPagination();
-    
-            // Función para filtrar filas de la tabla
-            function filtrar() {
-                const filtroNumeroCaso = $('#filtroNumeroCaso').val().trim().toLowerCase();
-                const filtroRazonSocial = $('#filtroRazonSocial').val().trim().toLowerCase();
-    
-                rows.forEach(row => {
-                    const numeroCaso = row.querySelector('td:first-child').textContent.trim().toLowerCase();
-                    const razonSocial = row.querySelector('td:nth-child(5)').textContent.trim().toLowerCase();
-    
-                    const matchNumeroCaso = numeroCaso.includes(filtroNumeroCaso);
-                    const matchRazonSocial = razonSocial.includes(filtroRazonSocial);
-    
-                    row.style.display = (matchNumeroCaso && matchRazonSocial) ? '' : 'none';
-                });
-    
-                currentPage = 1;
-                updatePagination();
-            }
-    
-            // Eventos para activar el filtrado
-            $('#filtroNumeroCaso, #filtroRazonSocial').on('input', filtrar);
-            $('#btnBuscar, #btnBuscarRazonSocial').on('click', filtrar);
         });
+    
+        
+    document.addEventListener('DOMContentLoaded', function () {
+        const rowsPerPage = 10;
+        const tableBody = document.querySelector('#clienteTableBody');
+        const pagination = document.querySelector('#pagination');
+        let allRows = Array.from(tableBody.querySelectorAll('tr'));
+        let filteredRows = allRows; // Initially, filteredRows is the same as allRows
+
+        function paginate(page, rows) {
+            const totalRows = rows.length;
+            const totalPages = Math.ceil(totalRows / rowsPerPage);
+            const start = (page - 1) * rowsPerPage;
+            const end = page * rowsPerPage;
+
+            tableBody.innerHTML = ''; // Clear the table body
+            rows.slice(start, end).forEach(row => tableBody.appendChild(row)); // Show only the rows for the current page
+
+            updatePagination(totalPages, page);
+        }
+
+        function updatePagination(totalPages, currentPage) {
+            pagination.innerHTML = '';
+
+            for (let i = 1; i <= totalPages; i++) {
+                const pageItem = document.createElement('li');
+                pageItem.classList.add('page-item');
+                if (i === currentPage) pageItem.classList.add('active');
+                pageItem.innerHTML = `<a class="page-link" href="#" data-page="${i}">${i}</a>`;
+                pagination.appendChild(pageItem);
+            }
+        }
+
+        function filterTable() {
+            const numCasoFilter = document.querySelector('#filtroNumeroCaso').value.toLowerCase();
+            const razonSocialFilter = document.querySelector('#filtroRazonSocial').value.toLowerCase();
+
+            filteredRows = allRows.filter(row => {
+                const numCaso = row.querySelector('td:nth-child(1)').textContent.toLowerCase();
+                const razonSocial = row.querySelector('td:nth-child(5)').textContent.toLowerCase();
+
+                return numCaso.includes(numCasoFilter) && razonSocial.includes(razonSocialFilter);
+            });
+
+            paginate(1, filteredRows); // Show the first page of the filtered results
+        }
+
+        function setupFilters() {
+            document.querySelector('#btnBuscar').addEventListener('click', filterTable);
+            document.querySelector('#btnBuscarRazonSocial').addEventListener('click', filterTable);
+            document.querySelector('#filtroNumeroCaso').addEventListener('keyup', filterTable);
+            document.querySelector('#filtroRazonSocial').addEventListener('keyup', filterTable);
+        }
+
+        pagination.addEventListener('click', function (event) {
+            if (event.target.tagName === 'A') {
+                const page = parseInt(event.target.getAttribute('data-page'), 10);
+                if (page > 0 && page <= Math.ceil(filteredRows.length / rowsPerPage)) {
+                    paginate(page, filteredRows);
+                }
+            }
+        });
+
+        setupFilters();
+        paginate(1, allRows); // Initialize with the first page of all rows
+    });
     </script>
     
-    
+
+
 </body>
 
 </html>

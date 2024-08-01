@@ -12,7 +12,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <!-- <div id="header"></div> -->
+    <%- include('partials/NavMondainaiSere') %>
     <div class="container text-center">
         <div id="NavSere"></div>
         <h2>BIENVENIDO A SERE <br>
@@ -25,38 +26,40 @@
             </a>
         </figure> -->
         <div class="card d-inline-block" style="width: 18rem;">
-            <img src="/images/sere/Administrador.jpg" class="card-img-top" alt="administrar" style="height: auto;"/>
+            <a href="/sere/AsignarRol">
+                <img src="/images/sere/Administrador.webp" class="card-img-top" alt="administrar" style="height: auto;"/>
+            </a>
             <div class="card-body">
                 <h5 class="card-title">Administrar perfil</h5>
                 <p class="card-text">
                     Lorem ipsum dolor
                 </p>
-                <a href="/sere/AsignarRol" class="btn btn-danger">Ir</a>
             </div>
         </div>
         <div class="card d-inline-block" style="width: 18rem;">
-            <img src="/images/sere/Clientes.jpg" class="card-img-top" alt="..." style="height: auto;"/>
+            <a href="/sere/Clientes">
+                <img src="/images/sere/Clientes.webp" class="card-img-top" alt="..." style="height: auto;"/>
+            </a>
             <div class="card-body">
                 <h5 class="card-title">CLIENTES</h5>
                 <p class="card-text">
                     Lorem ipsum dolor
                 </p>
-                <a href="/sere/Clientes" class="btn btn-danger">Ir</a>
             </div>
         </div>
         
         <h3 class="text-success">¡PRÓXIMAMENTE NUEVOS MODULOS!</h3>
         <figure class="figure">
             <figcaption class="figure-caption">Empleados</figcaption>
-            <img src="/images/sere/Empleados.jpg" class="img-thumbnail" alt="..." width="250">
+            <img src="/images/sere/Empleados.webp" class="img-thumbnail" alt="..." width="250">
         </figure>
         <figure class="figure">
             <figcaption class="figure-caption">Proveedores</figcaption>
-            <img src="/images/sere/Proveedores.jpg" class="img-thumbnail" alt="..." width="250">
+            <img src="/images/sere/Proveedores.webp" class="img-thumbnail" alt="..." width="250">
         </figure>
         <figure class="figure">
             <figcaption class="figure-caption">Gobierno</figcaption>
-            <img src="/images/sere/Gobierno.jpg" class="img-thumbnail" alt="..." width="250">
+            <img src="/images/sere/Gobierno.webp" class="img-thumbnail" alt="..." width="250">
         </figure>
     </div>
     <br>

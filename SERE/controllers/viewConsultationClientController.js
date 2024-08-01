@@ -134,7 +134,7 @@ exports.renderObtenerPagares = (req, res) => {
       return {
         ...row,
         FechaPrescripcion: row.FechaPrescripcion
-          ? moment(row.FechaPrescripcion).format("YYYY-MM-DD")
+          ? moment(row.FechaPrescripcion).format("DD-MM-YYYY")
           : null,
         FechaSuscripcion: row.FechaSuscripcion
           ? moment(row.FechaSuscripcion).format("YYYY-MM-DD")

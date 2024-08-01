@@ -11,8 +11,13 @@ exports.renderClientes = (req, res) => {
 };
 
 exports.renderContingencias = (req, res) => {
-  const { IDPerfil } = req.session.usuario;
-  res.render("Contingencias", { IDPerfil });
+  const { IDPerfil, Usuario_Activo } = req.session.usuario;
+  res.render("Contingencias", { IDPerfil, Usuario_Activo });
+};
+
+exports.renderAltaInfGeneral = (req, res) => {
+  const { RFCAsociado } = req.session.usuario;
+  res.render("Alta-InfoGeneral", {RFCAsociado});
 };
 
 exports.renderAsignarRol = (req, res) => {
@@ -156,7 +161,7 @@ exports.renderEjemplo = (req, res) => {
       JOIN 
       Usuarios u ON c.RFCDespacho = u.RFC -- Añadir este JOIN para enlazar con la tabla Usuarios
       WHERE 
-        c.RFCUsuario = ? AND EXISTS (
+        c.RFCAsociado = ? AND EXISTS (
           SELECT 1
           FROM Despacho_Cotizacion dc
           WHERE dc.IDCuenta = c.IDCuenta
@@ -168,7 +173,7 @@ exports.renderEjemplo = (req, res) => {
             AND dc.Validacion = TRUE
         )
     `;
-    queryParams = [RFC];
+    queryParams = [RFCAsociado];
   }
 
   pool.query(queryDatos, queryParams, (error, results) => {
@@ -247,7 +252,7 @@ exports.renderEjemplo = (req, res) => {
 
 // Ruta para obtener los datos
 exports.renderDatosDelDeudor = (req, res) => {
-  const { RFCAsociado, IDPerfil } = req.session.usuario;
+  const { RFC, RFCAsociado, IDPerfil, Usuario_Activo} = req.session.usuario;
   let query = `
     SELECT 
       Cliente_InfGeneralCuenta.IDCuenta AS IDCuenta,
@@ -279,13 +284,10 @@ exports.renderDatosDelDeudor = (req, res) => {
   if (IDPerfil === "AD" || IDPerfil === "AM") {
     query += `WHERE Cliente_InfGeneralCuenta.RFCDespacho = ?;`;
   } else {
-    query += `WHERE Cliente_InfGeneralCuenta.RFCUsuario = ?;`;
+    query += `WHERE Cliente_InfGeneralCuenta.RFCAsociado = ?;`;
   }
 
-  const parametro =
-    IDPerfil === "AD" || IDPerfil === "AM"
-      ? RFCAsociado
-      : req.session.usuario.RFC;
+  const parametro = RFCAsociado;
 
   pool.query(query, [parametro], (error, results) => {
     if (error) {
@@ -300,7 +302,7 @@ exports.renderDatosDelDeudor = (req, res) => {
 
     res.render("partials/DatosDelDeudor", {
       datos: formattedResults,
-      IDPerfil,
+      IDPerfil, Usuario_Activo
     });
   });
 };

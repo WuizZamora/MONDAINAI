@@ -20,9 +20,9 @@
     </script>
     <style>
         .card-img-top {
-            width: 100%;
-            height: 20rem; /* Ajusta esta altura según tus necesidades */
-            object-fit: cover;
+            width: 40%;
+            height: 10rem; /* Ajusta esta altura según tus necesidades */
+            /* object-fit: cover; */
         }
         .card {
             height: 100%; /* Asegura que todas las tarjetas tengan la misma altura */
@@ -31,7 +31,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <!-- <div id="header"></div> -->
+    <%- include('partials/NavMondainaiSere') %>
     <div class="container text-center">
         <div id="NavSere"></div>
         <h3>ELIJE UNA OPCIÓN</h3>
@@ -40,33 +41,45 @@
                 <% if (IDPerfil && IDPerfil !== 'AD') { %>
                     <div class="col-md-4 mb-4"> <!-- Columna -->
                         <div class="card">
-                            <img src="/images/sere/solicitud.png" class="card-img-top img-fluid" alt="...">
+                            <% if (Usuario_Activo===0) { %>
+                                <p class="text-danger">Usuario inactivo</p> <br>
+                                <img src="/images/sere/solicitud.webp" class="card-img-top img-fluid" alt="...">
+                                <%} else{ %>
+                                    <a href="/sere/AltaInfGeneral" >
+                                        <img src="/images/sere/solicitud.webp" class="card-img-top img-fluid" alt="...">
+                                    </a>
+                            <%} %>
                             <div class="card-body text-center">
-                                <h5 class="card-title">Solicitud</h5>
-                                <p class="card-text">Alta de una contingencia de pagos</p>
-                                <a href="/sere/AltaInfGeneral" class="btn btn-danger">Llenar formato</a>
+                                <h5 class="card-title">Formulario de entrega de casos</h5>
+                                <p class="card-text">Esta sección permite a los usuarios ingresar y enviar detalles específicos de un caso que necesitan ser revisados o gestionados por el despacho.</p>
                             </div>
                         </div>
                     </div>
                     <% } %>
                     
                 <div class="col-md-4 mb-4"> <!-- Columna -->
-                    <div class="card">
-                        <img src="/images/sere/cotizacion.jpg" class="card-img-top img-fluid" alt="...">
+                    <div class="card"> <br>
+                        <a href="/sere/DatosDelDeudor">
+                            <img src="/images/sere/cotizacion.webp" class="card-img-top img-fluid" alt="..." style="height: 7rem;">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">Consulta y cotización.</h5>
-                            <p class="card-text">Consulta los casos que se te asignaron y agrega una cotización</p>
-                            <a href="/sere/DatosDelDeudor" class="btn btn-danger">Entrar</a>
+                            <p class="card-text">
+                                Esta sección esta enfocada en concentrar y gestionar los casos asignados a un despacho, permitiendo a los despachos transparentar sus honorarios. 
+                            </p>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4"> <!-- Columna -->
                     <div class="card">
-                        <img src="/images/sere/Gestion.png" class="card-img-top img-fluid" alt="...">
+                        <a href="/sere/Ejemplo"><br>
+                            <img src="/images/sere/Gestion.webp" class="card-img-top img-fluid" alt="..." style="height: 7rem;">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">Gestión de casos</h5>
-                            <p class="card-text">Seguimiento de casos en archivo</p>
-                            <a href="/sere/Ejemplo" class="btn btn-danger">Entrar</a>
+                            <p class="card-text">
+                                Esta sección optimiza la gestión de casos, mejorando el seguimiento y la organización de información clave para el despacho.
+                            </p>
                         </div>
                     </div>
                 </div>

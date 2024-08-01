@@ -36,14 +36,14 @@ exports.cotizacion = [
   (req, res) => {
     try {
       const datos = req.body;
-      console.log(datos);
+      // console.log(datos);
       const { ID, RFC, TipoDeCaso, Comentarios, fechaCotizacion, validacion} = req.body;
       const IDCuenta = req.query.IDCuenta;
       const cotizacion = req.files["Cotizacion"]
         ? req.files["Cotizacion"][0].filename
         : "N/A";
       const rutaCotizacion = `uploads/${IDCuenta}/${cotizacion}`;
-      console.log(rutaCotizacion);
+      // console.log(rutaCotizacion);
       // Guardar rutaCotizacion en la base de datos
       pool.query(
         "INSERT INTO Despacho_Cotizacion(IDCuenta, RFCDespacho, TipoDeCaso, Comentarios, Cotizacion, FechaCotizacion) VALUES (?, ?, ?, ?, ?, ?)",

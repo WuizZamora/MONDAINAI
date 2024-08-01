@@ -20,8 +20,8 @@
     </script>
     <style>
         .card-img-top {
-            width: 100%;
-            height: 20rem;
+            width: 40%;
+            height: 10rem;
             /* Ajusta esta altura según tus necesidades */
             /* object-fit: cover; */
         }
@@ -34,7 +34,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <!-- <div id="header"></div> -->
+    <%- include('partials/NavMondainaiSere') %>
     <div class="container text-center">
         <div id="NavSere"></div>
         <h3>ELIJE UNA OPCIÓN</h3>
@@ -42,40 +43,43 @@
             <div class="row justify-content-end"> <!-- Fila -->
                 <div class="col-md-4 mb-4"> <!-- Columna -->
                     <div class="card">
-                        <img src="/images/sere/credito.webp" class="card-img-top img-fluid" alt="...">
+                        <a href="#">
+                            <img src="/images/sere/credito.webp" class="card-img-top img-fluid" alt="...">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">Gestión de otorgamiento de crédito</h5>
                             <p class="card-text">
                                 Un sistema que evalúa la viabilidad crediticia de clientes y empresas
                                 para tomar decisiones informadas sobre la concesión de préstamos o líneas de crédito.
                             </p>
-                            <a href="#" class="btn btn-danger mt-auto">IR</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4"> <!-- Columna -->
                     <div class="card">
-                        <img src="/images/sere/cuentas.webp" class="card-img-top img-fluid" alt="...">
+                        <a href="#">
+                            <img src="/images/sere/cuentas.webp" class="card-img-top img-fluid" alt="...">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">Gestión de cuentas por cobrar</h5>
                             <p class="card-text">
                                 Herramienta para administrar eficientemente los pagos pendientes de los clientes,
                                 asegurando un flujo de efectivo óptimo y reduciendo la morosidad.
                             </p>
-                            <a href="#" class="btn btn-danger mt-auto">IR</a>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-4 mb-4"> <!-- Columna -->
                     <div class="card">
-                        <img src="/images/sere/contingencias.webp" class="card-img-top img-fluid" alt="...">
+                        <a href="/sere/Contingencias">
+                            <img src="/images/sere/contingencias.webp" class="card-img-top img-fluid" alt="...">
+                        </a>
                         <div class="card-body text-center">
                             <h5 class="card-title">Gestión de contingencias</h5>
                             <p class="card-text">
                                 Nuestra herramienta de gestión de cobranza legal (Extrajudicial y Judicial)
                                 facilita el seguimiento y recuperación de deudas pendientes utilizando procesos legales.
                             </p>
-                            <a href="/sere/Contingencias" class="btn btn-danger mt-auto">IR</a>
                         </div>
                     </div>
                 </div>

@@ -16,19 +16,10 @@
     <div class="container text-center">
         <%- include('partials/NavSere') %>
             <div class="row">
-                <div class="col-md-3 align-items-center d-flex justify-content-center">
-                    <!-- Añadida la clase para centrar -->
-                    <div class="list-group">
-                        <a href="/sere/Ejemplo" class="list-group-item list-group-item-action">CASOS</a>
-                        <a href="/sere/hola2?IDCuenta=<%= idCuenta %>" class="list-group-item
-                        list-group-item-action">Información Financiera y Legal</a>
-                        <a href="/sere/hola3?IDCuenta=<%= idCuenta %>"
-                            class="list-group-item list-group-item-action">Detalles del Proceso Judicial</a>
-                        <a href="/sere/hola4?IDCuenta=<%= idCuenta %>"
-                            class="list-group-item list-group-item-action">Seguimiento y Gestión del Caso</a>
-                    </div>
+                <div style="padding-left: 3rem; padding-right: 3rem;">
+                    <%- include('partials/NavSereGestion') %>
                 </div>
-                <div class="col-md-9 text-start">
+                <div class="col-md-12 text-start">
                     <%- include('partials/DatosDeudorGestionCaso') %>
                     <p>
                         <strong>
@@ -123,9 +114,9 @@
                                         table.innerHTML = `
                                                 <thead class="thead-dark">
                                                     <tr class="table-dark">
-                                                        <th>RFC</th>
+                                                        <th>Usuario que captura</th>
                                                         <th>Feedback</th>
-                                                        <th>Fecha de registro</th>
+                                                        <th>Fecha de captura</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>

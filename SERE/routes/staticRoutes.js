@@ -46,11 +46,11 @@ router.get("/logout", (req, res) => {
 //   );
 // });
 
-router.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "html", "Clientes", "Alta-InfoGeneral.html")
-  );
-});
+// router.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
+//   res.sendFile(
+//     path.join(frontendPath, "html", "Clientes", "Alta-InfoGeneral.html")
+//   );
+// });
 
 router.get(
   "/AltaContactosVariablesDeRiesgo",

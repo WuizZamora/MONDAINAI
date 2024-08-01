@@ -41,7 +41,7 @@ exports.guardarDatos = (req, res) => {
   const data = req.body;
   // console.log(data);
 
-  const { RFC } = req.session.usuario; // Asegúrate de que este valor se obtiene de manera adecuada según tu aplicación
+  const { RFC, RFCAsociado } = req.session.usuario; // Asegúrate de que este valor se obtiene de manera adecuada según tu aplicación
 
   // Función para asignar "N/A" a campos vacíos excepto para FechaValidacion
   const naIfEmpty = (value) => (value ? value : "N/A");
@@ -49,8 +49,8 @@ exports.guardarDatos = (req, res) => {
   // Primero insertamos en la tabla Cliente_InfGeneralCuenta
   const queryInfGeneral = `
       INSERT INTO Cliente_InfGeneralCuenta
-      (NoClientePadre, NoClienteHijo, TipoDeCaso, FechaDeAsignacion, RFCUsuario, RFCDespacho)
-      VALUES (?, ?, ?, ?, ?, ?);
+      (NoClientePadre, NoClienteHijo, TipoDeCaso, FechaDeAsignacion, RFCUsuario, RFCDespacho, RFCAsociado)
+      VALUES (?, ?, ?, ?, ?, ?, ?);
     `;
 
   // Usar la conexión para insertar los datos generales de la cuenta
@@ -63,6 +63,7 @@ exports.guardarDatos = (req, res) => {
       data.FechaDeAsignacion,
       RFC,
       data.RFCDespacho,
+      RFCAsociado
     ],
     (error, results) => {
       if (error) {
