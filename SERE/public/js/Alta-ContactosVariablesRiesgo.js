@@ -139,7 +139,7 @@ function agregarContacto() {
 
         // Actualiza el texto del título del nuevo contacto
         nuevoContacto.querySelector("h4").textContent =
-            "DEL CONTACTO ADICIONAL " + contadorContactos + ":";
+            "DATOS DEL CONTACTO ADICIONAL " + contadorContactos + ":";
 
         // Recorre los elementos de entrada y textarea en el nuevo contacto y actualiza sus IDs y Names
         nuevoContacto

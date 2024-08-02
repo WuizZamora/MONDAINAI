@@ -24,11 +24,12 @@
         <% } %>
         
         <% if (IDPerfil === 'AM' || IDPerfil === 'AE') { %>
-            <h2 class="mb-4">Usuarios Asociados por RFC</h2>
+            <br><h2 class="mb-4">USUARIOS ASOCIADOS POR RFC</h2>
+            <hr>
             <div class="table-responsive">
-                <table class="table table-striped">
+                <table class="table table-striped-columns">
                     <thead>
-                        <tr>
+                        <tr class="table-dark">
                             <th>RFC</th>
                             <th>Nombre</th>
                             <th>Correo</th>
@@ -47,7 +48,7 @@
                                     <td><%= usuario.NombreEmpresa %></td>
                                     <td>
                                         <select class="form-select" id="idPerfil-<%= usuario.RFC %>">
-                                            <option disabled value=""></option>
+                                            <option disabled selected value=""></option>
                                             <% if (IDPerfil === 'AE') { %>
                                                 <option value="C1" <%= usuario.IDPerfil === 'C1' ? 'selected' : '' %>>Asesor Comercial</option>
                                                 <option value="C2" <%= usuario.IDPerfil === 'C2' ? 'selected' : '' %>>Asistente Comercial</option>
