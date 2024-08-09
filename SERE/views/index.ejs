@@ -19,36 +19,56 @@
         <h2>BIENVENIDO A SERE <br>
             <%= Nombre %>
         </h2>
-        <!-- <figure class="figure rounded float-end">
-            <figcaption class="figure-caption ">Asignar Rol </figcaption>
-            <a href="/sere/AsignarRol">
-                <img src="/images/sere/Alta.png" class="img-thumbnail" alt="..." width="100">
-            </a>
-        </figure> -->
-        <div class="card d-inline-block" style="width: 18rem;">
-            <a href="/sere/AsignarRol">
-                <img src="/images/sere/Administrador.webp" class="card-img-top" alt="administrar" style="height: auto;"/>
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">Administrar perfil</h5>
-                <p class="card-text">
-                    Lorem ipsum dolor
-                </p>
-            </div>
-        </div>
-        <div class="card d-inline-block" style="width: 18rem;">
-            <a href="/sere/Clientes">
-                <img src="/images/sere/Clientes.webp" class="card-img-top" alt="..." style="height: auto;"/>
-            </a>
-            <div class="card-body">
-                <h5 class="card-title">CLIENTES</h5>
-                <p class="card-text">
-                    Lorem ipsum dolor
-                </p>
+
+        <div class="container-cards"> <!-- Contenedor -->
+            <div class="row justify-content-center"> <!-- Fila -->
+                <div class="col-md-4 mb-3"> <!-- Columna -->
+                    <div class="card">
+                        <a href="/sere/AsignarRol">
+                            <img src="/images/sere/Administrador.webp" class="card-img-top" alt="administrar" style="height: auto;" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">Administrar perfil</h5>
+                            <p class="card-text">
+                                Accede a asignar perfiles de usuarios asociados a tu empresa y subir datos de facturación.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 mb-3"> <!-- Columna -->
+                    <div class="card">
+                        <a href="/sere/Clientes">
+                            <img src="/images/sere/Clientes.webp" class="card-img-top" alt="clientes" style="height: auto;" />
+                        </a>
+                        <div class="card-body">
+                            <h5 class="card-title">Clientes</h5>
+                            <p class="card-text">
+                                Accede a herramientas para evaluar la viabilidad crediticia, administrar cuentas por cobrar y gestionar la recuperación de deudas mediante procesos legales.
+                            </p>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         
-        <h3 class="text-success">¡PRÓXIMAMENTE NUEVOS MODULOS!</h3>
+        <style>
+            .card-img-top {
+                width: 60%;
+                height: 10rem;
+            }
+        
+            .card {
+                height: 100%;
+            }
+        
+            .container-cards {
+                display: flex;
+                justify-content: center;
+            }
+        </style>
+        
+        
+        <h3 class="text-danger">¡PRÓXIMAMENTE NUEVOS MODULOS!</h3>
         <figure class="figure">
             <figcaption class="figure-caption">Empleados</figcaption>
             <img src="/images/sere/Empleados.webp" class="img-thumbnail" alt="..." width="250">
@@ -62,7 +82,6 @@
             <img src="/images/sere/Gobierno.webp" class="img-thumbnail" alt="..." width="250">
         </figure>
     </div>
-    <br>
     <div id="footer"></div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz"
