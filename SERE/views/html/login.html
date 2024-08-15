@@ -9,6 +9,7 @@
         integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.1.1/css/all.min.css">
     <link rel="icon" type="image/x-icon" href="/images/ico.ico">
+    <script type="module" src="https://cdn.jsdelivr.net/npm/@justinribeiro/lite-youtube@1.5.0/lite-youtube.js"></script>
     <style>
         body {
             background-image: url('/images/background.webp');
@@ -32,26 +33,38 @@
             border-radius: 8px;
             /* Bordes redondeados */
         }
+        .video-container {
+        position: relative;
+        width: 100%;
+        padding-bottom: 56.25%; /* 16:9 aspect ratio */
+        height: 150px; /* Asegúrate que coincida con la altura de las imágenes */
+    }
+
+    .video-container lite-youtube {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
     </style>
 </head>
 <div id="header"></div>
 
 <body>
     <div class="container text-center my-3">
-        <br>
-        <!-- <h2>SISTEMA EXPERTO EN RELACIONES EMPRESARIALES</h2><br> -->
         <div class="row mb-3">
-            <div class="col-md-6 mb-4 "><br>
+            <div class="col-md-6 mb-3 ">
+                <div class="video-container">
+                    <lite-youtube videoid="6TLR-CttRhE"></lite-youtube>
+                </div> <br>
                 <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
                     <div class="carousel-inner">
                         <div class="carousel-item active">
-                            <img src="/images/sere/Recomendaciones.jpg" class="d-block w-100" height="450" alt="...">
+                            <img src="/images/sere/Recomendaciones_SERE.png" class="d-block w-100" height="250" alt="...">
                         </div>
                         <div class="carousel-item">
-                            <img src="/images/2.jpg" class="d-block w-100" height="450" alt="...">
-                        </div>
-                        <div class="carousel-item">
-                            <img src="/images/3.jpg" class="d-block w-100" height="450" alt="...">
+                            <img src="/images/sere/Tu_Inversion_Mensual.png" class="d-block w-100" height="250" alt="...">
                         </div>
                     </div>
                     <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
@@ -69,7 +82,7 @@
             <div class="col-md-6 mb-4">
                 <form id="loginForm"><br>
                     <h1 class="text-center">MONDAINAI SERE</h1>
-                    <h4 class="h3 mb-3 fw-normal text-center">Inicio de Sesión</h4>
+                    <h4 class="h3 mb-3 fw-normal text-center">Inicio de Sesión</h4><br>
                     <!-- Agrega mensaje de alerta -->
                     <div id="error-message" class="alert alert-danger d-none" role="alert">
                         <strong>

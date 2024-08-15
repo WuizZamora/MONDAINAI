@@ -16,33 +16,35 @@
 <body>
   <%- include('partials/header') %>
     <!-- <h1>Bienvenido al Portal</h1> -->
-    <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
-      <div class="carousel-inner">
-        <div class="carousel-item active">
-          <img src="images/Foto_1_Inicio.webp" class="d-block w-100" alt="..." height="400">
+    <div class="container">
+      <div id="carouselExampleAutoplaying" class="carousel slide" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item active">
+            <img src="images/Foto_1_Inicio.webp" class="d-block w-100" alt="..." height="400">
+          </div>
+          <div class="carousel-item">
+            <img src="images/Foto_2_Inicio.webp" class="d-block w-100" alt="..." height="400">
+          </div>
+          <div class="carousel-item">
+            <img src="images/Foto_3_Inicio.webp" class="d-block w-100" alt="..." height="400">
+          </div>
         </div>
-        <div class="carousel-item">
-          <img src="images/Foto_2_Inicio.webp" class="d-block w-100" alt="..." height="400">
-        </div>
-        <div class="carousel-item">
-          <img src="images/Foto_3_Inicio.webp" class="d-block w-100" alt="..." height="400">
-        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
+          data-bs-slide="prev">
+          <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Previous</span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
+          data-bs-slide="next">
+          <span class="carousel-control-next-icon" aria-hidden="true"></span>
+          <span class="visually-hidden">Next</span>
+        </button>
       </div>
-      <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="prev">
-        <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Previous</span>
-      </button>
-      <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleAutoplaying"
-        data-bs-slide="next">
-        <span class="carousel-control-next-icon" aria-hidden="true"></span>
-        <span class="visually-hidden">Next</span>
-      </button>
-    </div> <br>
-
+    </div>
+<br>
     <div class="container text-center">
-      <h3>"La Cruel Realidad de los Negocios: Un Camino sin Llegada"</h3>
-      <div class="row align-items-center">
+      <h3>"La Cruel Realidad de los Negocios: Un Camino sin Llegada"</h3> <br>
+      <div class="row">
         <div class="col-md-3">
           <p>
             <strong>
@@ -96,11 +98,11 @@
       </div>
 
       <div class="row">
-        <div class="col-md-9"><br>
+        <div class="col-md-12"><br><br>
           <h3>
             ¿Porque MONDAINAI empodera a emprendedores, profesionistas independientes y empresarios con su ecosistema de
             recursos?
-          </h3>
+          </h3> <br>
           <div class="accordion accordion-flush" id="accordionFlushExample">
             <div class="accordion-item">
               <h2 class="accordion-header">
@@ -229,8 +231,8 @@
                 </div>
               </div>
             </div>
-          </div>
-        </div>
+          </div><br>
+        </div> 
         <style>
           .custom-header {
             background-color: #95979B;
@@ -248,12 +250,15 @@
             color: white;
           }
         </style>
-        <div class="col-md-3">
-          <img src="images/Recomendacion_1.webp" class="d-block w-100 mb-3" alt="..." width="200" height="200">
-          <img src="images/Recomendacion_2.webp" class="d-block w-100 mb-3" alt="..." width="200" height="200">
-          <img src="images/Recomendacion_3.webp" class="d-block w-100 mb-3" alt="..." width="200" height="200">
-          <img src="images/Recomendacion_4.webp" class="d-block w-100 mb-3" alt="..." width="200" height="200">
-        </div>
+          <h3>Nuestros últimos clientes recomiendan nuestros recursos</h3>
+          <div class="col-md-12 d-flex flex-wrap justify-content-center">
+            <img src="images/Recomendacion_1.webp" class="m-2" alt="..." width="250" height="300">
+            <img src="images/Recomendacion_2.webp" class="m-2" alt="..." width="250" height="300">
+            <img src="images/Recomendacion_3.webp" class="m-2" alt="..." width="250" height="300">
+            <img src="images/Recomendacion_4.webp" class="m-2" alt="..." width="250" height="300">
+          </div>
+          
+        
       </div>
 
     </div>
