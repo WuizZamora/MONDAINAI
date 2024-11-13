@@ -63,7 +63,7 @@ exports.guardarDatos = (req, res) => {
       data.FechaDeAsignacion,
       RFC,
       data.RFCDespacho,
-      RFCAsociado
+      RFCAsociado,
     ],
     (error, results) => {
       if (error) {
@@ -377,51 +377,84 @@ exports.guardarEdoDeCuenta = [
   },
 ];
 
-// FORMULARIO PARA REGISTRAR EL HISTORIAL DE PAGOS
-exports.guardarHistorialPagos = (req, res) => {
-  const IDCuenta = req.session.IDCuenta;
-  const formData = req.body;
-  // console.log(formData);
-  // Itera sobre los datos del formulario y los inserta en la base de datos
-  Object.keys(formData).forEach((key) => {
-    // Verifica que el nombre de la clave sea válido (corresponde a un campo del formulario)
-    if (key.startsWith("FechaTransaccion") && formData[key]) {
-      const IDHistorialDePago = parseInt(key.replace("FechaTransaccion", ""));
-      const FechaTransaccion = formData[key];
-      const NumeroFacturaORecibo =
-        formData["NumeroFacturaORecibo" + IDHistorialDePago];
-      const MontoPagado = formData["MontoPagado" + IDHistorialDePago];
-      const EstadoDelPago = formData["EstadoDelPago" + IDHistorialDePago];
-      const ObservacionesPago =
-        formData["ObservacionesContacto" + IDHistorialDePago];
+// Función para guardar el historial de pagos y aceptar un archivo
+exports.guardarHistorialPagos = [
+  (req, res, next) => {
+    const IDCuenta = req.session.IDCuenta;
+    const upload = createUploadDirForUser(IDCuenta); // Crear directorio para el usuario
+    const uploadHandler = upload.fields([
+      { name: "SoporteHistorialPagos", maxCount: 1 }, // Cambié el nombre del campo a "SoporteHistorialPagos"
+    ]);
 
-      // Realiza la inserción en la base de datos
-      const query =
-        "INSERT INTO Cliente_HistorialDePagos (IDCuenta, IDHistorialDePago, FechaTransaccion, NumeroFacturaORecibo, MontoPagado, EstadoDelPago, ObservacionesPago) VALUES (?, ?, ?, ?, ?, ?, ?)";
-      const values = [
-        IDCuenta,
-        IDHistorialDePago,
-        FechaTransaccion,
-        NumeroFacturaORecibo,
-        MontoPagado,
-        EstadoDelPago,
-        ObservacionesPago,
-      ];
+    // Procesar la carga de archivos
+    uploadHandler(req, res, (err) => {
+      if (err instanceof multer.MulterError) {
+        return res.status(400).json({ error: err.message });
+      } else if (err) {
+        return res.status(500).json({ error: err.message });
+      }
+      next(); // Continuar con el siguiente middleware para procesar el formulario
+    });
+  },
+  (req, res) => {
+    const IDCuenta = req.session.IDCuenta;
+    const formData = req.body;
+    const soporteHistorialPagos =
+      req.files && req.files["SoporteHistorialPagos"]
+        ? req.files["SoporteHistorialPagos"][0]
+        : null;
+    const RutaArchivoSoporte = soporteHistorialPagos
+      ? `uploads/${IDCuenta}/${soporteHistorialPagos.filename}`
+      : null;
 
-      pool.query(query, values, (error, results, fields) => {
-        if (error) {
-          console.error("Error al insertar datos en la base de datos:", error);
-          res
-            .status(500)
-            .json({ error: "Error al guardar los datos en la base de datos" });
-        }
-      });
-    }
-  });
+    // Itera sobre los datos del formulario
+    Object.keys(formData).forEach((key) => {
+      // Verifica que el nombre de la clave sea válido (corresponde a un campo del formulario)
+      if (key.startsWith("FechaTransaccion") && formData[key]) {
+        const IDHistorialDePago = parseInt(key.replace("FechaTransaccion", ""));
+        const FechaTransaccion = formData[key];
+        const NumeroFacturaORecibo =
+          formData["NumeroFacturaORecibo" + IDHistorialDePago];
+        const MontoPagado = formData["MontoPagado" + IDHistorialDePago];
+        const EstadoDelPago = formData["EstadoDelPago" + IDHistorialDePago];
+        const ObservacionesPago =
+          formData["ObservacionesContacto" + IDHistorialDePago];
 
-  // Envía una respuesta vacía al navegador con un código de estado 204 (No Content)
-  res.status(204).end();
-};
+        // Realiza la inserción en la base de datos
+        const query =
+          "INSERT INTO Cliente_HistorialDePagos (IDCuenta, IDHistorialDePago, FechaTransaccion, NumeroFacturaORecibo, MontoPagado, EstadoDelPago, ObservacionesPago, SoporteHistorialPagos, RutaArchivoSoporte) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        const values = [
+          IDCuenta,
+          IDHistorialDePago,
+          FechaTransaccion,
+          NumeroFacturaORecibo,
+          MontoPagado,
+          EstadoDelPago,
+          ObservacionesPago,
+          soporteHistorialPagos ? soporteHistorialPagos.filename : null, // Si hay un archivo, lo guardamos; si no, lo dejamos como null
+          RutaArchivoSoporte, // Ruta del archivo en el servidor
+        ];
+
+        pool.query(query, values, (error, results, fields) => {
+          if (error) {
+            console.error(
+              "Error al insertar datos en la base de datos:",
+              error
+            );
+            res
+              .status(500)
+              .json({
+                error: "Error al guardar los datos en la base de datos",
+              });
+          }
+        });
+      }
+    });
+
+    // Envía una respuesta vacía al navegador con un código de estado 204 (No Content)
+    res.status(204).end();
+  },
+];
 
 // FORMULARIO PARA LA DESCRIPCIÓN DEL CASO Y CARGA DE DOCUMENTOS
 exports.guardarDocumentosDescripcion = [
@@ -518,17 +551,13 @@ exports.ValidarCotizacion = (req, res) => {
       SET Validacion = ?, RFCUsuario = ?, FechaValidacion = ? 
       WHERE IDCotizacion = ?
     `;
-  pool.query(
-    query,
-    [validado, RFCValidacion, fechaValidacion, id],
-    (error) => {
-      if (error) {
-        console.error("Error ejecutando la consulta:", error.stack);
-        return res.status(500).send("Error en el servidor");
-      }
-      res.sendStatus(200);
+  pool.query(query, [validado, RFCValidacion, fechaValidacion, id], (error) => {
+    if (error) {
+      console.error("Error ejecutando la consulta:", error.stack);
+      return res.status(500).send("Error en el servidor");
     }
-  );
+    res.sendStatus(200);
+  });
 };
 
 // VALIDACIÓN DE CLIENTE PARA LOS HONORARIOS DEL DESPACHO
