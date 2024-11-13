@@ -35,66 +35,8 @@ router.get("/logout", (req, res) => {
   });
 });
 
-// Rutas que requieren autenticación
-// router.get("/clientes", verificarAutenticacion, (req, res) => {
-//   res.sendFile(path.join(frontendPath, "html", "Clientes", "Clientes.html"));
+// router.get("/AltaUsuario", (req, res) => {
+//   res.sendFile(path.join(frontendPath, "html", "Alta-Usuarios.html"));
 // });
-
-// router.get("/Contingencias", verificarAutenticacion, (req, res) => {
-//   res.sendFile(
-//     path.join(frontendPath, "html", "Clientes", "Contingencias.html")
-//   );
-// });
-
-// router.get("/AltaInfGeneral", verificarAutenticacion, (req, res) => {
-//   res.sendFile(
-//     path.join(frontendPath, "html", "Clientes", "Alta-InfoGeneral.html")
-//   );
-// });
-
-router.get(
-  "/AltaContactosVariablesDeRiesgo",
-  verificarAutenticacion,
-  (req, res) => {
-    res.sendFile(path.join(frontendPath, "html", "Clientes", "ejemplo.html"));
-  }
-);
-
-router.get("/AltaEdoCuenta", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "html", "Clientes", "Alta-EdoCuenta.html")
-  );
-});
-
-router.get("/AltaHistorialPagos", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(frontendPath, "html", "Clientes", "Alta-HistorialDePagos.html")
-  );
-});
-
-router.get("/AltaDescripcionDocumentos", verificarAutenticacion, (req, res) => {
-  res.sendFile(
-    path.join(
-      frontendPath,
-      "html",
-      "Clientes",
-      "Alta-DescripcionDocumentos.html"
-    )
-  );
-});
-
-router.get("/AltaUsuario", (req, res) => {
-  res.sendFile(path.join(frontendPath, "html", "Alta-Usuarios.html"));
-});
-
-// Ruta para servir la página principal
-// app.get("/", verificarAutenticacion, (req, res) => {
-//   res.sendFile(path.join(frontendPath, "html", "index.html"));
-// });
-
-// Ruta para servir el formulario de inicio de sesión
-router.get("/login", (req, res) => {
-  res.sendFile(path.join(frontendPath, "html", "login.html"));
-});
 
 module.exports = router;

@@ -21,7 +21,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <%- include('partials/NavMondainaiSere') %>
+    <!-- <div id="header"></div> -->
     <div class="container text-center">
         <div id="NavSere"></div>
         <div class="row d-flex justify-content-center">
@@ -77,6 +78,23 @@
             <button type="button" class="btn btn-secondary" id="eliminarBtn"
                 onclick="eliminarFilaHistorial()">-</button>
             <br> <br>
+            <div class="row mb-3 align-items-end justify-content-center">
+                <div class="row d-flex justify-content-center">
+                    <div class="col-md-6">
+                        <div class="mb-3">
+                            <div class="alert alert-danger" role="alert">
+                                <strong>Atención:</strong> Sube el documento soporte del historial de pagos en formato .zip
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-3">
+                        <label class="form-label" style="display: none;"></label>
+                        <input type="file" class="form-control" name="SoporteHistorialPagos" required>
+                    </div>
+                </div>
+            </div>
             <div class="row mb-3">
                 <div class="container-avisos text-center">
                     <div id="error-message" class="alert alert-danger d-none" role="alert">
@@ -92,7 +110,8 @@
             </div>
         </form>
     </div>
-    <div id="footer"></div>
+    <!-- <div id="footer"></div> -->
+    <%- include('../../views/partials/footer') %>
     <script>
         $(document).ready(function () {
             // $('#Form-Historial').bootstrapValidator();
@@ -110,11 +129,7 @@
 
                     fetch('/sere/guardar-HistorialPagos', {
                         method: 'POST',
-                        headers: {
-                            // Añade el Content-Type para asegurarte de que el backend pueda parsear correctamente los datos
-                            'Content-Type': 'application/x-www-form-urlencoded'
-                        },
-                        body: new URLSearchParams(new FormData(form[0])).toString()
+                        body: formData
                     })
                         .then(response => {
                             if (!response.ok) {

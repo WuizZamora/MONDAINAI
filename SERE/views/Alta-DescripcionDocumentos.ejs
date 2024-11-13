@@ -13,7 +13,8 @@
 </head>
 
 <body>
-    <div id="header"></div>
+    <%- include('partials/NavMondainaiSere') %>
+    <!-- <div id="header"></div> -->
     <div class="container text-center">
         <form action="/sere/guardar-DocumentosDescripcion" method="post" autocomplete="off" class="needs-validation"
             enctype="multipart/form-data" id="Form-Descripcion" novalidate>
@@ -118,7 +119,8 @@
     </div>
     </form>
     </div>
-    <div id="footer"></div>
+    <!-- <div id="footer"></div> -->
+    <%- include('../../views/partials/footer') %>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         $(document).ready(function () {

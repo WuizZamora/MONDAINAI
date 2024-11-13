@@ -1,45 +1,56 @@
 <style>
-    footer {
-        background-color: #95979B;
-        text-align: center;
-        padding: 0.5em;
-        /* Reducir el padding */
-        font-size: 1rem;
-        /* Reducir el tamaño de fuente */
-        color: white;
-    }
+    html, body {
+    height: 100%; /* Hace que el body ocupe toda la altura de la ventana */
+    margin: 0; /* Elimina los márgenes predeterminados */
+}
 
+body {
+    display: flex;
+    flex-direction: column;
+}
+
+.container-fluid {
+    flex: 1; /* El contenedor principal ocupa todo el espacio disponible */
+}
+
+footer {
+    background-color: #95979B;
+    text-align: center;
+    padding: 0.5em;
+    font-size: 1rem;
+    color: white;
+    margin-top: auto; /* Empuja el footer hacia abajo si el contenido es corto */
+}
+
+table {
+    margin: auto;
+}
+
+.redes-sociales img {
+    width: 2em;
+    height: 2em;
+}
+
+.redes-sociales {
+    padding: 0.5em;
+}
+
+/* Media query para pantallas más pequeñas */
+@media screen and (max-width: 600px) {
     table {
-        margin: auto;
-    }
-
-    .redes-sociales img {
-        width: 2em;
-        height: 2em;
+        width: 100%; /* Hace que la tabla ocupe todo el ancho en pantallas pequeñas */
     }
 
     .redes-sociales {
-        padding: 0.5em;
+        display: block;
+        margin: auto;
+        text-align: center;
     }
 
-    /* Media query para pantallas más pequeñas */
-    @media screen and (max-width: 600px) {
-        table {
-            width: 100%;
-            /* Hace que la tabla ocupe todo el ancho en pantallas pequeñas */
-        }
-
-        .redes-sociales {
-            display: block;
-            margin: auto;
-            text-align: center;
-        }
-
-        .redes-sociales img {
-            margin-bottom: 0.5em;
-            /* Agrega espacio entre las imágenes */
-        }
+    .redes-sociales img {
+        margin-bottom: 0.5em; /* Agrega espacio entre las imágenes */
     }
+}
 </style>
 <footer>
     <strong>
@@ -71,6 +82,9 @@
         </tr>
     </table>
     <p>
-        © 2023 MÁS SERVICIOS MONDAINAI. <br> Todos los Derechos Reservados. <br> Hecho con ❤ por WZ
+        © 2023 MÁS SERVICIOS MONDAINAI. Todos los Derechos Reservados. <br> Hecho con ❤ por 
+        <a href="https://linktr.ee/wuiz_zp?utm_source=linktree_profile_share&ltsid=2644650b-20b3-472a-92d5-455b645b1781" target="_blank">
+            WZ
+        </a>
     </p>
 </footer>

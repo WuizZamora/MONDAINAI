@@ -1,6 +1,14 @@
 const pool = require("../config/database");
 const moment = require("moment");
 
+exports.renderLogin = (req, res) => {
+  // const { Nombre } = req.session.usuario;
+  res.render("login");
+};
+exports.renderAltaUsuario = (req, res) => {
+  // const { Nombre } = req.session.usuario;
+  res.render("Alta-Usuarios");
+};
 exports.renderIndex = (req, res) => {
   const { Nombre } = req.session.usuario;
   res.render("index", { Nombre });
@@ -18,6 +26,25 @@ exports.renderContingencias = (req, res) => {
 exports.renderAltaInfGeneral = (req, res) => {
   const { RFCAsociado } = req.session.usuario;
   res.render("Alta-InfoGeneral", {RFCAsociado});
+};
+exports.renderAltaContactosVariablesDeRiesgo = (req, res) => {
+  const { RFCAsociado } = req.session.usuario;
+  res.render("Alta-ContactosVariablesDeRiesgos", {RFCAsociado});
+};
+
+exports.renderAltaEdoCuenta = (req, res) => {
+  const { RFCAsociado } = req.session.usuario;
+  res.render("Alta-EdoCuenta", {RFCAsociado});
+};
+
+exports.renderAltaHistorialPagos = (req, res) => {
+  const { RFCAsociado } = req.session.usuario;
+  res.render("Alta-HistorialDePagos", {RFCAsociado});
+};
+
+exports.renderDescripcionDocumentos = (req, res) => {
+  const { RFCAsociado } = req.session.usuario;
+  res.render("Alta-DescripcionDocumentos", {RFCAsociado});
 };
 
 exports.renderAsignarRol = (req, res) => {
